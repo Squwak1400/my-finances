@@ -1,0 +1,2168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Privacy lock: this page is not allowed to load or send anything over the network. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-N3/2qtH6R1lEHQaxYBiahmyueVX4XPsaba1xqeX0wEM=' 'sha256-5S+LDNHJkwx+JkKBvVbqehwtt5BKtONk0vKMHM+OHfc='; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Tax Coordinator</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f3ef;
+  --surface: #fcfcfb;
+  --surface-2: #f0efec;
+  --line: #e2e1dc;
+  --grid: #ebeae6;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #6b6a65;
+  --accent: #184f95;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s7: #4a3aa7;
+  --s1-wash: rgba(42,120,214,.10);
+  --track: #cde2fb;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-text: #006300; --critical-text: #b42828;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface: #1a1a19; --surface-2: #232321; --line: #2f2f2c; --grid: #2a2a28;
+    --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e86; --accent: #86b6ef;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s7: #9085e9;
+    --s1-wash: rgba(57,135,229,.14); --track: #184f95;
+    --good-text: #4cc94c; --critical-text: #ff8080;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --surface-2: #232321; --line: #2f2f2c; --grid: #2a2a28;
+  --text: #ffffff; --text-2: #c3c2b7; --muted: #8f8e86; --accent: #86b6ef;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s7: #9085e9;
+  --s1-wash: rgba(57,135,229,.14); --track: #184f95;
+  --good-text: #4cc94c; --critical-text: #ff8080;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 14px/1.5 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px 64px; }
+header.top {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 22px 0 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand .mark {
+  width: 36px; height: 36px; border-radius: 8px; background: var(--accent); color: var(--surface);
+  display: grid; place-items: center; font-weight: 700; font-size: 15px; letter-spacing: .5px;
+}
+.brand h1 { font-size: 18px; margin: 0; font-weight: 600; letter-spacing: -.01em; }
+.brand .sub { color: var(--muted); font-size: 12.5px; }
+.lock { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2);
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+.lock svg { width: 12px; height: 12px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button, .btn {
+  font: inherit; font-size: 13px; color: var(--text); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer;
+}
+button:hover { background: var(--surface-2); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 600; }
+button.primary:hover { filter: brightness(1.08); background: var(--accent); }
+button.ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+button.danger { color: var(--critical-text); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--s1); outline-offset: 1px; }
+
+nav.tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+nav.tabs button {
+  border: 0; border-radius: 0; background: transparent; padding: 10px 14px; color: var(--text-2);
+  border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; font-size: 14px;
+}
+nav.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+
+.grid { display: grid; gap: 16px; }
+.g-kpi { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.g-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+  box-shadow: var(--shadow); min-width: 0;
+}
+.card h2 { font-size: 15px; font-weight: 600; margin: 0; }
+.card .desc { color: var(--muted); font-size: 12.5px; margin: 2px 0 14px; }
+.hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.hero .label { color: var(--text-2); font-size: 13px; }
+.hero .value { font-size: 52px; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; }
+.hero .note { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+.kpi .label { color: var(--text-2); font-size: 12.5px; }
+.kpi .value { font-size: 24px; font-weight: 600; letter-spacing: -.01em; margin-top: 2px; }
+.kpi .foot { font-size: 12px; color: var(--muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
+.badge svg { width: 13px; height: 13px; flex: none; }
+
+svg.chart { display: block; width: 100%; overflow: visible; }
+svg.chart text { fill: var(--text-2); font-size: 12px; font-family: inherit; }
+svg.chart text.v { fill: var(--text); font-variant-numeric: tabular-nums; }
+svg.chart text.m { fill: var(--muted); font-size: 11px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--text-2); margin-bottom: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.legend i.ln { height: 2px; width: 14px; border-radius: 1px; }
+.legend i.dash { height: 0; width: 14px; border-top: 2px dashed; background: none !important; }
+
+.empty { color: var(--muted); font-size: 13px; padding: 22px 0; text-align: center; }
+.tip {
+  position: fixed; pointer-events: none; z-index: 50; background: var(--surface); color: var(--text);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12.5px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12); opacity: 0; transition: opacity .08s; max-width: 260px;
+}
+.tip b { font-weight: 600; }
+.tip .r { display: flex; justify-content: space-between; gap: 14px; }
+.tip .r span:last-child { font-variant-numeric: tabular-nums; }
+
+table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+table.data td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+table.data td.n, table.data th.n { text-align: right; font-variant-numeric: tabular-nums; }
+table.data tr:last-child td { border-bottom: 0; }
+table.data tfoot td { font-weight: 600; border-top: 1px solid var(--line); }
+
+/* Entry forms */
+.editor table.data td { padding: 4px 4px; }
+.editor input, .editor select {
+  width: 100%; font: inherit; font-size: 13px; color: var(--text); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; min-width: 0;
+}
+.editor input[type=number] { text-align: right; font-variant-numeric: tabular-nums; }
+.editor .rm { padding: 4px 8px; color: var(--muted); border-color: transparent; background: transparent; }
+.editor .rm:hover { color: var(--critical-text); }
+.editor .add { margin-top: 8px; }
+.editor .scroll { overflow-x: auto; }
+.editor table { min-width: 560px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.total { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.total b { color: var(--text); }
+
+/* Advisor */
+.memo { max-width: 860px; margin: 0 auto; }
+.memo .letterhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 16px; }
+.memo .letterhead h2 { font-size: 20px; }
+.memo p { margin: 0 0 12px; color: var(--text); }
+.finding { display: grid; grid-template-columns: 22px 1fr; gap: 10px; padding: 14px 0; border-top: 1px solid var(--grid); }
+.finding:first-of-type { border-top: 0; }
+.finding svg { width: 18px; height: 18px; margin-top: 2px; }
+.finding h3 { font-size: 14px; margin: 0 0 4px; font-weight: 600; }
+.finding p { margin: 0; color: var(--text-2); }
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--grid); }
+.steps li:first-child { border-top: 0; }
+.steps li::before { content: counter(s); width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--surface); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.memo p.disclaimer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--surface);
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 60; }
+.mapgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 14px; margin: 6px 0 14px; }
+.mapgrid label, .fld { display: grid; gap: 4px; font-size: 12px; color: var(--text-2); }
+.fld-in, .mapgrid select, .mapgrid input[type=text], .txctl input, .txctl select, table.data select.cat {
+  font: inherit; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; min-width: 0;
+}
+table.data select.cat { padding: 3px 6px; font-size: 12.5px; max-width: 170px; }
+.check { display: inline-flex !important; grid-template-columns: none !important; align-items: center; gap: 8px; font-size: 13px !important; color: var(--text) !important; }
+.txctl { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.txctl input { flex: 1; min-width: 180px; }
+.drop { border: 1.5px dashed var(--line); border-radius: 12px; padding: 26px 16px; text-align: center; color: var(--text-2); }
+.drop.over { border-color: var(--s1); background: var(--s1-wash); }
+.drop b { color: var(--text); }
+td.neg { color: var(--text); }
+td.pos { color: var(--good-text); }
+.changes { list-style: none; margin: 0; padding: 0; }
+.changes li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--grid); font-size: 13px; }
+.changes li:first-child { border-top: 0; }
+.changes .d { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hidden { display: none !important; }
+@media (max-width: 600px) { .hero .value { font-size: 40px; } }
+@media print {
+  nav.tabs, .actions, .tip, .toast { display: none !important; }
+  body { background: #fff; }
+  .card { box-shadow: none; break-inside: avoid; }
+}
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.chips button { border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+.chips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 600; }
+.chips button .sm { opacity: .75; font-size: 11.5px; margin-left: 4px; }
+.item { display: grid; grid-template-columns: 1fr minmax(220px, 300px); gap: 10px 18px; padding: 14px 0; border-top: 1px solid var(--grid); }
+.item:first-child { border-top: 0; }
+.item .what { font-weight: 600; font-size: 13.5px; }
+.item .meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.item .msg { color: var(--text-2); font-size: 13px; margin-top: 6px; }
+.item .ctl { display: grid; gap: 6px; align-content: start; }
+.item .ctl select, .item .ctl input { font: inherit; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; width: 100%; }
+.item .ctl label { font-size: 12px; color: var(--text-2); display: grid; gap: 3px; }
+@media (max-width: 640px) { .item { grid-template-columns: 1fr; } }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); border: 1px solid var(--line); white-space: nowrap; }
+.pill.warn { border-color: var(--warning); }
+:root:not([data-theme="dark"]) .pill.warn { border-color: #b07800; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pill.warn { border-color: var(--warning); } }
+.pill.crit { border-color: var(--critical); color: var(--critical-text); }
+.pill.ok { border-color: var(--good); color: var(--good-text); }
+.pill svg { width: 12px; height: 12px; }
+.kpi .foot svg { width: 13px; height: 13px; flex: none; }
+.tracker { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); }
+.tracker .card h2 { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tracker .ticks { display: grid; gap: 6px; margin: 10px 0; }
+.tracker textarea { width: 100%; min-height: 54px; font: inherit; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; resize: vertical; }
+.mini { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-size: 12.5px; color: var(--text-2); }
+.mini b { color: var(--text); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.bar i { display: block; height: 100%; background: var(--s1); border-radius: 3px; }
+.rules { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.rules div { font-size: 13px; color: var(--text-2); }
+.rules b { color: var(--text); display: block; margin-bottom: 2px; }
+.notice { border-left: 3px solid var(--warning); background: var(--surface-2); padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
+.notice b { color: var(--text); }
+.scrollx { overflow-x: auto; }
+.scrollx table { min-width: 640px; }
+ol.how { margin: 6px 0 0; padding-left: 20px; font-size: 13px; color: var(--text-2); }
+ol.how li { margin: 3px 0; }
+dialog#lockDlg { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text); padding: 22px 24px; width: min(440px, calc(100vw - 32px)); box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+dialog#lockDlg::backdrop { background: rgba(0,0,0,.45); }
+dialog#lockDlg h2 { margin: 0 0 6px; font-size: 17px; }
+dialog#lockDlg label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--text-2); margin: 12px 0 0; }
+dialog#lockDlg input { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--text); }
+dialog#lockDlg .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+dialog#lockDlg .err { color: var(--critical-text); font-size: 13px; margin: 10px 0 0; min-height: 1em; }
+body.is-locked .wrap > :not(header):not(.pageswitch), body.is-locked header .actions > :not(#btnLock):not(#btnTheme):not(a) { display: none !important; }
+.printonly { display: none; }
+.sq-q { font-size: 15px; margin: 14px 0 10px; outline-offset: 4px; }
+.sq-opts { display: flex; flex-direction: column; gap: 6px; }
+.sq-opt { display: flex; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; cursor: pointer; background: var(--surface); font-size: 13.5px; }
+.sq-opt input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.sq-opt:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); font-weight: 600; }
+.sq-opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+ol.plan { list-style: none; margin: 0; padding: 0; }
+ol.plan li { padding: 12px 0; border-top: 1px solid var(--line); }
+ol.plan h3 { font-size: 14px; margin: 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+ol.plan p { margin: 4px 0 0; color: var(--text-2); font-size: 13.5px; }
+ol.plan p.when { color: var(--muted); font-size: 12.5px; }
+.editor h3.wk-h { font-size: 13px; margin: 16px 0 6px; }
+@media print { #stratQ { display: none !important; } .printing .g-2 { grid-template-columns: 1fr !important; } }
+@media print { .printonly { display: block; } section:not(.printing) { display: none !important; } header.top .actions, .noprint { display: none !important; } }
+
+.pageswitch { display: flex; justify-content: flex-start; padding-top: 14px; }
+.pageswitch .seg { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pageswitch a, .pageswitch span { font-size: 13px; padding: 6px 14px; border-radius: 7px; text-decoration: none; color: var(--muted); }
+.pageswitch a:hover { color: var(--text); background: var(--surface-2); }
+.pageswitch [aria-current] { background: var(--accent); color: var(--surface); font-weight: 600; }
+.pageswitch + header.top { padding-top: 12px; }
+@media print { .pageswitch { display: none !important; } }
+/* ==== Shared theme (same block in Financial Advisor.html and Tax Coordinator.html; edit both together) ==== */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #eef1f5; --line: #dde3ea; --grid: #e8ecf1;
+  --text: #0e1726; --text-2: #46505f; --muted: #5b6676;
+  --band: #0f2747; --band-2: #16345c; --band-line: rgba(255,255,255,.12);
+  --on-band: #ffffff; --on-band-2: rgba(255,255,255,.74); --band-accent: #8fc0ff;
+  --radius: 14px; --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.04);
+  --shadow-lg: 0 12px 40px rgba(16,24,40,.22);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1217; --surface: #161a21; --surface-2: #1e232c; --line: #2a303b; --grid: #232933;
+    --text: #f2f4f7; --text-2: #c2c9d4; --muted: #939dad;
+    --band: #121a27; --band-2: #1a2434; --band-line: rgba(255,255,255,.08);
+    --shadow: none; --shadow-lg: 0 12px 40px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1217; --surface: #161a21; --surface-2: #1e232c; --line: #2a303b; --grid: #232933;
+  --text: #f2f4f7; --text-2: #c2c9d4; --muted: #939dad;
+  --band: #121a27; --band-2: #1a2434; --band-line: rgba(255,255,255,.08);
+  --shadow: none; --shadow-lg: 0 12px 40px rgba(0,0,0,.55);
+}
+body { font-feature-settings: "tnum" 0; letter-spacing: .002em; }
+
+/* Top band: page switch, title and tabs sit on one navy band */
+.pageswitch, header.top, nav.tabs {
+  background: var(--band); box-shadow: 0 0 0 100vmax var(--band); clip-path: inset(-1px -100vmax);
+}
+.pageswitch { padding-top: 12px; }
+.pageswitch .seg { background: rgba(255,255,255,.06); border-color: var(--band-line); }
+.pageswitch a, .pageswitch span { color: var(--on-band-2); font-weight: 500; }
+.pageswitch a:hover { color: var(--on-band); background: rgba(255,255,255,.10); }
+.pageswitch [aria-current] { background: var(--on-band); color: var(--band); font-weight: 600; }
+header.top { border-bottom: 0; margin-bottom: 0; padding-bottom: 10px; color: var(--on-band); }
+.brand .mark {
+  width: 38px; height: 38px; border-radius: 10px; color: var(--band);
+  background: linear-gradient(145deg, #ffffff, #d6e6fb); box-shadow: inset 0 0 0 1px rgba(255,255,255,.6);
+}
+.brand h1 { font-size: 19px; color: var(--on-band); }
+.brand .sub { color: var(--on-band-2); }
+.lock { background: rgba(255,255,255,.08); border-color: var(--band-line); color: var(--on-band-2); }
+header.top .actions button { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.20); color: var(--on-band); }
+header.top .actions button:hover { background: rgba(255,255,255,.14); }
+header.top .actions button.primary { background: var(--on-band); border-color: var(--on-band); color: var(--band); }
+header.top .actions button.primary:hover { filter: none; background: #e3eefc; }
+header.top .actions button.ghost { background: transparent; border-color: transparent; color: var(--on-band-2); }
+header.top .actions button.ghost:hover { color: var(--on-band); background: rgba(255,255,255,.10); }
+header.top :focus-visible, nav.tabs :focus-visible, .pageswitch :focus-visible { outline: 2px solid var(--band-accent); outline-offset: 2px; }
+nav.tabs {
+  position: sticky; top: 0; z-index: 30; gap: 2px; margin-bottom: 24px;
+  border-bottom: 0; scrollbar-width: none;
+}
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs button { color: var(--on-band-2); font-weight: 500; padding: 11px 14px 12px; border-bottom-width: 3px; transition: color .15s, border-color .15s; }
+nav.tabs button:hover { color: var(--on-band); background: transparent; border-bottom-color: rgba(255,255,255,.28); }
+nav.tabs button[aria-selected="true"] { color: var(--on-band); border-bottom-color: var(--band-accent); }
+
+/* Surfaces */
+.card { border-radius: var(--radius); border-color: var(--line); padding: 20px 22px; }
+.card h2 { font-size: 15.5px; letter-spacing: -.005em; }
+.card .desc { color: var(--muted); }
+.hero .label, .kpi .label {
+  color: var(--muted); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .045em;
+}
+.hero .value { font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.kpi .value { font-size: 24px; font-variant-numeric: tabular-nums; letter-spacing: -.015em; margin-top: 4px; }
+
+/* Controls */
+button, .btn { border-radius: var(--radius-sm); font-weight: 500; transition: background .15s, border-color .15s, color .15s, box-shadow .15s; }
+button:not(.ghost):not(.linkish):not(.xchip):not(.xun):not(.rm):not([role="tab"]) { box-shadow: 0 1px 1px rgba(16,24,40,.04); }
+button:hover { border-color: color-mix(in srgb, var(--line) 60%, var(--text-2)); }
+button.primary:hover { filter: none; background: color-mix(in srgb, var(--accent) 88%, #000); border-color: color-mix(in srgb, var(--accent) 88%, #000); }
+input, select, textarea { transition: border-color .15s, box-shadow .15s; }
+input:not([type=checkbox]):not([type=radio]):focus, select:focus, textarea:focus { border-color: var(--accent) !important; box-shadow: var(--ring); outline: none; }
+input:not([type=checkbox]):not([type=radio]):focus-visible, select:focus-visible, textarea:focus-visible { outline: none; }
+input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
+
+/* Tables */
+table.data th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-top: 8px; padding-bottom: 8px; }
+table.data tbody tr { transition: background .1s; }
+table.data tbody tr:hover > td { background: color-mix(in srgb, var(--surface-2) 70%, transparent); }
+table.data tfoot td { border-top: 1.5px solid var(--line); }
+
+/* Memo, lists, notices */
+.memo .letterhead { border-bottom: 2px solid var(--accent); }
+.memo .letterhead h2 { letter-spacing: -.01em; }
+.steps li::before { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
+.notice { border-radius: var(--radius-sm); }
+.drop { border-radius: var(--radius); background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+
+/* Overlays */
+dialog#lockDlg, dialog#wiz { border-radius: 16px; border-color: var(--line); box-shadow: var(--shadow-lg); }
+dialog#lockDlg::backdrop, dialog#wiz::backdrop { background: rgba(10,20,36,.55); backdrop-filter: blur(3px); }
+.tip { border-radius: 10px; box-shadow: 0 8px 24px rgba(16,24,40,.16); }
+.toast { background: var(--band); color: var(--on-band); border-radius: 10px; padding: 10px 16px; box-shadow: var(--shadow-lg); }
+
+@media (max-width: 600px) {
+  header.top { padding-top: 14px; }
+  nav.tabs { flex-wrap: nowrap; overflow-x: auto; }
+}
+@media print {
+  .pageswitch, header.top, nav.tabs { background: none; box-shadow: none; clip-path: none; color: #000; }
+  .brand h1, .brand .sub { color: #000; }
+  .brand .mark { background: #fff; color: #000; box-shadow: inset 0 0 0 1px #999; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="pageswitch" aria-label="Switch page"><div class="seg"><a href="Financial Advisor.html" title="Switch to Financial Advisor">Financial Advisor</a><span aria-current="page">Tax Coordinator</span></div></nav>
+  <header class="top">
+    <div class="brand">
+      <div class="mark">TX</div>
+      <div>
+        <h1>Tax Coordinator</h1>
+        <div class="sub">Crypto and catch-up filing · <span class="lock"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Offline. Your data stays on this computer.</span></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="btnSave" title="Save a backup file of your tax workspace">Save backup</button>
+      <button id="btnLoad" title="Open a backup file you saved earlier">Open backup</button>
+      <button id="btnLock" class="hidden">Lock now</button>
+      <button id="btnTheme" class="ghost" title="Switch light or dark" aria-label="Switch light or dark"><svg viewBox="0 0 16 16" width="16" height="16" style="display:block"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg></button>
+      <input type="file" id="backupIn" accept=".json,application/json" class="hidden">
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button role="tab" data-tab="import" aria-selected="false">Import</button>
+    <button role="tab" data-tab="review" aria-selected="false">Review <span id="revCount"></span></button>
+    <button role="tab" data-tab="years" aria-selected="false">Year reports</button>
+    <button role="tab" data-tab="holdings" aria-selected="false">Holdings</button>
+    <button role="tab" data-tab="work" aria-selected="false">Work and deductions</button>
+    <button role="tab" data-tab="strategy" aria-selected="false">Strategy</button>
+    <button role="tab" data-tab="filing" aria-selected="false">Filing plan</button>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <section id="tab-overview">
+    <div id="welcome" class="card hidden" style="margin-bottom:16px">
+      <h2>Let's get your crypto sorted for CRA.</h2>
+      <p class="desc" style="margin-bottom:10px">Import your full transaction history from Crypto.com and Kraken, from your very first purchase. I'll match transfers between your accounts, work out your average cost (ACB) the way CRA requires, and give you a gain, loss and income summary for each year you need to file. Nothing leaves this computer.</p>
+      <div class="actions"><button class="primary" data-goto="import">Import my files</button><button id="btnSample">Try it with sample data</button></div>
+    </div>
+    <div id="sampleNote" class="notice hidden"><b>You're looking at made-up sample data.</b> <button id="btnClearSample" style="margin-left:8px">Remove sample data</button></div>
+
+    <div class="card hero" style="margin-bottom:16px">
+      <div>
+        <div class="label" id="heroLabel">Crypto amounts to report, unfiled years</div>
+        <div class="value" id="heroVal">$0</div>
+        <div class="note" id="heroNote">Taxable capital gains plus crypto income, before any other income</div>
+      </div>
+      <div style="flex:1; min-width:260px; max-width:560px">
+        <div class="legend" id="yrLegend"></div>
+        <svg class="chart" id="chYears" height="190" role="img" aria-label="Net capital gain or loss and crypto income by year"></svg>
+      </div>
+    </div>
+
+    <div class="grid g-kpi" id="kpis" style="margin-bottom:16px"></div>
+
+    <div class="grid g-2">
+      <div class="card">
+        <h2>Needs your attention</h2>
+        <p class="desc">Things I couldn't decide on my own. Each one can change a year's numbers.</p>
+        <div id="attn"></div>
+      </div>
+      <div class="card">
+        <h2>Year by year</h2>
+        <p class="desc">Taxable capital gain is 50% of the net gain. A loss is applied to gains in the 3 years before it first (form T1A), and the rest carries forward to later gains.</p>
+        <div id="yrTable"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPORT -->
+  <section id="tab-import" class="hidden">
+    <div class="grid g-2" style="margin-bottom:16px">
+      <div class="card">
+        <h2>Add exchange files</h2>
+        <p class="desc">Drop in CSV exports. Re-importing an overlapping file is safe: duplicates are skipped.</p>
+        <label class="drop" id="drop"><input type="file" id="fileIn" accept=".csv,text/csv" multiple class="hidden"><b>Drop CSV files here</b> or click to choose<br><span style="font-size:12.5px">Crypto.com app, Kraken Ledgers, or the manual template</span></label>
+        <div id="importMsg" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h2>How to export your history</h2>
+        <p class="desc">Always pick the widest date range, starting before your first purchase. Menu names move around between app versions.</p>
+        <b style="font-size:13px">Crypto.com app</b>
+        <ol class="how"><li>Open Accounts, then Crypto Wallet (or Transaction History).</li><li>Tap the export or document icon and choose Export to CSV.</li><li>Pick the crypto transactions export and the full date range. It arrives by email or download.</li></ol>
+        <b style="font-size:13px; display:block; margin-top:10px">Kraken</b>
+        <ol class="how"><li>Sign in on kraken.com and open Documents (or History), then Export.</li><li>Choose <b>Ledgers</b> (not Trades), all fields, the full date range.</li><li>Download the zip and unzip it; import <b>ledgers.csv</b>.</li></ol>
+        <b style="font-size:13px; display:block; margin-top:10px">Anything else (another app, a hardware wallet, cash deals)</b>
+        <p style="font-size:13px; color:var(--text-2); margin:4px 0 8px">Fill in the manual template in Excel and import it.</p>
+        <button id="btnTemplate">Download manual template</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Imported files</h2>
+      <p class="desc">Each file is read once and kept in this browser. Remove a file to take its transactions out.</p>
+      <div class="scrollx" id="fileTable"></div>
+      <div style="margin-top:14px; border-top:1px solid var(--grid); padding-top:12px">
+        <b style="font-size:13px">File check</b>
+        <p style="font-size:12.5px; color:var(--muted); margin:2px 0 8px">Shows how each file was read: its columns, the kinds of transactions in it and how many have no CAD value. It contains no amounts, coins held or balances, so it's safe to paste into the chat if something looks wrong.</p>
+        <button id="btnCheck">Run file check</button><button id="btnCheckCopy" class="hidden">Copy it</button>
+        <pre id="checkOut" class="hidden" style="white-space:pre-wrap; font-size:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:10px; margin-top:10px; max-height:360px; overflow:auto"></pre>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Prices and exchange rates (optional, improves accuracy)</h2>
+      <p class="desc">This page never goes online, so it values things from your own records first. Where a trade was in US dollars it needs a USD to CAD rate; without a rate file it uses the Bank of Canada annual average and marks those rows as estimates.</p>
+      <div class="grid g-2">
+        <div>
+          <b style="font-size:13px">USD to CAD daily rates</b>
+          <p style="font-size:12.5px; color:var(--muted); margin:2px 0 8px">From bankofcanada.ca: Rates, Exchange rates, then download the USD/CAD daily series as CSV.</p>
+          <button id="btnFx">Import rate file</button> <span class="total" id="fxStatus"></span>
+          <input type="file" id="fxIn" accept=".csv,text/csv" class="hidden">
+        </div>
+        <div>
+          <b style="font-size:13px">Daily coin prices in CAD</b>
+          <p style="font-size:12.5px; color:var(--muted); margin:2px 0 8px">Any CSV with a date column and a CAD close or price column (for example Kraken's own price history for that coin).</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center"><input class="fld-in" id="pxAsset" placeholder="Coin, e.g. ETH" style="width:120px"><button id="btnPx">Import price file</button> <span class="total" id="pxStatus"></span></div>
+          <input type="file" id="pxIn" accept=".csv,text/csv" class="hidden">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section id="tab-review" class="hidden">
+    <div class="card">
+      <div class="section-head"><div><h2>Review</h2><p class="desc">Transfers I couldn't match, missing prices and gaps in history. The default choice is already applied; changing it updates every total.</p></div>
+        <label class="check"><input type="checkbox" id="showAll"> Show items already answered</label></div>
+      <div id="reviewList"></div>
+    </div>
+  </section>
+
+  <!-- YEARS -->
+  <section id="tab-years" class="hidden">
+    <div class="chips noprint" id="yearChips"></div>
+    <div class="printonly" id="printHead"></div>
+    <div id="yearFiled"></div>
+    <div class="grid g-kpi" id="yearKpis" style="margin-bottom:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="section-head"><div><h2>Sales, swaps and spending</h2><p class="desc">Each disposal at its CAD value, with the average cost of the coins given up.</p></div>
+        <div class="actions noprint"><button id="btnExpDisp">Export CSV for CPA</button><button id="btnPrint">Print this year</button></div></div>
+      <div class="scrollx" id="dispTable"></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="section-head"><div><h2>Crypto income</h2><p class="desc">Staking, interest and rewards, counted at market value when received. That value also becomes the coins' cost.</p></div>
+        <div class="actions noprint"><button id="btnExpInc">Export CSV for CPA</button></div></div>
+      <div class="scrollx" id="incTable"></div>
+    </div>
+    <div class="card">
+      <h2>Where these go on the return</h2>
+      <p class="desc">For discussion with your CPA, who confirms the final treatment.</p>
+      <div class="rules">
+        <div><b>Capital gains (Schedule 3)</b>Report the proceeds and adjusted cost base of crypto disposals on Schedule 3. The taxable half flows to line 12700.</div>
+        <div><b>Crypto income</b>Staking, interest and rewards are usually other income (line 13000). If CRA would see your activity as a business, all of it is business income instead.</div>
+        <div><b>Business or capital?</b>Frequent trading, short holding periods and running it like a business point to business income: 100% taxable, but losses are fully deductible.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOLDINGS -->
+  <section id="tab-holdings" class="hidden">
+    <div class="card">
+      <h2>What you still hold, and its tax cost</h2>
+      <p class="desc">Units are pooled across every account and wallet. Your ACB per coin is what each future sale is measured against.</p>
+      <div class="scrollx" id="holdTable"></div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="tab-work" class="hidden">
+    <div class="notice"><b>Set up for a flying career.</b> Fill in each year from your T4, T4E and pay records. I'll sort each amount onto the right line and flag what to ask your CPA. These are estimates; the per diem and meal rules in particular depend on your employer's paperwork.</div>
+    <div class="actions noprint" style="margin:-4px 0 12px"><button class="primary" id="btnPayOpen">Import a pay summary (Dayforce)</button></div>
+    <div class="card hidden noprint" id="payPanel" style="margin-bottom:16px">
+      <h2>Import a pay summary</h2>
+      <p class="desc">In Dayforce, open your year-to-date pay or total compensation statement. If it's a PDF, open it, press Ctrl+A then Ctrl+C, and paste it below. A .txt or .csv export works too. This page reads it right here on your computer; nothing is sent anywhere, and I never see it.</p>
+      <div class="mapgrid" style="grid-template-columns:1fr auto;align-items:end">
+        <label>Paste your pay summary<textarea id="payText" rows="6" style="width:100%;font:inherit;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;resize:vertical" placeholder="Paste the copied text here"></textarea></label>
+        <label>Tax year<select class="fld-in" id="payYear"></select></label>
+      </div>
+      <div class="actions" style="margin-top:10px"><button id="payRead">Read it</button><label class="btn" style="cursor:pointer">Or open a .txt or .csv file<input type="file" id="payFile" accept=".txt,.csv,.pdf,text/plain,text/csv" class="hidden"></label><button class="ghost" id="payClear">Clear</button></div>
+      <div id="payRows"></div>
+      <div class="actions" style="margin-top:10px"><button class="primary" id="payApply" disabled>Add to that year</button></div>
+    </div>
+    <div class="card noprint" style="margin-bottom:16px">
+      <h2>For your estimate</h2>
+      <p class="desc">Used for the rough balance on each year and shared with the Financial Advisor so it can plan around your taxes. Room amounts are on your latest Notice of Assessment.</p>
+      <div class="mapgrid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+        <label>Province you lived in on Dec 31 (change a single year on its form)<select class="fld-in" id="taxProv"></select></label>
+        <label>RRSP deduction limit (Notice of Assessment)<input class="fld-in" type="number" min="0" step="0.01" id="room_rrsp" placeholder="$"></label>
+        <label>TFSA contribution room (CRA My Account; there’s no TFSA slip)<input class="fld-in" type="number" min="0" step="0.01" id="room_tfsa" placeholder="$"></label>
+        <label>FHSA participation room (CRA My Account)<input class="fld-in" type="number" min="0" step="0.01" id="room_fhsa" placeholder="$ (blank if no FHSA)"></label>
+      </div>
+    </div>
+    <div class="chips noprint" id="workChips"></div>
+    <div class="grid g-2" style="margin-bottom:16px">
+      <div class="printonly" id="workPrintHead" style="grid-column:1/-1"></div>
+      <div class="card editor" id="workForm"></div>
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="section-head"><div><h2 id="workResTitle">What goes on the return</h2><p class="desc">Each amount, the line it goes on, and how confident I am that it applies.</p></div><div class="actions noprint"><button id="btnWorkPrint">Print for CPA</button></div></div>
+          <div class="grid g-kpi" id="workKpis" style="margin-bottom:12px"></div>
+          <div id="workLines" style="overflow-x:auto"></div>
+        </div>
+        <div class="card">
+          <h2>Questions for your CPA</h2>
+          <p class="desc">Built from your answers for this year.</p>
+          <ol class="how" id="workQs"></ol>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>What usually applies to pilots</h2>
+      <p class="desc">General CRA rules. Your employer's setup decides which ones you can use.</p>
+      <div class="rules">
+        <div><b>Per diems</b>A reasonable travel allowance for work away from your home base is usually tax-free and stays off your T4. If your employer put it in box 14, it was taxed and you may be able to claim meals instead. You can't have both for the same meals.</div>
+        <div><b>Transport employee meals and lodging</b>Form TL2, signed by your employer, lets transport employees claim meals by the simplified method ($17 a meal, up to $51 a day before 2023; $23 and $69 from 2023; one meal per 4 hours away; 50% deductible) and lodging they paid on trips of 12 hours or more away from base. Ask each employer whether it counts as a transport employer and will sign a TL2.</div>
+        <div><b>Other employment expenses</b>Transport employee meals use the employer-signed TL2. Other work costs on line 22900, including travel meals for other employees, need a signed T2200. Licence renewals, medicals, headsets and uniforms usually aren't deductible for employees.</div>
+        <div><b>Union and professional dues</b>Dues on your T4 (box 44) or receipts go on line 21200.</div>
+        <div><b>Training</b>Flight training at a Transport Canada certified school can give a T2202 for the tuition credit (line 32300), and the Canada Training Credit from 2020 on.</div>
+        <div><b>Camps and remote bases</b>Board and lodging at a special or remote work site your employer provides is usually tax-free. Northern residents deduction (line 25500) only applies if you lived in a prescribed zone for 6 months or more.</div>
+        <div><b>Two employers in one year</b>Each employer takes off CPP and EI from zero, so a job change partway through a year can mean you paid too much. CRA refunds the extra when you file (lines 44800 and 45000).</div>
+        <div><b>Seasonal EI</b>Off-season EI (T4E) is taxable and often has little tax taken off, so it can leave a balance owing.</div>
+        <div><b>Contracting</b>If you flew as a self-employed contractor, licences, medicals, training, gear, travel and 50% of meals are business expenses on form T2125, and you pay both halves of CPP.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRATEGY -->
+  <section id="tab-strategy" class="hidden">
+    <div class="notice"><b>Your tax strategy.</b> Answer a few questions about your work, savings and goals, and I'll build a plan from them plus the numbers on this page. Your answers stay on this computer. This is general planning, not professional advice: go over it with your CPA.</div>
+    <div class="printonly" id="stratPrintHead"></div>
+    <div class="grid g-2">
+      <div class="card" id="stratQ"></div>
+      <div class="card"><div class="section-head"><div><h2 id="stratPlanTitle" tabindex="-1" aria-live="polite">Your plan</h2><p class="desc">Most important first. It updates as your numbers change.</p></div><div class="actions noprint"><button id="btnStratPrint">Print</button></div></div><div id="stratPlan"></div></div>
+    </div>
+  </section>
+
+  <section id="tab-filing" class="hidden">
+    <div class="notice"><b>I'm not a licensed tax professional.</b> This tool organizes your records and estimates the crypto part of each return. With several back years and crypto, have a CPA review everything before you file.</div>
+    <div class="tracker" id="tracker" style="margin-bottom:16px"></div>
+    <div class="grid g-2">
+      <div class="card">
+        <h2>The catch-up plan</h2>
+        <p class="desc">In order. The oldest unfiled year goes first.</p>
+        <ol class="steps">
+          <li><div><b>Import every crypto record</b><br><span style="color:var(--text-2)">Crypto.com and Kraken from the very first purchase, plus anything else in the manual template.</span></div></li>
+          <li><div><b>Clear the Review list</b><br><span style="color:var(--text-2)">Confirm transfers, fill in missing prices, close history gaps.</span></div></li>
+          <li><div><b>Download your slips from CRA My Account</b><br><span style="color:var(--text-2)">T4, T4A, T5, T4E and RRSP receipts for 2021 to 2025, under Tax information slips.</span></div></li>
+          <li><div><b>Book a CPA review</b><br><span style="color:var(--text-2)">Bring the year exports from Year reports, your slips and your 2020 notice. Ask whether the Voluntary Disclosures Program makes sense if you'll owe a lot.</span></div></li>
+          <li><div><b>File 2021, then 2022, 2023, 2024, 2025</b><br><span style="color:var(--text-2)">Refund years carry no penalty. For years you owe, a payment arrangement with CRA is an option.</span></div></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>How the numbers are worked out</h2>
+        <p class="desc">The CRA rules this page applies.</p>
+        <div class="rules" style="grid-template-columns:1fr">
+          <div><b>Average cost (ACB)</b>All units of a coin are one pool across every account. Each purchase adds its cost; each sale takes out the average cost of what was sold.</div>
+          <div><b>What's taxable</b>Selling for dollars, swapping coins, spending crypto, and crypto you earn. Moving coins between your own accounts isn't.</div>
+          <div><b>Superficial losses</b>If you bought the same coin within 30 days before or after a loss and still held it 30 days later, that part of the loss is denied and added to your cost instead.</div>
+          <div><b>Losses carry forward</b>A net capital loss can be applied against later capital gains, or carried back three years.</div>
+          <div><b>Late filing</b>Penalty is 5% of the balance owing plus 1% per month (up to 12), plus interest, only on years you owe.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<dialog id="lockDlg" aria-labelledby="lockTitle">
+  <form id="lockForm" autocomplete="off">
+    <h2 id="lockTitle"></h2>
+    <p class="desc" id="lockMsg" style="margin:0"></p>
+    <label><span>Passphrase</span><input type="password" id="lp1" autocomplete="off" spellcheck="false"></label>
+    <p class="err" id="lockErr" role="alert"></p>
+    <div class="row"><button type="submit" class="primary" id="lockGo"></button><button type="button" id="lockCancel">Cancel</button></div>
+    <p class="desc" style="margin:14px 0 0">The lock is shared with your Financial Advisor. Turn it on, off or change it there.</p>
+  </form>
+</dialog>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<script>
+/* Tax Coordinator engine: parsing, normalizing, transfer matching, ACB and superficial losses. */
+const TC = (() => {
+  const DAY = 86400000;
+  const FIAT = new Set(['CAD', 'USD', 'EUR', 'GBP', 'AUD', 'JPY', 'CHF', 'SGD', 'HKD', 'NZD']);
+  const USDLIKE = new Set(['USDT', 'USDC', 'DAI', 'BUSD', 'TUSD', 'PYUSD', 'USDP', 'GUSD', 'USD']);
+  // Approximate Bank of Canada annual average USD->CAD; used only when no daily rate was imported.
+  const FX_ANNUAL = { 2015: 1.2787, 2016: 1.3248, 2017: 1.2986, 2018: 1.2957, 2019: 1.3269, 2020: 1.3415,
+    2021: 1.2535, 2022: 1.3013, 2023: 1.3497, 2024: 1.3698, 2025: 1.3978, 2026: 1.38 };
+
+  /* ---------- helpers ---------- */
+  function parseCSV(text) {
+    text = text.replace(/^﻿/, '');
+    const rows = []; let row = []; let f = ''; let q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; }
+        else f += c;
+      } else if (c === '"') q = true;
+      else if (c === ',') { row.push(f); f = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(f); f = '';
+        if (row.length > 1 || row[0] !== '') rows.push(row);
+        row = [];
+      } else f += c;
+    }
+    if (f !== '' || row.length) { row.push(f); if (row.length > 1 || row[0] !== '') rows.push(row); }
+    return rows;
+  }
+  function hashStr(s) {
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+  }
+  const num = v => { if (v == null) return NaN; const s = String(v).replace(/[$,\s]/g, ''); return s === '' ? NaN : Number(s); };
+  function parseUTC(s) {
+    s = String(s || '').trim();
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?)?/);
+    if (m) return Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 12), +(m[5] || 0), +(m[6] || 0));
+    const d = Date.parse(s); return isNaN(d) ? NaN : d;
+  }
+  function parseLocalDate(s) {
+    s = String(s || '').trim();
+    let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (m) return new Date(+m[1], +m[2] - 1, +m[3], 12).getTime();
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); // MM/DD/YYYY
+    if (m) return new Date(+m[3], +m[1] - 1, +m[2], 12).getTime();
+    const d = Date.parse(s); return isNaN(d) ? NaN : d;
+  }
+  const pad = n => String(n).padStart(2, '0');
+  const dkey = t => { const d = new Date(t); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+  const yearOf = t => new Date(t).getFullYear();
+  const isFiat = a => FIAT.has(a);
+
+  function kAsset(a) {
+    a = String(a || '').trim().toUpperCase();
+    let b = a.split('.')[0];
+    const legacy = { XXBT: 'BTC', XBT: 'BTC', XETH: 'ETH', XETC: 'ETC', XLTC: 'LTC', XXRP: 'XRP', XXLM: 'XLM', XXMR: 'XMR',
+      XZEC: 'ZEC', XREP: 'REP', XMLN: 'MLN', XXDG: 'DOGE', XDG: 'DOGE', ZCAD: 'CAD', ZUSD: 'USD', ZEUR: 'EUR',
+      ZGBP: 'GBP', ZJPY: 'JPY', ZAUD: 'AUD', ZCHF: 'CHF', ETH2: 'ETH' };
+    return legacy[b] || b;
+  }
+
+  /* ---------- format detection & import ---------- */
+  function detect(headers) {
+    const h = headers.map(x => x.trim().toLowerCase());
+    const has = k => h.includes(k);
+    if (has('transaction kind') && has('native amount')) return 'cdc';
+    if (has('refid') && has('asset') && has('amount') && has('fee')) return 'kraken';
+    if (has('pair') && has('vol') && has('cost') && has('ordertxid')) return 'kraken-trades';
+    if (has('date') && has('type') && has('asset') && has('quantity')) return 'manual';
+    return null;
+  }
+
+  function importFile(name, text) {
+    const rows = parseCSV(text);
+    if (!rows.length) return { error: 'This file is empty.' };
+    const headers = rows[0];
+    const fmt = detect(headers);
+    if (!fmt && headers.some(h => /native amount/i.test(h))) return { error: 'This looks like a Crypto.com card or cash (fiat) history. You don\u2019t need it: import the crypto transactions file instead.' };
+    if (!fmt) return { error: 'I don’t recognise this file’s layout. Use the Crypto.com app “crypto transactions” export, the Kraken “Ledgers” export, or the manual template.' };
+    if (fmt === 'kraken-trades') return { error: 'This is Kraken’s “Trades” export. Please export “Ledgers” instead: it also includes deposits, withdrawals and staking rewards.' };
+    const idx = {}; headers.forEach((k, i) => { idx[k.trim().toLowerCase()] = i; });
+    const recs = rows.slice(1).map(r => { const o = {}; for (const k in idx) o[k] = (r[idx[k]] || '').trim(); o.__line = r.join(','); return o; });
+    const seen = {};
+    const rid = (src, line) => { seen[line] = (seen[line] || 0) + 1; return src + ':' + hashStr(line) + '#' + seen[line]; };
+    let events;
+    if (fmt === 'cdc') events = fromCDC(recs, rid);
+    else if (fmt === 'kraken') events = fromKraken(recs, rid);
+    else events = fromManual(recs, rid);
+    const ts = events.map(e => e.t).filter(t => !isNaN(t));
+    const kinds = {}, ccy = {};
+    for (const r of recs) {
+      const k = fmt === 'cdc' ? (r['transaction kind'] || '(blank)') : fmt === 'kraken' ? (r.type || '') + (r.subtype ? '/' + r.subtype : '') : (r.type || '');
+      kinds[k] = (kinds[k] || 0) + 1;
+      if (fmt === 'cdc') { const c = r['native currency'] || '(blank)'; ccy[c] = (ccy[c] || 0) + 1; }
+    }
+    const diag = { headers: headers.map(h => h.trim()), kinds, nativeCcy: ccy,
+      blankNative: fmt === 'cdc' ? recs.filter(r => !r['native amount']).length : 0,
+      badDates: fmt === 'cdc' ? recs.filter(r => isNaN(parseUTC(r['timestamp (utc)'] || r['timestamp']))).length : fmt === 'kraken' ? recs.filter(r => isNaN(parseUTC(r.time))).length : 0 };
+    return { source: fmt, events, rows: recs.length, diag,
+      from: ts.length ? Math.min(...ts) : null, to: ts.length ? Math.max(...ts) : null };
+  }
+
+  const CDC_IGNORE = /lock|program_created|program_withdrawn|supercharger_deposit|supercharger_withdrawal|stake_lock|stake_unlock|^viban_|fiat/;
+  const CDC_INCOME = /interest|reward|referral|staking|airdrop|bonus|gift|commission|mission|promo/;
+  const CDC_REBATE = /cashback|reimbursement|rebate/;
+  const CDC_DEPOSIT = /^(crypto_deposit|exchange_to_crypto_transfer|crypto_to_app_transfer|nft_.*deposit)$/;
+  const CDC_WITHDRAW = /^(crypto_withdrawal|crypto_to_exchange_transfer|app_to_exchange_transfer)$/;
+  const CDC_BUY = /purchase|recurring_buy|dust_conversion_credited|swap_credited|reverted|buy/;
+  const CDC_SELL = /card_top_up|payment|dust_conversion_debited|swap_debited|reverted|sell|spend/;
+
+  function fromCDC(recs, rid) {
+    const out = [];
+    for (const r of recs) {
+      const t = parseUTC(r['timestamp (utc)'] || r['timestamp']);
+      const kind = (r['transaction kind'] || '').toLowerCase();
+      const legs = [];
+      const c1 = (r['currency'] || '').toUpperCase(), a1 = num(r['amount']);
+      const c2 = (r['to currency'] || '').toUpperCase(), a2 = num(r['to amount']);
+      if (c1 && !isNaN(a1) && a1 !== 0) legs.push({ asset: c1, qty: a1 });
+      if (c2 && c2 !== c1 && !isNaN(a2) && a2 !== 0) legs.push({ asset: c2, qty: a2 });
+      const nCcy = (r['native currency'] || 'CAD').toUpperCase();
+      const nAmt = Math.abs(num(r['native amount']));
+      const val = isNaN(nAmt) ? null : { amt: nAmt, ccy: nCcy };
+      const base = { id: rid('cdc', [r['timestamp (utc)'] || r['timestamp'], kind, c1, a1, c2, a2].join('|')), src: 'cdc', srcName: 'Crypto.com', t, kindRaw: kind,
+        desc: r['transaction description'] || kind, hash: r['transaction hash'] || '', val };
+      const crypto = legs.filter(l => !isFiat(l.asset));
+      if (!crypto.length || isNaN(t)) continue;
+      if (/fund_lock|fund_unlock/.test(kind)) continue; // limit-order holds; the fill is the .exchange row
+      if (CDC_IGNORE.test(kind) && !/interest|reward/.test(kind) && legs.length < 2) continue;
+      if (legs.length === 2 && Math.sign(legs[0].qty) !== Math.sign(legs[1].qty)) {
+        // to-leg amounts are positive in CDC exports; the from-leg is negative
+        out.push({ ...base, cat: 'trade', legs }); continue;
+      }
+      if (legs.length === 2) { // both positive: from-leg sign missing; assume first is given
+        out.push({ ...base, cat: 'trade', legs: [{ asset: legs[0].asset, qty: -Math.abs(legs[0].qty) }, { asset: legs[1].asset, qty: Math.abs(legs[1].qty) }] });
+        continue;
+      }
+      const l = crypto[0];
+      const pos = l.qty > 0;
+      let cat;
+      if (pos) {
+        if (CDC_DEPOSIT.test(kind)) cat = 'deposit';
+        else if (CDC_REBATE.test(kind)) cat = 'rebate';
+        else if (CDC_INCOME.test(kind)) cat = 'income';
+        else if (CDC_BUY.test(kind)) cat = 'buy';
+        else cat = 'unknown_in';
+      } else {
+        if (CDC_WITHDRAW.test(kind)) cat = 'withdrawal';
+        else if (CDC_SELL.test(kind)) cat = 'sell';
+        else cat = 'unknown_out';
+      }
+      out.push({ ...base, cat, legs: [l] });
+    }
+    return out;
+  }
+
+  function fromKraken(recs, rid) {
+    const groups = new Map();
+    const out = [];
+    for (const r of recs) {
+      const type = (r.type || '').toLowerCase(), sub = (r.subtype || '').toLowerCase();
+      if (type === 'transfer' && /staking|spot|futures|earn/.test(sub)) continue;
+      if (type === 'earn' && /allocation|migration/.test(sub)) continue;
+      const key = r.refid || r.txid || r.__line;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(r);
+    }
+    for (const [refid, rows] of groups) {
+      const t = Math.min(...rows.map(r => parseUTC(r.time)));
+      if (isNaN(t)) continue;
+      const net = {}; const rawAssets = {};
+      for (const r of rows) {
+        const a = kAsset(r.asset);
+        net[a] = (net[a] || 0) + (num(r.amount) || 0) - (num(r.fee) || 0);
+        rawAssets[a] = (r.asset || '').toUpperCase();
+      }
+      // newer Kraken exports carry a USD value per row; use it to value rewards and deposits
+      const usd = {};
+      for (const r of rows) {
+        const a = kAsset(r.asset), au = num(r.amountusd), fu = num(r.feeusd);
+        if (!isNaN(au)) usd[a] = (usd[a] || 0) + Math.abs(au) - (isNaN(fu) ? 0 : Math.abs(fu));
+      }
+      const legs = Object.entries(net).filter(([, q]) => Math.abs(q) > 1e-10).map(([asset, qty]) => ({ asset, qty }));
+      const types = rows.map(r => (r.type || '').toLowerCase());
+      const subs = rows.map(r => (r.subtype || '').toLowerCase());
+      const crypto = legs.filter(l => !isFiat(l.asset));
+      if (!crypto.length) continue;
+      const base = { id: rid('kraken', rows.map(r => r.__line).join('|')), src: 'kraken', srcName: 'Kraken', t,
+        kindRaw: [...new Set(types)].join('+') + (subs.some(Boolean) ? ' (' + [...new Set(subs.filter(Boolean))].join(',') + ')' : ''),
+        desc: 'Kraken ' + [...new Set(types)].join(' / '), hash: '', val: null, ref: refid };
+      if (legs.length === 2 && Math.sign(legs[0].qty) !== Math.sign(legs[1].qty)) {
+        out.push({ ...base, cat: 'trade', legs: legs.sort((a, b) => a.qty - b.qty) }); continue;
+      }
+      if (legs.length !== 1) { out.push({ ...base, cat: legs[0].qty > 0 ? 'unknown_in' : 'unknown_out', legs: crypto.slice(0, 1) }); continue; }
+      const l = legs[0];
+      base.rawAsset = rawAssets[l.asset];
+      if (usd[l.asset] > 0) base.val = { amt: usd[l.asset], ccy: 'USD' };
+      let cat;
+      if (l.qty > 0) {
+        if (types.includes('deposit')) cat = 'deposit';
+        else if (types.some(x => /staking|earn|dividend|reward|airdrop|credit/.test(x)) || subs.includes('reward')) cat = 'income';
+        else cat = 'unknown_in';
+      } else {
+        if (types.includes('withdrawal')) cat = 'withdrawal';
+        else if (types.some(x => /spend|sale/.test(x))) cat = 'sell';
+        else cat = 'unknown_out';
+      }
+      out.push({ ...base, cat, legs: [l] });
+    }
+    return out;
+  }
+
+  function fromManual(recs, rid) {
+    const out = [];
+    const map = { buy: 'buy', bought: 'buy', sell: 'sell', sold: 'sell', income: 'income', reward: 'income', staking: 'income',
+      mining: 'income', payment: 'income', deposit: 'deposit', 'transfer in': 'deposit', withdrawal: 'withdrawal', 'transfer out': 'withdrawal',
+      spend: 'sell', gift: 'sell' };
+    for (const r of recs) {
+      const t = parseLocalDate(r.date);
+      const asset = (r.asset || '').toUpperCase();
+      const q = Math.abs(num(r.quantity));
+      const cat = map[(r.type || '').toLowerCase().trim()];
+      if (isNaN(t) || !asset || isNaN(q) || !cat) continue;
+      const v = num(r['cad value']);
+      const fee = num(r['fee cad']) || 0;
+      const sign = /withdrawal|sell/.test(cat) ? -1 : 1;
+      out.push({ id: rid('manual', r.__line), src: 'manual', srcName: r.source || 'Manual entry', t, kindRaw: r.type, desc: r.note || r.type,
+        hash: '', cat, legs: [{ asset, qty: sign * q }], val: isNaN(v) ? null : { amt: Math.abs(v) + (sign > 0 ? fee : -fee), ccy: 'CAD' } });
+    }
+    return out;
+  }
+
+  /* ---------- price-file import (BoC FX or CAD price history) ---------- */
+  function importPrices(text) {
+    const rows = parseCSV(text);
+    const out = []; let header = null;
+    for (const r of rows) {
+      const d = parseLocalDate((r[0] || '').replace(/"/g, ''));
+      if (isNaN(d) || !/\d{4}|\d{1,2}\/\d{1,2}\//.test(r[0])) { if (!out.length) header = r.map(x => x.toLowerCase()); continue; }
+      let col = 1;
+      if (header) { const c = header.findIndex(h => /close|fxusdcad|price|rate|value/.test(h)); if (c > 0) col = c; }
+      const v = num(r[col]);
+      if (!isNaN(v) && v > 0) out.push([dkey(d), v]);
+    }
+    return out;
+  }
+
+  /* ---------- the calculation ---------- */
+  function compute(state) {
+    const opt = state.settings || {};
+    const all = new Map();
+    for (const f of state.files || []) for (const e of f.events) if (!all.has(e.id)) all.set(e.id, e);
+    const evs = [...all.values()].sort((a, b) => a.t - b.t || (a.id < b.id ? -1 : 1));
+    const review = state.review || {};
+    const prices = state.prices || {};
+    const fx = state.fx || {};
+
+    // FX lookup (nearest earlier daily rate within 7 days, else annual average)
+    const fxKeys = Object.keys(fx).sort();
+    function usdcad(t) {
+      const k = dkey(t);
+      if (fx[k]) return { r: fx[k], est: false };
+      // binary search for nearest previous
+      let lo = 0, hi = fxKeys.length - 1, best = null;
+      while (lo <= hi) { const m = (lo + hi) >> 1; if (fxKeys[m] <= k) { best = fxKeys[m]; lo = m + 1; } else hi = m - 1; }
+      if (best && (parseLocalDate(k) - parseLocalDate(best)) <= 7 * DAY) return { r: fx[best], est: false };
+      return { r: FX_ANNUAL[yearOf(t)] || 1.35, est: true };
+    }
+    function fiatToCAD(amt, ccy, t) {
+      if (ccy === 'CAD') return { cad: amt, est: false };
+      if (USDLIKE.has(ccy)) { const f = usdcad(t); return { cad: amt * f.r, est: f.est }; }
+      return null;
+    }
+
+    // implied CAD prices from the user's own fiat-valued events
+    const implied = {};
+    function directValue(e) {
+      const fiat = e.legs.find(l => isFiat(l.asset));
+      if (fiat) return fiatToCAD(Math.abs(fiat.qty), fiat.asset, e.t);
+      if (e.val && e.val.amt > 0) return fiatToCAD(e.val.amt, e.val.ccy, e.t);
+      return null;
+    }
+    for (const e of evs) {
+      const v = directValue(e);
+      if (!v || v.est) continue;
+      for (const l of e.legs) if (!isFiat(l.asset) && Math.abs(l.qty) > 0) {
+        (implied[l.asset] = implied[l.asset] || []).push([e.t, v.cad / Math.abs(l.qty)]);
+      }
+    }
+    function priceOf(asset, t) {
+      const k = asset + '|' + dkey(t);
+      if (prices[k]) return { p: prices[k], how: 'your price' };
+      if (USDLIKE.has(asset)) { const f = usdcad(t); return { p: f.r, how: f.est ? 'USD rate (annual avg.)' : 'USD rate' }; }
+      const arr = implied[asset];
+      if (arr && arr.length) {
+        let best = null, bd = Infinity;
+        for (const [tt, p] of arr) { const d = Math.abs(tt - t); if (d < bd) { bd = d; best = p; } }
+        if (bd <= 3 * DAY) return { p: best, how: 'from your own trades' + (bd > DAY ? ' (nearby day)' : '') };
+      }
+      return null;
+    }
+    function valueEvent(e) {
+      const d = directValue(e);
+      if (d) return { cad: d.cad, est: d.est, how: d.est ? 'USD rate (annual avg.)' : 'exchange record' };
+      for (const l of e.legs) {
+        const p = priceOf(l.asset, e.t);
+        if (p) return { cad: p.p * Math.abs(l.qty), est: p.how !== 'your price', how: p.how };
+      }
+      return null;
+    }
+
+    // transfer matching: withdrawal -> deposit of same asset, other account (or staking variant), within 10 days
+    const W = evs.filter(e => e.cat === 'withdrawal'), D = evs.filter(e => e.cat === 'deposit');
+    const used = new Set(); const match = {};
+    for (const w of W) {
+      const wl = w.legs[0], wq = Math.abs(wl.qty);
+      let best = null, score = Infinity;
+      for (const d of D) {
+        if (used.has(d.id) || d.legs[0].asset !== wl.asset) continue;
+        if (d.src === w.src && d.rawAsset === w.rawAsset) continue;
+        const dq = d.legs[0].qty, dt = d.t - w.t;
+        const hashHit = w.hash && d.hash && w.hash === d.hash;
+        if (!hashHit && (dt < -2 * 3600000 || dt > 10 * DAY || dq > wq * 1.0001 || dq < wq * 0.9)) continue;
+        const s = hashHit ? -1 : dt / DAY + (wq - dq) / wq * 50;
+        if (s < score) { score = s; best = d; }
+      }
+      if (best) { used.add(best.id); match[w.id] = best.id; match[best.id] = w.id; }
+    }
+
+    // build operations
+    const ops = []; const items = []; const evInfo = {};
+    const incomeRows = [];
+    const flag = (e, kind, msg, extra) => items.push({ id: e.id, e, kind, msg, ...extra });
+    for (const e of evs) {
+      const rv = review[e.id] || {};
+      const info = evInfo[e.id] = { e, matched: match[e.id] ? all.get(match[e.id]) : null, treatment: '' };
+      const cryptoLegs = e.legs.filter(l => !isFiat(l.asset));
+      let cat = e.cat;
+      if (rv.as === 'ignore') { info.treatment = 'Ignored (your choice)'; continue; }
+
+      if (cat === 'withdrawal' || cat === 'unknown_out') {
+        const l = cryptoLegs[0];
+        if (info.matched) {
+          const fee = Math.abs(l.qty) - info.matched.legs[0].qty;
+          if (fee > 1e-12) ops.push({ t: e.t, asset: l.asset, type: 'feeburn', qty: fee, ev: e });
+          info.treatment = 'Moved to your ' + info.matched.srcName + ' account (not taxable)';
+          continue;
+        }
+        const as = rv.as || (cat === 'withdrawal' ? 'own' : 'sold');
+        if (as === 'own') {
+          info.treatment = 'Moved to your own wallet (not taxable)';
+          flag(e, 'out', cat === 'withdrawal' ? 'Crypto sent out with no matching deposit. Was it your own wallet, or did you pay someone or sell it?' : 'Unrecognised outgoing transaction.', { as, needs: !rv.as });
+          continue;
+        }
+        cat = 'sell';
+        if (rv.value != null) e = { ...e, val: { amt: rv.value, ccy: 'CAD' } };
+        flag(e, 'out', 'Treated as a sale or payment at market value.', { as, needs: false });
+      }
+      if (cat === 'deposit' || cat === 'unknown_in') {
+        const l = cryptoLegs[0];
+        if (info.matched) { info.treatment = 'Arrived from your ' + info.matched.srcName + ' account (not taxable)'; continue; }
+        const as = rv.as || (cat === 'deposit' ? 'own' : 'bought');
+        if (as === 'own') {
+          info.treatment = 'From your own wallet (no new cost)';
+          flag(e, 'in', cat === 'deposit' ? 'Crypto received with no matching withdrawal. Did it come from your own wallet, or did you buy or earn it somewhere else?' : 'Unrecognised incoming transaction.', { as, needs: !rv.as });
+          continue;
+        }
+        cat = as === 'income' ? 'income' : 'buy';
+        if (rv.value != null) e = { ...e, val: { amt: rv.value, ccy: 'CAD' } };
+        flag(e, 'in', as === 'income' ? 'Treated as income at market value.' : 'Treated as a purchase at the cost you entered.', { as, needs: false });
+      }
+
+      const v = valueEvent(e);
+      if (!v) flag(e, 'price', 'No CAD value for this. Enter the price per coin on this date.', { needs: true, asset: (cryptoLegs[0] || {}).asset });
+      const cad = v ? v.cad : 0;
+      const est = v ? v.est : true;
+      if (cat === 'trade') {
+        const give = e.legs.find(l => l.qty < 0), get = e.legs.find(l => l.qty > 0);
+        if (!isFiat(give.asset)) ops.push({ t: e.t, asset: give.asset, type: 'disp', qty: -give.qty, cad, est, ev: e, noVal: !v });
+        if (!isFiat(get.asset)) ops.push({ t: e.t, asset: get.asset, type: 'acq', qty: get.qty, cad, est, ev: e, noVal: !v });
+        info.treatment = isFiat(give.asset) ? 'Purchase' : isFiat(get.asset) ? 'Sale (taxable)' : 'Swap (taxable sale of ' + give.asset + ')';
+      } else if (cat === 'buy') {
+        ops.push({ t: e.t, asset: cryptoLegs[0].asset, type: 'acq', qty: Math.abs(cryptoLegs[0].qty), cad, est, ev: e, noVal: !v });
+        info.treatment = 'Purchase';
+      } else if (cat === 'sell') {
+        ops.push({ t: e.t, asset: cryptoLegs[0].asset, type: 'disp', qty: Math.abs(cryptoLegs[0].qty), cad, est, ev: e, noVal: !v });
+        info.treatment = 'Sale or spend (taxable)';
+      } else if (cat === 'income' || cat === 'rebate') {
+        const isInc = cat === 'income' || opt.cashbackIncome;
+        ops.push({ t: e.t, asset: cryptoLegs[0].asset, type: 'acq', qty: Math.abs(cryptoLegs[0].qty), cad, est, ev: e, noVal: !v });
+        if (isInc) incomeRows.push({ t: e.t, asset: cryptoLegs[0].asset, qty: Math.abs(cryptoLegs[0].qty), cad, est, noVal: !v, ev: e, rebate: cat === 'rebate' });
+        info.treatment = isInc ? 'Income at market value' : 'Card cashback (cost = market value, not counted as income)';
+      }
+    }
+    ops.sort((a, b) => a.t - b.t || (a.type === 'acq' ? -1 : 1) - (b.type === 'acq' ? -1 : 1));
+
+    // quantity timeline per asset (for superficial loss rule)
+    const qtl = {};
+    for (const o of ops) (qtl[o.asset] = qtl[o.asset] || []).push(o);
+    function holdingAt(asset, t) {
+      let u = 0; for (const o of qtl[asset] || []) { if (o.t > t) break; u += o.type === 'acq' ? o.qty : -o.qty; }
+      return Math.max(0, u);
+    }
+    function acquiredBetween(asset, a, b) {
+      let q = 0; for (const o of qtl[asset] || []) { if (o.t > b) break; if (o.t >= a && o.type === 'acq') q += o.qty; }
+      return q;
+    }
+
+    const pools = {}; const disps = []; const now = Date.now();
+    const pool = a => pools[a] = pools[a] || { units: 0, acb: 0, pendingDenied: 0, series: [] };
+    for (const o of ops) {
+      const p = pool(o.asset);
+      if (o.type === 'acq') {
+        p.units += o.qty; p.acb += o.cad + p.pendingDenied; p.pendingDenied = 0;
+      } else if (o.type === 'feeburn') {
+        if (p.units > 0) { const q = Math.min(o.qty, p.units); p.units -= q; if (p.units < 1e-12) { p.pendingDenied += p.acb; p.acb = 0; p.units = 0; } }
+      } else {
+        let cost, shortfall = 0;
+        if (o.qty > p.units * (1 + 1e-9) + 1e-12) { shortfall = o.qty - p.units; cost = p.acb; }
+        else cost = p.units > 0 ? p.acb * o.qty / p.units : 0;
+        const proceeds = o.cad;
+        let gain = proceeds - cost, denied = 0;
+        if (gain < 0) {
+          const end = o.t + 30 * DAY;
+          const bought = acquiredBetween(o.asset, o.t - 30 * DAY, end);
+          const held = holdingAt(o.asset, Math.min(end, now));
+          const frac = Math.min(o.qty, bought, held) / o.qty;
+          if (frac > 1e-9) { denied = -gain * frac; gain += denied; }
+        }
+        p.acb -= cost; p.units -= Math.min(o.qty, p.units);
+        if (p.units < 1e-12) { p.units = 0; p.acb = 0; }
+        if (denied) { if (p.units > 0) p.acb += denied; else p.pendingDenied += denied; }
+        const d = { t: o.t, year: yearOf(o.t), asset: o.asset, qty: o.qty, proceeds, cost, gain, denied, shortfall, est: o.est, noVal: o.noVal, ev: o.ev };
+        disps.push(d);
+        if (shortfall > 1e-9) flag(o.ev, 'short', 'You sold ' + fmtQ(o.qty) + ' ' + o.asset + ' but the records only show ' + fmtQ(o.qty - shortfall) + ' held. Some purchase history is missing, so the missing part is costed at $0 for now.', { needs: true, asset: o.asset });
+      }
+      p.series.push({ t: o.t, units: p.units, acb: p.acb });
+    }
+
+    // yearly summary
+    const years = {};
+    const Y = y => years[y] = years[y] || { year: y, proceeds: 0, cost: 0, gains: 0, losses: 0, net: 0, denied: 0, income: 0, rebate: 0, disposals: 0, estimated: 0, missing: 0 };
+    for (const d of disps) {
+      const y = Y(d.year);
+      y.proceeds += d.proceeds; y.cost += d.cost; y.net += d.gain; y.denied += d.denied; y.disposals++;
+      if (d.gain >= 0) y.gains += d.gain; else y.losses += -d.gain;
+      if (d.est) y.estimated++; if (d.noVal || d.shortfall > 1e-9) y.missing++;
+    }
+    for (const r of incomeRows) { const y = Y(yearOf(r.t)); y.income += r.cad; if (r.noVal) y.missing++; else if (r.est) y.estimated++; }
+    for (const e of evs) Y(yearOf(e.t));
+    // net capital losses: carried back up to 3 years first (form T1A), the rest carried forward
+    let cf = 0;
+    const ys = Object.values(years).sort((a, b) => a.year - b.year);
+    for (const y of ys) {
+      y.taxableCG = y.net > 0 ? y.net * 0.5 : 0;
+      y.lossAvail = cf;
+      y.applied = Math.min(cf, y.taxableCG);
+      cf -= y.applied;
+      y.taxableAfterLoss = y.taxableCG - y.applied;
+      y.carriedBack = y.carriedBack || 0; y.lossBack = 0;
+      if (y.net < 0) {
+        let loss = -y.net * 0.5;
+        for (const q of ys) if (q.year >= y.year - 3 && q.year < y.year && loss > 0) { const u = Math.min(loss, q.taxableAfterLoss); q.taxableAfterLoss -= u; q.carriedBack = (q.carriedBack || 0) + u; loss -= u; y.lossBack += u; }
+        cf += loss;
+      }
+      y.carryAfter = cf;
+    }
+    const holdings = Object.entries(pools).filter(([, p]) => p.units > 1e-9).map(([asset, p]) => ({ asset, units: p.units, acb: p.acb, per: p.acb / p.units, series: p.series }));
+    return { evs, evInfo, ops, disps, incomeRows, years, holdings, pools, items, matchCount: Object.keys(match).length / 2 };
+  }
+  function fmtQ(q) { return (+q).toLocaleString('en-CA', { maximumFractionDigits: 8 }); }
+
+  return { parseCSV, importFile, importPrices, compute, dkey, yearOf, kAsset, parseUTC, hashStr, isFiat, FX_ANNUAL };
+})();
+
+
+</script>
+<script>
+(() => {
+const KEY = 'taxCoordinator.v1';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = (v, d = 0) => (v < 0 ? '−' : '') + '$' + Math.abs(v || 0).toLocaleString('en-CA', { minimumFractionDigits: d, maximumFractionDigits: d });
+const money2 = v => money(v, 2);
+const qty = q => (+q).toLocaleString('en-CA', { maximumFractionDigits: 8 });
+const fdate = t => TC.dkey(t);
+const FILE_YEARS = [2021, 2022, 2023, 2024, 2025];
+const ICON = {
+  warn: '<svg viewBox="0 0 16 16"><path d="M8 1.5 15 14H1z" fill="var(--warning)"/><path d="M8 6v4M8 11.6v.4" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  crit: '<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="var(--critical)"/><path d="M8 4.5v4.5M8 11v.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  ok: '<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="var(--good)"/><path d="m5 8.2 2 2 4-4.2" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'
+};
+
+/* ---------- state ---------- */
+function blank() { return { files: [], review: {}, prices: {}, fx: {}, settings: { cashbackIncome: false }, tracker: {}, work: {}, year: null }; }
+let state = blank();
+let R = null;
+
+/* ---------- shared passphrase lock ----------
+   The lock is owned by the Financial Advisor page. When its saved data is encrypted, this page encrypts
+   its own data with the same passphrase (PBKDF2 SHA-256 -> AES-GCM, same settings), all inside the browser. */
+const FA_KEY = 'financial-advisor-data-v1';
+const CRYPTO_OK = !!(window.crypto && crypto.subtle);
+const te = new TextEncoder(), td = new TextDecoder();
+const b64 = u8 => { let x = ''; for (let i = 0; i < u8.length; i += 0x8000) x += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(x); };
+const unb64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+const isSealed = o => !!o && o.locked === 1 && typeof o.ct === 'string' && typeof o.iv === 'string' && typeof o.salt === 'string';
+async function deriveKey(pass, salt) {
+  const base = await crypto.subtle.importKey('raw', te.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function seal(obj, key, salt) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, te.encode(JSON.stringify(obj))));
+  return { locked: 1, v: 1, salt: b64(salt), iv: b64(iv), ct: b64(ct) };
+}
+async function unseal(env, pass) {
+  const salt = unb64(env.salt), key = await deriveKey(pass, salt);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(env.iv) }, key, unb64(env.ct));
+  return { data: JSON.parse(td.decode(pt)), key, salt };
+}
+function faSealed() { try { const o = JSON.parse(localStorage.getItem(FA_KEY) || 'null'); return isSealed(o) ? o : null; } catch (e) { return null; } }
+// PENDING: our own encrypted copy, waiting for the passphrase. NEED: the dashboard is locked, so this page must be too.
+let PENDING = null, NEED = false, CK = null, SALT = null;
+try {
+  const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (isSealed(s)) PENDING = s; else if (s) state = Object.assign(blank(), s);
+} catch (e) {}
+let PLAIN = null; // unencrypted data kept out of view until the passphrase is checked
+if (faSealed()) { NEED = true; if (!PENDING) { PLAIN = state; state = blank(); } }
+const isLocked = () => !!PENDING || (NEED && !CK);
+// Printing (or saving as PDF) is never encrypted
+function plainPrint() { if (CK && !confirm('The printout or PDF won’t be encrypted. Keep it somewhere private. Continue?')) return; print(); }
+let writing = Promise.resolve();
+function save() {
+  if (isLocked()) return;
+  writing = writing.then(async () => {
+    try { localStorage.setItem(KEY, JSON.stringify(CK ? await seal(state, CK, SALT) : state)); }
+    catch (e) { toast('Could not save in this browser. Use Save backup.'); }
+  });
+  publishSummary();
+  return writing;
+}
+function toast(m) { const t = $('#toast'); t.textContent = m; t.style.opacity = 1; clearTimeout(toast.h); toast.h = setTimeout(() => t.style.opacity = 0, 2600); }
+function download(name, text, type) {
+  if (CK && !/backup/i.test(name)) setTimeout(() => toast('This file isn’t encrypted. Keep it out of synced folders.'), 2700);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type || 'text/csv' }));
+  a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* ---------- theme ---------- */
+try { const th = localStorage.getItem('taxCoordinator.theme'); if (th) document.documentElement.dataset.theme = th; } catch (e) {}
+$('#btnTheme').onclick = () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const nx = cur === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = nx;
+  try { localStorage.setItem('taxCoordinator.theme', nx); } catch (e) {}
+  render();
+};
+
+/* ---------- tabs ---------- */
+// Tabs: link each tab to its panel and support arrow keys
+$$('nav.tabs button').forEach(b => { b.id = 't-' + b.dataset.tab; b.setAttribute('aria-controls', 'tab-' + b.dataset.tab); const p = $('#tab-' + b.dataset.tab); if (p) { p.setAttribute('role', 'tabpanel'); p.setAttribute('aria-labelledby', b.id); } });
+$('nav.tabs').addEventListener('keydown', e => {
+  const tabs = $$('nav.tabs button'), i = tabs.indexOf(document.activeElement); if (i < 0) return;
+  const j = e.key === 'ArrowRight' ? (i + 1) % tabs.length : e.key === 'ArrowLeft' ? (i - 1 + tabs.length) % tabs.length : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1;
+  if (j < 0) return; e.preventDefault(); tabs[j].focus(); tabs[j].click();
+});
+function goTab(name) {
+  $$('nav.tabs button').forEach(b => b.tabIndex = b.dataset.tab === name ? 0 : -1);
+  $$('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name));
+  $$('section[id^=tab-]').forEach(s => s.classList.toggle('hidden', s.id !== 'tab-' + name));
+  try { sessionStorage.setItem('tc.tab', name); } catch (e) {}
+}
+$$('nav.tabs button').forEach(b => b.onclick = () => goTab(b.dataset.tab));
+document.addEventListener('click', e => { const g = e.target.closest('[data-goto]'); if (g) goTab(g.dataset.goto); });
+
+/* ---------- tooltip ---------- */
+const tip = $('#tip');
+function showTip(html, ev) {
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip() { tip.style.opacity = 0; }
+
+/* ---------- import ---------- */
+function addFiles(list) {
+  const msgs = [];
+  let pending = list.length;
+  [...list].forEach(f => {
+    const rd = new FileReader();
+    rd.onload = () => {
+      const r = TC.importFile(f.name, rd.result);
+      if (!r.error && !r.events.length) r.error = 'No crypto transactions in this file. If it\u2019s your Crypto.com cash (fiat) history, you don\u2019t need it: the crypto transactions file already has your buys and sells.';
+      if (r.error) msgs.push('<div class="badge" style="margin:3px 0">' + ICON.crit + '<span><b>' + esc(f.name) + ':</b> ' + esc(r.error) + '</span></div>');
+      else {
+        const known = new Set(); state.files.forEach(x => x.events.forEach(e => known.add(e.id)));
+        const fresh = r.events.filter(e => !known.has(e.id)).length;
+        state.files = state.files.filter(x => x.name !== f.name || x.sample);
+        state.files.push({ id: TC.hashStr(f.name + Date.now()), name: f.name, source: r.source, importedAt: Date.now(), rows: r.rows, from: r.from, to: r.to, events: r.events, diag: r.diag });
+        msgs.push('<div class="badge" style="margin:3px 0">' + ICON.ok + '<span><b>' + esc(f.name) + ':</b> ' + ({ cdc: 'Crypto.com', kraken: 'Kraken ledger', manual: 'manual template' }[r.source]) + ', ' + r.events.length + ' crypto transactions (' + fresh + ' new).</span></div>');
+      }
+      if (--pending === 0) { $('#importMsg').innerHTML = msgs.join(''); save(); render(); }
+    };
+    rd.readAsText(f);
+  });
+}
+const drop = $('#drop');
+$('#fileIn').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+['dragenter', 'dragover'].forEach(k => drop.addEventListener(k, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(k => drop.addEventListener(k, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+$('#btnTemplate').onclick = () => download('crypto-manual-template.csv',
+  'Date,Type,Asset,Quantity,CAD Value,Fee CAD,Source,Note\n' +
+  '2021-05-04,Buy,BTC,0.01,650,2,Bitbuy,Bought on another app\n' +
+  '2022-01-15,Sell,BTC,0.005,300,1,Ledger wallet,Sold to a friend for cash\n' +
+  '2023-03-01,Income,ETH,0.002,4.10,0,Ledger wallet,Staking reward\n' +
+  '2023-07-09,Withdrawal,BTC,0.003,,,Ledger wallet,Moved to another wallet\n');
+
+function readText(input, cb) { input.onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; const r = new FileReader(); r.onload = () => cb(r.result, f.name); r.readAsText(f); }; }
+$('#btnFx').onclick = () => $('#fxIn').click();
+readText($('#fxIn'), text => {
+  const rows = TC.importPrices(text).filter(([, v]) => v > 0.5 && v < 3);
+  rows.forEach(([d, v]) => state.fx[d] = v); save(); render();
+  toast(rows.length ? rows.length + ' daily USD to CAD rates loaded' : 'No USD to CAD rates found in that file');
+});
+$('#btnPx').onclick = () => { if (!$('#pxAsset').value.trim()) { toast('Type the coin symbol first, e.g. ETH'); $('#pxAsset').focus(); return; } $('#pxIn').click(); };
+readText($('#pxIn'), text => {
+  const a = $('#pxAsset').value.trim().toUpperCase().replace('XBT', 'BTC');
+  const rows = TC.importPrices(text);
+  rows.forEach(([d, v]) => state.prices[a + '|' + d] = v); save(); render();
+  toast(rows.length ? rows.length + ' daily ' + a + ' prices loaded' : 'No prices found in that file');
+});
+
+/* ---------- backup ---------- */
+$('#btnSave').onclick = async () => {
+  const body = CK ? await seal(state, CK, SALT) : state;
+  download('Tax Coordinator backup ' + TC.dkey(Date.now()) + '.json', JSON.stringify(body), 'application/json');
+  toast(CK ? 'Locked backup saved. It opens with your passphrase.' : 'Backup saved');
+};
+function useBackup(s) {
+  if (!s || !Array.isArray(s.files)) { toast('That file is not a Tax Coordinator backup'); return; }
+  state = Object.assign(blank(), s); save(); render(); toast('Backup opened');
+}
+$('#btnLoad').onclick = () => $('#backupIn').click();
+readText($('#backupIn'), text => {
+  let s; try { s = JSON.parse(text); } catch (e) { toast('That file is not a Tax Coordinator backup'); return; }
+  if (isSealed(s)) { if (!CRYPTO_OK) { toast('This browser can\u2019t open locked backups'); return; } openLock('file', s); return; }
+  useBackup(s);
+});
+
+/* ---------- sample ---------- */
+const SAMPLE_CDC = `Timestamp (UTC),Transaction Description,Currency,Amount,To Currency,To Amount,Native Currency,Native Amount,Native Amount (in USD),Transaction Kind,Transaction Hash
+2020-11-03 15:00:00,Buy BTC,CAD,-800,BTC,0.04,CAD,800,610,viban_purchase,
+2021-01-10 15:00:00,Buy BTC,CAD,-1000,BTC,0.02,CAD,1000,790,viban_purchase,
+2021-02-01 15:00:00,Buy BTC,BTC,0.01,,,CAD,600,470,crypto_purchase,
+2021-03-01 15:00:00,BTC -> ETH,BTC,-0.01,ETH,0.3,CAD,700,550,crypto_exchange,
+2021-04-01 15:00:00,Crypto Earn,BTC,0.001,,,CAD,70,55,crypto_earn_interest_paid,
+2021-05-01 03:00:00,Withdraw BTC,BTC,-0.015,,,CAD,-900,-700,crypto_withdrawal,
+2021-06-01 15:00:00,Card Cashback,CRO,100,,,CAD,15,12,referral_card_cashback,
+2021-11-20 15:00:00,BTC -> CAD,BTC,-0.02,CAD,1600,CAD,1600,1270,crypto_viban_exchange,
+2022-06-01 15:00:00,ETH -> CAD,ETH,-0.3,CAD,400,CAD,400,300,crypto_viban_exchange,
+2023-01-01 15:00:00,CRO Stake,CRO,-100,,,CAD,-10,-8,lockup_lock,
+2023-09-14 15:00:00,Buy BTC,CAD,-1500,BTC,0.042,CAD,1500,1110,viban_purchase,
+`;
+const SAMPLE_KR = `"txid","refid","time","type","subtype","aclass","asset","wallet","amount","fee","balance"
+"L1","D1","2021-05-01 05:00:00","deposit","","currency","XXBT","spot / main",0.0149,0,0.0149
+"L2","R2","2022-06-10 12:00:00","trade","","currency","ZCAD","spot / main",-150,0,0
+"L3","R2","2022-06-10 12:00:00","trade","","currency","XETH","spot / main",0.1,0,0.1
+"L4","S1","2023-03-01 12:00:00","staking","","currency","ETH2.S","spot / main",0.001,0,0.001
+"L5","R3","2024-02-01 12:00:00","trade","","currency","XXBT","spot / main",-0.01,0,0
+"L6","R3","2024-02-01 12:00:00","trade","","currency","ZUSD","spot / main",400,1,399
+"L7","W1","2024-03-01 12:00:00","withdrawal","","currency","XXBT","spot / main",-0.005,0,0
+"L8","D2","2025-01-01 12:00:00","deposit","","currency","XXBT","spot / main",0.05,0,0
+"L9","R4","2025-02-01 12:00:00","trade","","currency","XXBT","spot / main",-0.06,0,0
+"L10","R4","2025-02-01 12:00:00","trade","","currency","ZCAD","spot / main",6000,0,0
+`;
+$('#btnSample').onclick = () => {
+  for (const [name, text] of [['Sample Crypto.com.csv', SAMPLE_CDC], ['Sample Kraken ledgers.csv', SAMPLE_KR]]) {
+    const r = TC.importFile(name, text);
+    state.files.push({ id: 'sample-' + name, name, source: r.source, importedAt: Date.now(), rows: r.rows, from: r.from, to: r.to, events: r.events, sample: true });
+  }
+  save(); render();
+};
+$('#btnClearSample').onclick = () => { state.files = state.files.filter(f => !f.sample); save(); render(); };
+
+/* ---------- render ---------- */
+function render() {
+  R = TC.compute(state);
+  const has = state.files.length > 0;
+  $('#welcome').classList.toggle('hidden', has);
+  $('#sampleNote').classList.toggle('hidden', !state.files.some(f => f.sample));
+  const open = R.items.filter(i => i.needs).length;
+  $('#revCount').innerHTML = open ? '<span class="pill warn" style="margin-left:4px">' + open + '</span>' : '';
+  renderOverview(); renderFiles(); renderReview(); renderYears(); renderHoldings(); renderTracker(); renderWork(); renderTaxSettings(); renderStrategy(); publishSummary();
+  $('#fxStatus').textContent = Object.keys(state.fx).length ? Object.keys(state.fx).length + ' days loaded' : 'none loaded (using annual averages)';
+  const pa = {}; Object.keys(state.prices).forEach(k => { const a = k.split('|')[0]; pa[a] = (pa[a] || 0) + 1; });
+  $('#pxStatus').textContent = Object.keys(pa).length ? Object.entries(pa).map(([a, n]) => a + ': ' + n + ' days').join(', ') : '';
+}
+const yr = y => R.years[y] || { year: y, proceeds: 0, cost: 0, net: 0, gains: 0, losses: 0, denied: 0, income: 0, taxableCG: 0, taxableAfterLoss: 0, applied: 0, lossAvail: 0, disposals: 0, estimated: 0, missing: 0 };
+
+function renderOverview() {
+  const unfiled = FILE_YEARS.map(yr);
+  const total = unfiled.reduce((s, y) => s + y.taxableAfterLoss + y.income, 0);
+  $('#heroVal').textContent = money(total);
+  const open = R.items.filter(i => i.needs).length;
+  $('#heroNote').textContent = state.files.length ? (open ? 'Estimate. ' + open + ' item' + (open > 1 ? 's' : '') + ' still need review, so this may change.' : 'Taxable capital gains plus crypto income for 2021 to 2025, before any other income.') : 'Import your exchange files to see this.';
+
+  const filedCount = FILE_YEARS.filter(y => (state.tracker[y] || {}).filed).length;
+  const yearsWith = Object.values(R.years).filter(y => y.disposals).length;
+  const k = [
+    ['Returns to file', String(5 - filedCount), filedCount ? filedCount + ' of 5 filed' : '2021 to 2025, oldest first', filedCount === 5 ? 'ok' : 'warn'],
+    ['Needs your review', String(open), open ? 'Unmatched transfers, prices or gaps' : 'All clear', open ? 'warn' : 'ok'],
+    ['Transactions read', R.evs.length.toLocaleString('en-CA'), state.files.length + ' file' + (state.files.length === 1 ? '' : 's') + ', ' + R.matchCount + ' transfer' + (R.matchCount === 1 ? '' : 's') + ' matched', null],
+    ['Taxable sales and swaps', R.disps.length.toLocaleString('en-CA'), yearsWith ? 'across ' + yearsWith + ' tax year' + (yearsWith > 1 ? 's' : '') : 'none yet', null]
+  ];
+  $('#kpis').innerHTML = k.map(([l, v, f, s]) => '<div class="card kpi"><div class="label">' + l + '</div><div class="value">' + v + '</div><div class="foot">' + (s ? ICON[s] : '') + esc(f) + '</div></div>').join('');
+
+  // attention
+  const it = R.items.filter(i => i.needs);
+  const pre = Object.values(R.years).filter(y => y.year <= 2020 && (y.disposals || y.income));
+  let html = '';
+  if (pre.length) html += '<div class="badge" style="margin-bottom:10px">' + ICON.warn + '<span>Crypto sales or income in ' + pre.map(y => y.year).join(', ') + ' (already filed). If they weren’t on that return, ask your CPA about adjusting it.</span></div>';
+  if (!it.length && !pre.length) html += '<div class="empty">' + (state.files.length ? 'Nothing needs your attention.' : 'Import files to start.') + '</div>';
+  const groups = { short: ['Missing purchase history', 'crit'], price: ['Missing CAD value', 'warn'], out: ['Crypto sent out, destination unknown', 'warn'], in: ['Crypto received, source unknown', 'warn'] };
+  html += '<ul class="changes">' + Object.entries(groups).map(([kd, [lab, ic]]) => {
+    const n = it.filter(i => i.kind === kd).length; if (!n) return '';
+    return '<li><span class="badge">' + ICON[ic] + lab + '</span><span class="d">' + n + '</span></li>';
+  }).join('') + '</ul>';
+  if (it.length) html += '<button style="margin-top:10px" data-goto="review">Open the review list</button>';
+  $('#attn').innerHTML = html;
+
+  // year table
+  const ys = Object.values(R.years).filter(y => y.disposals || y.income || FILE_YEARS.includes(y.year)).sort((a, b) => a.year - b.year);
+  const shown = ys.length ? ys : FILE_YEARS.map(yr);
+  $('#yrTable').innerHTML = '<table class="data"><thead><tr><th>Year</th><th class="n">Net gain/loss</th><th class="n">Taxable gain</th><th class="n">Income</th><th>Status</th></tr></thead><tbody>' +
+    shown.map(y => {
+      const filed = y.year <= 2020 || (state.tracker[y.year] || {}).filed;
+      const st = y.missing ? '<span class="pill crit">' + ICON.crit + 'gaps</span>' : y.estimated ? '<span class="pill warn">' + ICON.warn + 'estimates</span>' : '';
+      return '<tr><td>' + y.year + (filed ? ' <span class="pill">filed</span>' : '') + '</td><td class="n">' + money(y.net) + '</td><td class="n">' + money(y.taxableAfterLoss) + (y.applied > 0.005 ? '<div class="m" style="font-size:11px;color:var(--muted)">after ' + money(y.applied) + ' carried loss</div>' : '') + '</td><td class="n">' + money(y.income) + '</td><td>' + st + '</td></tr>';
+    }).join('') + '</tbody></table>';
+
+  drawYears(shown);
+}
+
+function drawYears(ys) {
+  const svg = $('#chYears');
+  const W = svg.clientWidth || 520, H = 190, padL = 52, padB = 24, padT = 10;
+  const S = [['net', 'Net capital gain or loss', 'var(--s1)'], ['income', 'Crypto income', 'var(--s2)']];
+  $('#yrLegend').innerHTML = S.map(s => '<span><i style="background:' + s[2] + '"></i>' + s[1] + '</span>').join('');
+  const vals = ys.flatMap(y => [y.net, y.income]);
+  let mx = Math.max(0, ...vals), mn = Math.min(0, ...vals);
+  if (mx - mn < 1) mx = 100;
+  const raw = (mx - mn) / 4, p10 = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * p10).find(s => s >= raw);
+  mn = Math.floor(mn / step) * step; mx = Math.ceil(mx / step) * step;
+  const ticks = []; for (let v = mn; v <= mx + step / 2; v += step) ticks.push(Math.round(v));
+  const yS = v => padT + (mx - v) / (mx - mn) * (H - padT - padB);
+  const plotW = W - padL - 6, gw = plotW / ys.length, bw = Math.max(4, Math.min(26, (gw - 14) / 2));
+  let g = '';
+  for (const t of ticks) g += '<line x1="' + padL + '" x2="' + (W - 6) + '" y1="' + yS(t) + '" y2="' + yS(t) + '" stroke="' + (t === 0 ? 'var(--muted)' : 'var(--grid)') + '" stroke-width="1"/><text class="m" x="' + (padL - 8) + '" y="' + (yS(t) + 4) + '" text-anchor="end">' + money(t) + '</text>';
+  ys.forEach((y, i) => {
+    const cx = padL + gw * i + gw / 2;
+    S.forEach(([key, , col], j) => {
+      const v = y[key]; const x = cx - bw - 1 + j * (bw + 2);
+      const y0 = yS(0), y1 = yS(v), h = Math.abs(y1 - y0);
+      if (h >= 0.5) {
+        const top = Math.min(y0, y1), r = Math.min(4, h, bw / 2);
+        const d = v >= 0
+          ? 'M' + x + ',' + y0 + 'V' + (top + r) + 'Q' + x + ',' + top + ' ' + (x + r) + ',' + top + 'H' + (x + bw - r) + 'Q' + (x + bw) + ',' + top + ' ' + (x + bw) + ',' + (top + r) + 'V' + y0 + 'Z'
+          : 'M' + x + ',' + y0 + 'V' + (y1 - r) + 'Q' + x + ',' + y1 + ' ' + (x + r) + ',' + y1 + 'H' + (x + bw - r) + 'Q' + (x + bw) + ',' + y1 + ' ' + (x + bw) + ',' + (y1 - r) + 'V' + y0 + 'Z';
+        g += '<path d="' + d + '" fill="' + col + '"/>';
+      }
+    });
+    g += '<text x="' + cx + '" y="' + (H - 6) + '" text-anchor="middle">' + y.year + '</text>';
+    g += '<rect class="hit" data-i="' + i + '" x="' + (padL + gw * i) + '" y="' + padT + '" width="' + gw + '" height="' + (H - padT - padB) + '" fill="transparent"/>';
+  });
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.innerHTML = g;
+  svg.querySelectorAll('.hit').forEach(h => {
+    h.onmousemove = ev => { const y = ys[+h.dataset.i]; showTip('<b>' + y.year + '</b>' + S.map(s => '<div class="r"><span><i class="dot" style="background:' + s[2] + '"></i> ' + s[1] + '</span><span>' + money(y[s[0]]) + '</span></div>').join('') + '<div class="r"><span>Taxable gain</span><span>' + money(y.taxableAfterLoss) + '</span></div>', ev); };
+    h.onmouseleave = hideTip;
+  });
+}
+
+function fileCheck() {
+  const missing = new Set(R.items.filter(i => i.kind === 'price').map(i => i.id));
+  const est = new Set(R.disps.filter(d => d.est && !d.noVal).map(d => d.ev.id).concat(R.incomeRows.filter(r => r.est && !r.noVal).map(r => r.ev.id)));
+  const lines = []; let html = '';
+  const catName = { trade: 'trade', buy: 'buy', sell: 'sell/spend', income: 'income', rebate: 'cashback', deposit: 'deposit', withdrawal: 'withdrawal', unknown_in: 'unrecognised in', unknown_out: 'unrecognised out' };
+  for (const f of state.files.filter(x => !x.sample)) {
+    const d = f.diag;
+    lines.push('FILE: ' + f.name + ' | format: ' + f.source + ' | rows: ' + f.rows + ' | crypto transactions: ' + f.events.length);
+    if (!d) { lines.push('  (imported before the file check existed: remove and re-import it)'); continue; }
+    lines.push('  columns: ' + d.headers.join(', '));
+    if (f.source === 'cdc') lines.push('  native currency: ' + Object.entries(d.nativeCcy).map(([k, n]) => k + ' x' + n).join(', ') + ' | rows with blank native amount: ' + d.blankNative);
+    if (d.badDates) lines.push('  rows with unreadable dates: ' + d.badDates);
+    const byKind = {};
+    for (const e of f.events) {
+      const k = (f.source === 'kraken' ? e.kindRaw : e.kindRaw) || '(blank)';
+      const o = byKind[k] = byKind[k] || { n: 0, cats: {}, miss: 0, est: 0 };
+      o.n++; o.cats[catName[e.cat] || e.cat] = 1; if (missing.has(e.id)) o.miss++; if (est.has(e.id)) o.est++;
+    }
+    lines.push('  kinds in file -> how they were read (count, no CAD value, estimated):');
+    for (const [k, n] of Object.entries(d.kinds).sort((a, b) => b[1] - a[1])) {
+      const hit = Object.entries(byKind).filter(([kk]) => kk === k || kk.split(' ')[0].split('+').includes(k.split('/')[0]));
+      const o = hit.length ? hit[0][1] : null;
+      lines.push('    ' + k + ': ' + n + ' rows -> ' + (o ? Object.keys(o.cats).join('/') + ', ' + o.miss + ' no value, ' + o.est + ' est.' : 'skipped (cash-only or internal)'));
+    }
+  }
+  return lines.join('\n');
+}
+$('#btnCheck').onclick = () => {
+  const t = fileCheck();
+  $('#checkOut').textContent = t || 'Import your files first.';
+  $('#checkOut').classList.remove('hidden');
+  $('#btnCheckCopy').classList.toggle('hidden', !t);
+};
+// Copy only when asked: clipboard history and sync can keep what's copied
+$('#btnCheckCopy').onclick = () => { try { navigator.clipboard.writeText($('#checkOut').textContent).then(() => toast('File check copied. It lists file names and columns, not amounts.'), () => toast('Select the text and copy it.')); } catch (e) {} };
+function renderFiles() {
+  if (!state.files.length) { $('#fileTable').innerHTML = '<div class="empty">No files yet.</div>'; return; }
+  const src = { cdc: 'Crypto.com', kraken: 'Kraken', manual: 'Manual' };
+  $('#fileTable').innerHTML = '<table class="data"><thead><tr><th>File</th><th>Source</th><th>Covers</th><th class="n">Crypto transactions</th><th></th></tr></thead><tbody>' +
+    state.files.map(f => '<tr><td>' + esc(f.name) + (f.sample ? ' <span class="pill">sample</span>' : '') + '</td><td>' + src[f.source] + '</td><td>' + (f.from ? fdate(f.from) + ' to ' + fdate(f.to) : '') + '</td><td class="n">' + f.events.length + '</td><td style="text-align:right"><button class="ghost danger" data-rmfile="' + esc(f.id) + '">Remove</button></td></tr>').join('') + '</tbody></table>';
+  $$('[data-rmfile]').forEach(b => b.onclick = () => { state.files = state.files.filter(f => f.id !== b.dataset.rmfile); save(); render(); });
+  const srcs = new Set(state.files.map(f => f.source));
+  const firstYear = Math.min(...state.files.filter(f => f.from).map(f => TC.yearOf(f.from)));
+  let warn = '';
+  if (!srcs.has('cdc')) warn += '<div class="badge" style="margin-top:10px">' + ICON.warn + 'No Crypto.com file yet.</div> ';
+  if (!srcs.has('kraken')) warn += '<div class="badge" style="margin-top:10px">' + ICON.warn + 'No Kraken ledger yet.</div>';
+  if (firstYear > 2021) warn += '<div class="badge" style="margin-top:10px">' + ICON.warn + 'Your earliest record is ' + firstYear + '. If you bought crypto before that, import the older history too.</div>';
+  $('#fileTable').insertAdjacentHTML('beforeend', warn);
+}
+
+function legText(e) { return e.legs.map(l => (l.qty > 0 ? '+' : '−') + qty(Math.abs(l.qty)) + ' ' + l.asset).join(' → '); }
+
+function renderReview() {
+  const all = $('#showAll').checked;
+  const list = R.items.filter(i => all || i.needs).sort((a, b) => ({ short: 0, price: 1, out: 2, in: 3 }[a.kind] - { short: 0, price: 1, out: 2, in: 3 }[b.kind]) || a.e.t - b.e.t);
+  if (!list.length) { $('#reviewList').innerHTML = '<div class="empty">' + (state.files.length ? 'Nothing to review. Every transaction has a treatment.' : 'Import files first.') + '</div>'; return; }
+  $('#reviewList').innerHTML = list.map((it, n) => {
+    const e = it.e, rv = state.review[e.id] || {};
+    const valTxt = e.val && e.val.amt ? ' · recorded value ' + money2(e.val.amt) + (e.val.ccy !== 'CAD' ? ' ' + e.val.ccy : '') : '';
+    let ctl = '';
+    if (it.kind === 'out') {
+      ctl = '<label>What happened?<select data-rv="' + esc(e.id) + '"><option value="own"' + (it.as === 'own' ? ' selected' : '') + '>Moved to my own wallet (still mine)</option><option value="sold"' + (it.as === 'sold' ? ' selected' : '') + '>Sold, spent or sent to someone else</option><option value="ignore">Ignore (duplicate or not mine)</option></select></label>' +
+        (it.as === 'sold' ? '<label>Value in CAD when it left (leave blank to use market price)<input type="number" step="0.01" data-rvv="' + esc(e.id) + '" value="' + (rv.value ?? '') + '"></label>' : '');
+    } else if (it.kind === 'in') {
+      ctl = '<label>Where did it come from?<select data-rv="' + esc(e.id) + '"><option value="own"' + (it.as === 'own' ? ' selected' : '') + '>My own wallet (already counted)</option><option value="bought"' + (it.as === 'bought' ? ' selected' : '') + '>Bought somewhere else</option><option value="income"' + (it.as === 'income' ? ' selected' : '') + '>Earned or paid to me</option><option value="ignore">Ignore (duplicate or not mine)</option></select></label>' +
+        (it.as === 'bought' || it.as === 'income' ? '<label>' + (it.as === 'bought' ? 'What you paid in CAD' : 'Value in CAD when received') + '<input type="number" step="0.01" data-rvv="' + esc(e.id) + '" value="' + (rv.value ?? '') + '"></label>' : '');
+    } else if (it.kind === 'price') {
+      const k = it.asset + '|' + fdate(e.t);
+      ctl = '<label>' + esc(it.asset) + ' price in CAD on ' + fdate(e.t) + '<input type="number" step="0.01" data-px="' + esc(k) + '" value="' + (state.prices[k] ?? '') + '" placeholder="per coin"></label>';
+    } else if (it.kind === 'short') {
+      ctl = '<span style="font-size:12.5px;color:var(--text-2)">Import older history from the account where these coins were bought, or add the purchase with the manual template. A deposit marked “bought somewhere else” also fixes this.</span>';
+    }
+    if ((it.kind === 'out' || it.kind === 'in') && it.needs) ctl += '<button class="primary" data-ok="' + esc(e.id) + '" data-as="' + esc(it.as) + '">That\u2019s right</button>';
+    const tag = { short: ['crit', 'History gap'], price: ['warn', 'Missing value'], out: [it.needs ? 'warn' : '', 'Sent out'], in: [it.needs ? 'warn' : '', 'Received'] }[it.kind];
+    return '<div class="item"><div><div class="what"><span class="pill ' + tag[0] + '">' + tag[1] + '</span> ' + esc(legText(e)) + '</div><div class="meta">' + fdate(e.t) + ' · ' + esc(e.srcName) + ' · ' + esc(e.desc) + valTxt + '</div><div class="msg">' + esc(it.msg) + '</div></div><div class="ctl">' + ctl + '</div></div>';
+  }).join('');
+  $$('[data-rv]').forEach(s => s.onchange = () => { const id = s.dataset.rv; state.review[id] = Object.assign({}, state.review[id], { as: s.value }); save(); render(); });
+  $$('[data-ok]').forEach(b => b.onclick = () => { const id = b.dataset.ok; state.review[id] = Object.assign({}, state.review[id], { as: b.dataset.as }); save(); render(); toast('Saved'); });
+  $$('[data-rvv]').forEach(s => s.onchange = () => { const id = s.dataset.rvv; const v = s.value === '' ? null : +s.value; state.review[id] = Object.assign({}, state.review[id], { value: v }); save(); render(); });
+  $$('[data-px]').forEach(s => s.onchange = () => { const k = s.dataset.px; if (s.value === '') delete state.prices[k]; else state.prices[k] = +s.value; save(); render(); });
+}
+$('#showAll').onchange = renderReview;
+
+function renderYears() {
+  const ys = Object.values(R.years).map(y => y.year);
+  const all = [...new Set([...ys, ...FILE_YEARS])].sort();
+  if (!state.year || !all.includes(state.year)) state.year = FILE_YEARS.find(y => yr(y).disposals || yr(y).income) || 2021;
+  $('#yearChips').innerHTML = all.map(y => '<button aria-pressed="' + (y === state.year) + '" data-yr="' + y + '">' + y + (y <= 2020 ? '<span class="sm">filed</span>' : '') + '</button>').join('');
+  $$('[data-yr]').forEach(b => b.onclick = () => { state.year = +b.dataset.yr; save(); renderYears(); });
+  const y = yr(state.year);
+  $('#printHead').innerHTML = '<h2 style="margin:0 0 4px">Crypto tax summary, ' + y.year + '</h2><p style="margin:0 0 14px;color:var(--muted)">Prepared ' + fdate(Date.now()) + ' with the offline Tax Coordinator. Average cost (ACB) method, CAD. For CPA review.</p>';
+  $('#yearFiled').innerHTML = y.year <= 2020 ? '<div class="notice"><b>' + y.year + ' is already filed.</b> If these amounts weren’t on that return, a CPA can tell you whether to request a change.</div>' :
+    (y.missing ? '<div class="notice"><b>This year has gaps.</b> Some sales have missing purchase history or no CAD value. Clear the Review list before relying on these numbers.</div>' : '');
+  const k = [['Proceeds', money(y.proceeds), 'what you received, in CAD'], ['Cost of coins sold', money(y.cost), 'average cost (ACB)'], ['Net gain or loss', money(y.net), y.denied > 0.5 ? money(y.denied) + ' superficial loss denied' : y.disposals + ' disposal' + (y.disposals === 1 ? '' : 's')],
+    ['Taxable capital gain', money(y.taxableAfterLoss), y.applied > 0.5 ? 'after ' + money(y.applied) + ' of earlier losses' : '50% of a net gain'], ['Crypto income', money(y.income), 'staking, interest, rewards']];
+  $('#yearKpis').innerHTML = k.map(([l, v, f]) => '<div class="card kpi"><div class="label">' + l + '</div><div class="value">' + v + '</div><div class="foot">' + esc(f) + '</div></div>').join('');
+  const ds = R.disps.filter(d => d.year === y.year);
+  $('#dispTable').innerHTML = ds.length ? '<table class="data"><thead><tr><th>Date</th><th>Coin</th><th class="n">Units</th><th class="n">Proceeds</th><th class="n">ACB</th><th class="n">Gain/loss</th><th>Account</th><th>Notes</th></tr></thead><tbody>' +
+    ds.map(d => '<tr><td>' + fdate(d.t) + '</td><td>' + esc(d.asset) + '</td><td class="n">' + qty(d.qty) + '</td><td class="n">' + money2(d.proceeds) + '</td><td class="n">' + money2(d.cost) + '</td><td class="n">' + money2(d.gain) + '</td><td>' + esc(d.ev.srcName) + '</td><td>' + noteFor(d) + '</td></tr>').join('') +
+    '</tbody><tfoot><tr><td colspan="3">Total</td><td class="n">' + money2(y.proceeds) + '</td><td class="n">' + money2(y.cost) + '</td><td class="n">' + money2(y.net) + '</td><td colspan="2"></td></tr></tfoot></table>' : '<div class="empty">No sales, swaps or spending in ' + y.year + '.</div>';
+  const inc = R.incomeRows.filter(r => TC.yearOf(r.t) === y.year);
+  $('#incTable').innerHTML = inc.length ? '<table class="data"><thead><tr><th>Date</th><th>Coin</th><th class="n">Units</th><th class="n">Value (CAD)</th><th>Account</th><th>Type</th></tr></thead><tbody>' +
+    inc.map(r => '<tr><td>' + fdate(r.t) + '</td><td>' + esc(r.asset) + '</td><td class="n">' + qty(r.qty) + '</td><td class="n">' + money2(r.cad) + (r.noVal ? ' <span class="pill crit">no value</span>' : r.est ? ' <span class="pill warn">est.</span>' : '') + '</td><td>' + esc(r.ev.srcName) + '</td><td>' + esc(r.ev.desc) + '</td></tr>').join('') +
+    '</tbody><tfoot><tr><td colspan="3">Total</td><td class="n">' + money2(y.income) + '</td><td colspan="2"></td></tr></tfoot></table>' : '<div class="empty">No crypto income in ' + y.year + '.</div>';
+}
+function noteFor(d) {
+  const n = [];
+  const info = R.evInfo[d.ev.id];
+  if (info && /Swap/.test(info.treatment)) n.push('<span class="pill">swap</span>');
+  if (d.denied > 0.005) n.push('<span class="pill">superficial loss ' + money2(d.denied) + ' denied</span>');
+  if (d.shortfall > 1e-9) n.push('<span class="pill crit">' + ICON.crit + 'history gap</span>');
+  if (d.noVal) n.push('<span class="pill crit">' + ICON.crit + 'no value</span>');
+  else if (d.est) n.push('<span class="pill warn">' + ICON.warn + 'estimated value</span>');
+  return n.join(' ');
+}
+const csvCell = v => { const s = String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+const csv = rows => rows.map(r => r.map(csvCell).join(',')).join('\n') + '\n';
+$('#btnExpDisp').onclick = () => {
+  const ds = R.disps.filter(d => d.year === state.year);
+  download('Crypto dispositions ' + state.year + '.csv', csv([['Date', 'Coin', 'Units', 'Proceeds CAD', 'ACB CAD', 'Gain or loss CAD', 'Superficial loss denied CAD', 'Account', 'Type', 'Value estimated', 'History gap units', 'Description'],
+    ...ds.map(d => [fdate(d.t), d.asset, d.qty, d.proceeds.toFixed(2), d.cost.toFixed(2), d.gain.toFixed(2), d.denied.toFixed(2), d.ev.srcName, R.evInfo[d.ev.id].treatment, d.noVal ? 'missing' : d.est ? 'yes' : 'no', d.shortfall > 1e-9 ? d.shortfall : '', d.ev.desc])]));
+};
+$('#btnExpInc').onclick = () => {
+  const inc = R.incomeRows.filter(r => TC.yearOf(r.t) === state.year);
+  download('Crypto income ' + state.year + '.csv', csv([['Date', 'Coin', 'Units', 'Value CAD', 'Account', 'Description', 'Value estimated'],
+    ...inc.map(r => [fdate(r.t), r.asset, r.qty, r.cad.toFixed(2), r.ev.srcName, r.ev.desc, r.noVal ? 'missing' : r.est ? 'yes' : 'no'])]));
+};
+$('#btnPrint').onclick = () => { $('#tab-years').classList.add('printing'); plainPrint(); $('#tab-years').classList.remove('printing'); };
+
+function renderHoldings() {
+  const hs = R.holdings.sort((a, b) => b.acb - a.acb);
+  if (!hs.length) { $('#holdTable').innerHTML = '<div class="empty">No holdings yet.</div>'; return; }
+  const mx = Math.max(...hs.map(h => h.acb), 1);
+  $('#holdTable').innerHTML = '<table class="data"><thead><tr><th>Coin</th><th class="n">Units held</th><th class="n">Total cost (ACB)</th><th class="n">ACB per coin</th><th style="width:28%">Share of total cost</th></tr></thead><tbody>' +
+    hs.map(h => '<tr><td>' + esc(h.asset) + '</td><td class="n">' + qty(h.units) + '</td><td class="n">' + money2(h.acb) + '</td><td class="n">' + money2(h.per) + '</td><td><div class="bar" style="margin:0"><i style="width:' + (h.acb / mx * 100).toFixed(1) + '%"></i></div></td></tr>').join('') +
+    '</tbody></table><p class="desc" style="margin-top:12px">Coins you moved to your own wallets stay counted here. If these units don’t match what you actually hold, something is missing from the imports or the review choices.</p>';
+}
+
+function renderTracker() {
+  const steps = [['slips', 'Slips downloaded from CRA My Account'], ['crypto', 'Crypto reviewed here (no gaps)'], ['cpa', 'Reviewed with CPA'], ['filed', 'Return filed'], ['noa', 'Notice of Assessment received']];
+  $('#tracker').innerHTML = FILE_YEARS.map(y => {
+    const t = state.tracker[y] || {}; const d = yr(y);
+    const done = steps.filter(s => t[s[0]]).length;
+    const status = t.noa ? '<span class="pill ok">' + ICON.ok + 'assessed</span>' : t.filed ? '<span class="pill ok">' + ICON.ok + 'filed</span>' : '<span class="pill warn">' + ICON.warn + 'not filed</span>';
+    return '<div class="card"><h2>' + y + ' return ' + status + '</h2>' +
+      '<div class="mini" style="margin-top:10px"><span>Taxable capital gain</span><b>' + money(d.taxableAfterLoss) + '</b><span>Crypto income</span><b>' + money(d.income) + '</b><span>Net capital loss to carry forward</span><b>' + money(d.net < 0 ? -d.net * 0.5 : 0) + '</b>' + (() => { const c = workCalc(y); return (c.w.t4inc || c.w.ctGross) ? '<span>Work deductions likely / to confirm</span><b>' + money(c.deductions) + ' / ' + money(c.discuss) + '</b>' : ''; })() + '</div>' +
+      '<div class="bar"><i style="width:' + (done / steps.length * 100) + '%"></i></div>' +
+      '<div class="ticks">' + steps.map(([k, l]) => '<label class="check"><input type="checkbox" data-tr="' + y + '|' + k + '"' + (t[k] ? ' checked' : '') + '> ' + l + '</label>').join('') + '</div>' +
+      '<textarea data-trn="' + y + '" placeholder="Notes for this year (slips you have, questions for the CPA)">' + esc(t.notes || '') + '</textarea></div>';
+  }).join('');
+  $$('[data-tr]').forEach(c => c.onchange = () => { const [y, k] = c.dataset.tr.split('|'); state.tracker[y] = Object.assign({}, state.tracker[y], { [k]: c.checked }); save(); render(); });
+  $$('[data-trn]').forEach(c => c.onchange = () => { const y = c.dataset.trn; state.tracker[y] = Object.assign({}, state.tracker[y], { notes: c.value }); save(); });
+}
+
+
+/* ---------- work and deductions ---------- */
+// Simplified meal rate and CPP figures used for estimates; a CPA confirms them for each year.
+const MEAL_DAY = { 2020: 51, 2021: 51, 2022: 51, 2023: 69, 2024: 69, 2025: 69, 2026: 69 }, MEAL_PCT = 0.5; // simplified rate: $17 a meal before 2023, $23 from 2023
+const CPP = { 2021: [0.109, 61600], 2022: [0.114, 64900], 2023: [0.119, 66600], 2024: [0.119, 68500], 2025: [0.119, 71300] };
+const W_FIELDS = [
+  ['General', [
+    ['status', 'How did you fly this year?', 'select', [['employee', 'Employee (T4)'], ['contractor', 'Self-employed contractor'], ['both', 'Both'], ['none', 'Didn’t fly this year']]],
+    ['employer', 'Who did you fly for?', 'text'],
+    ['twoT4', 'Did you get T4s from more than one employer this year?', 'select', [['no', 'No'], ['yes', 'Yes'], ['unsure', 'Not sure']]],
+    ['abroad', 'Did you work outside Canada (for example an overseas charter or contract)?', 'select', [['no', 'No'], ['yes', 'Yes'], ['unsure', 'Not sure']]],
+    ['north', 'Did you live (not just work) in a northern or remote zone for 6 months or more?', 'select', [['no', 'No'], ['yes', 'Yes'], ['unsure', 'Not sure']]],
+    ['prov', 'Province you lived in on December 31 of this year', 'select', [['', 'Same as “For your estimate” above'], ['ON', 'Ontario'], ['BC', 'British Columbia'], ['AB', 'Alberta'], ['SK', 'Saskatchewan'], ['MB', 'Manitoba'], ['other', 'Somewhere else']]],
+    ['rrsp', 'RRSP contribution receipts: amount you’re deducting for this year (line 20800)', 'money']
+  ]],
+  ['T4 slips (employment)', [
+    ['t4inc', 'T4 box 14: employment income', 'money', null, 'emp'], ['t4tax', 'T4 box 22: income tax deducted', 'money', null, 'emp'],
+    ['t4cpp', 'T4 box 16: CPP contributions', 'money', null, 'emp'], ['t4cpp2', 'T4 box 16A: second CPP contributions (2024 and later)', 'money', null, 'emp'], ['t4ei', 'T4 box 18: EI premiums', 'money', null, 'emp'],
+    ['t4rpp', 'T4 box 20: pension plan (RPP) contributions', 'money', null, 'emp'], ['t4pa', 'T4 box 52: pension adjustment', 'money', null, 'emp'],
+    ['t4dues', 'T4 box 44: union dues', 'money', null, 'emp']
+  ]],
+  ['T4E slip (EI benefits)', [
+    ['eiInc', 'T4E box 14: total benefits paid', 'money'], ['eiTax', 'T4E box 22: income tax deducted', 'money']
+  ]],
+  ['T5 slips (bank and investment income)', [
+    ['t5int', 'T5 box 13: interest from Canadian sources', 'money'],
+    ['t5elig', 'T5 box 25: taxable amount of eligible dividends', 'money'],
+    ['t5div', 'T5 box 11: taxable amount of other dividends', 'money'],
+    ['t5cgd', 'T5 box 18: capital gains dividends', 'money'],
+    ['t5for', 'T5 box 15: foreign income', 'money'], ['t5ftax', 'T5 box 16: foreign tax paid', 'money']
+  ]],
+  ['Per diems and time away', [
+    ['perdiem', 'Per diems or meal allowances received', 'money', null, 'emp'],
+    ['perdiemT4', 'Were the per diems included in T4 box 14?', 'select', [['unsure', 'Not sure'], ['no', 'No, paid separately'], ['yes', 'Yes, they were taxed']], 'emp'],
+    ['mealDays', 'Days away from your home terminal for 12 hours or more', 'number', null, 'emp'],
+    ['lodging', 'Lodging you paid yourself and weren’t paid back for', 'money', null, 'emp'],
+    ['transport', 'Is your employer’s main business carrying people or cargo by air?', 'select', [['unsure', 'Not sure'], ['no', 'No (aerial work such as firefighting or surveying)'], ['yes', 'Yes (airline or charter)']], 'emp'],
+    ['forms', 'Will your employer sign a T2200 and TL2 for this year?', 'select', [['ask', 'Haven’t asked yet'], ['yes', 'Yes'], ['no', 'No']], 'emp']
+  ]],
+  ['Training, dues and moving', [
+    ['tuition', 'T2202 box 26: total eligible tuition fees (flight training)', 'money'],
+    ['dues', 'Other union or professional dues (receipts, not on your T4)', 'money'],
+    ['licmed', 'Licence renewals and aviation medicals you paid', 'money'],
+    ['moveKm', 'Moved for work: how many km closer to the new job?', 'number'],
+    ['moveCost', 'Moving costs (movers, travel, temporary lodging)', 'money']
+  ]],
+  ['Contract flying (self-employed)', [
+    ['ctGross', 'Contract income: T4A box 048 (fees for services), or your invoices if there’s no slip', 'money', null, 'ct'],
+    ['ctTravel', 'Travel and lodging you paid', 'money', null, 'ct'],
+    ['ctMeals', 'Meals while away (full amount; 50% is claimed)', 'money', null, 'ct'],
+    ['ctGear', 'Headsets, flight gear, uniforms, charts and apps', 'money', null, 'ct'],
+    ['ctTrain', 'Training and type ratings without a T2202', 'money', null, 'ct'],
+    ['ctPhone', 'Work share of phone and internet', 'money', null, 'ct'],
+    ['ctOther', 'Other business costs (insurance, accounting)', 'money', null, 'ct']
+  ]]
+];
+// Employers by year: [name, counts as a transport employer for TL2, will sign a TL2]. Filled in by Redesign build/personal/tax.js when it exists.
+const JOBS = {};
+function wDefaults(y) { const j = JOBS[y] || ['', 'unsure', 'ask']; return { status: 'employee', employer: j[0], twoT4: 'no', abroad: 'no', north: 'no', perdiemT4: 'unsure', transport: j[1], forms: j[2] }; }
+function workYear(y) {
+  state.work = state.work || {};
+  const w = state.work[y] = Object.assign(wDefaults(y), state.work[y]);
+  if (!w.jobV) { const j = JOBS[y]; if (j) { if (!w.employer) w.employer = j[0]; if (w.transport === 'unsure') w.transport = j[1]; } w.jobV = 1; } // work history added after the first version
+  if (w.jobV < 2) { const j = JOBS[y]; if (j) { if (w.transport !== j[1] && (w.transport === 'unsure' || (y > 2021 && w.transport === 'yes'))) w.transport = j[1]; if (w.forms === 'ask') w.forms = j[2]; } w.jobV = 2; } // TL2 answers from JOBS
+  return w;
+}
+const wn = v => +v || 0;
+function workCalc(y) {
+  const w = workYear(y), emp = w.status === 'employee' || w.status === 'both', ct = w.status === 'contractor' || w.status === 'both';
+  const L = [], Q = [];
+  const line = (label, ln, form, amt, conf, note) => L.push({ label, line: ln, form, amt, conf, note });
+  if (w.status === 'none') Q.push('I didn’t fly in ' + y + '. Do I still need to report anything besides other income and EI?');
+  if (emp && wn(w.t4inc)) line('Employment income', '10100', 'T4', wn(w.t4inc), 'sure', 'From T4 box 14.');
+  if (emp && wn(w.perdiem)) {
+    if (w.perdiemT4 === 'yes') line('Per diems (already in box 14)', '10100', 'T4', 0, 'sure', 'Taxed as part of box 14. Not added again.');
+    else if (w.perdiemT4 === 'no') line('Per diems (tax-free travel allowance)', '—', '', wn(w.perdiem), 'likely', 'Not income if reasonable and for travel away from base. The same meals can’t also be claimed.');
+    else { line('Per diems', '?', '', wn(w.perdiem), 'discuss', 'Check whether they’re in T4 box 14 or paid separately.'); Q.push('Were my ' + y + ' per diems a tax-free travel allowance, or should they have been in T4 box 14?'); }
+  }
+  if (emp && wn(w.mealDays)) {
+    const allowance = w.perdiemT4 === 'yes' ? 0 : wn(w.perdiem);
+    const meals = Math.max(0, wn(w.mealDays) * (MEAL_DAY[y] || 69) - allowance) * MEAL_PCT;
+    const conf = w.forms === 'no' ? 'unlikely' : w.transport === 'yes' ? (w.forms === 'yes' ? 'likely' : 'discuss') : w.transport === 'no' ? 'unlikely' : 'discuss';
+    line('Transport employee meals', '22900', 'TL2', meals, conf, 'Up to ' + wn(w.mealDays) + ' days × $' + (MEAL_DAY[y] || 69) + (allowance ? ' less tax-free per diems' : '') + ', 50% deductible. One meal per 4 hours away, up to 3 a day.');
+    const who = w.employer || 'My employer';
+    if (conf !== 'likely') Q.push('Can I claim meals and lodging as a transport employee (TL2) for ' + y + '? ' + who + (w.transport === 'yes' ? ' mainly carries passengers or cargo.' : w.transport === 'no' ? ' isn’t mainly a passenger or cargo carrier.' : /ambulance/i.test(who) ? ' is an air ambulance service, which may or may not count as a transport employer.' : ' may or may not count as a transport employer.'));
+    if (w.forms === 'ask') Q.push('Ask ' + (w.employer || 'my employer') + ' to sign a T2200 and TL2 for ' + y + '.');
+  }
+  if (emp && wn(w.mealDays) && w.forms === 'no' && w.perdiemT4 !== 'no') Q.push('Even without a TL2, can I claim ' + y + ' travel meals as an employee with a T2200 (50% of meals on trips of 12 hours or more)?');
+  if (emp && wn(w.lodging)) line('Lodging you paid', '22900', 'TL2 or T777', wn(w.lodging), w.forms === 'no' ? 'unlikely' : w.transport === 'yes' ? 'likely' : 'discuss', 'Only if your employer certifies you had to pay it yourself.');
+  if (wn(w.rrsp)) line('RRSP contributions', '20800', 'RRSP receipts', wn(w.rrsp), 'sure', 'Lowers taxable income.');
+  if (emp && wn(w.t4rpp)) line('Pension plan (RPP) contributions', '20700', 'T4 box 20', wn(w.t4rpp), 'sure', 'Deducted from income.');
+  if (wn(w.t5int) || wn(w.t5for)) line('Interest and foreign investment income', '12100', 'T5 boxes 13 and 15', wn(w.t5int) + wn(w.t5for), 'sure', 'Taxable income.');
+  if (wn(w.t5elig) || wn(w.t5div)) line('Taxable dividends', '12000', 'T5 boxes 25 and 11', wn(w.t5elig) + wn(w.t5div), 'sure', 'Dividend tax credit lowers the tax on these.');
+  if (wn(w.t5cgd)) line('Capital gains dividends', '17400', 'T5 box 18, Schedule 3', wn(w.t5cgd), 'sure', 'Half is taxable, like other capital gains.');
+  if (wn(w.t5ftax)) line('Foreign tax paid', '40500', 'T5 box 16, form T2209', wn(w.t5ftax), 'likely', 'Foreign tax credit.');
+  if (emp && wn(w.t4dues)) line('Union dues (T4 box 44)', '21200', 'T4', wn(w.t4dues), 'likely', '');
+  if (wn(w.dues)) line('Other professional dues', '21200', 'Receipts', wn(w.dues), 'likely', 'Union dues, or dues needed to keep a status recognized by law.');
+  if (emp && wn(w.licmed)) { line('Licence renewals and medicals', '—', '', wn(w.licmed), 'unlikely', 'Usually not deductible for employees.'); Q.push('Is there any way to claim my ' + y + ' pilot licence and medical costs as an employee?'); }
+  if (wn(w.eiInc)) {
+    line('EI benefits', '11900', 'T4E', wn(w.eiInc), 'sure', 'Taxable income.');
+    if (wn(w.eiTax) < wn(w.eiInc) * 0.1) Q.push('Little tax was taken off my ' + y + ' EI. How much will I owe, and does the EI repayment apply?');
+  }
+  if (wn(w.tuition)) { line('Flight training tuition', '32300', 'T2202', wn(w.tuition), 'likely', 'A tax credit, not a deduction. Unused amounts carry forward.'); Q.push('Can I use the Canada Training Credit for my ' + y + ' flight training?'); }
+  if (w.twoT4 === 'yes') { line('CPP and EI overpaid with two employers', '44800 / 45000', 'Both T4s', 0, 'likely', 'Each employer starts CPP and EI from zero. CRA refunds any extra when you file.'); }
+  else if (w.twoT4 === 'unsure') Q.push('Did I get a ' + y + ' T4 from more than one employer, for example a final paycheque or vacation payout?');
+  if (wn(w.moveKm) || wn(w.moveCost)) {
+    const ok = wn(w.moveKm) >= 40;
+    line('Moving expenses', '21900', 'T1-M', wn(w.moveCost), ok ? 'likely' : 'unlikely', ok ? 'New home is 40 km or more closer to the new work location.' : 'Needs to be at least 40 km closer to the new work location.');
+  }
+  if (w.north !== 'no') { line('Northern residents deduction', '25500', 'T2222', 0, 'discuss', 'Only if you lived in a prescribed zone 6+ months.'); Q.push('Do I qualify for the northern residents deduction in ' + y + '?'); }
+  if (w.abroad !== 'no') Q.push('How do I report work outside Canada in ' + y + ', and can I claim a foreign tax credit for tax paid there?');
+  let ctNet = 0, cppOwed = 0;
+  if (ct && wn(w.ctGross)) {
+    const exp = wn(w.ctTravel) + wn(w.ctMeals) * 0.5 + wn(w.ctGear) + wn(w.ctTrain) + wn(w.ctPhone) + wn(w.ctOther) + (emp ? 0 : wn(w.licmed));
+    ctNet = wn(w.ctGross) - exp;
+    line('Contract income (gross)', '13499', 'T2125', wn(w.ctGross), 'sure', '');
+    line('Business expenses', '9368', 'T2125', exp, 'likely', 'Meals at 50%.' + (emp ? '' : ' Includes licences and medicals.'));
+    line('Net business income', '13500', 'T2125', ctNet, 'sure', '');
+    const c = CPP[y]; if (c && ctNet > 3500) cppOwed = (Math.min(ctNet, c[1]) - 3500) * c[0];
+    if (cppOwed) line('CPP on self-employment (both halves)', '22200 / 31000', 'Schedule 8', cppOwed, 'likely', 'Estimate at ' + (c[0] * 100).toFixed(1) + '%.');
+    Q.push('Was I really self-employed in ' + y + ', or should the operator have treated me as an employee?');
+  }
+  const DED = ['22900', '21200', '21900'];
+  const deductions = L.filter(l => DED.includes(l.line) && l.conf === 'likely').reduce((s, l) => s + l.amt, 0);
+  const discuss = L.filter(l => (DED.includes(l.line) || l.line === '?') && l.conf === 'discuss').reduce((s, l) => s + l.amt, 0);
+  const withheld = (emp ? wn(w.t4tax) : 0) + wn(w.eiTax);
+  return { w, L, Q, deductions, discuss, withheld, ctNet, cppOwed, emp, ct };
+}
+function renderWork(resultsOnly) {
+  if (!state.workYear || !FILE_YEARS.includes(state.workYear)) state.workYear = FILE_YEARS[0];
+  const y = state.workYear;
+  if (!resultsOnly || !$('#workChips').children.length) { // rebuilding on every edit would swallow a click on another year
+    $('#workChips').innerHTML = FILE_YEARS.map(v => '<button aria-pressed="' + (v === y) + '" data-wy="' + v + '">' + v + '</button>').join('');
+    $$('[data-wy]').forEach(b => b.onclick = () => { state.workYear = +b.dataset.wy; save(); renderWork(); });
+  }
+  const c = workCalc(y), w = c.w;
+  if (!resultsOnly) {
+  $('#workForm').innerHTML = '<h2>' + y + ': your work</h2><p class="desc">Leave blank what doesn’t apply. Amounts in CAD. If you have more than one of the same slip, add the boxes together.</p>' +
+    W_FIELDS.map(([title, fields]) => {
+      const vis = fields.filter(f => !(f[4] === 'emp' && !c.emp) && !(f[4] === 'ct' && !c.ct));
+      if (!vis.length) return '';
+      return '<h3 class="wk-h">' + title + '</h3><div class="mapgrid" style="grid-template-columns:1fr">' + vis.map(([k, label, type, opts]) => {
+        if (type === 'select') return '<label>' + label + '<select class="fld-in" data-wk="' + k + '">' + opts.map(([v, t]) => '<option value="' + v + '"' + (w[k] === v ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></label>';
+        if (type === 'text') return '<label>' + label + '<input class="fld-in" type="text" data-wk="' + k + '" value="' + esc(w[k] ?? '') + '"></label>';
+        return '<label>' + label + '<input class="fld-in" type="number" min="0" step="' + (type === 'money' ? '0.01' : '1') + '" data-wk="' + k + '" value="' + esc(w[k] ?? '') + '"' + (type === 'money' ? ' placeholder="$"' : '') + '></label>';
+      }).join('') + '</div>';
+    }).join('');
+  $$('[data-wk]').forEach(el => el.onchange = () => {
+    const k = el.dataset.wk; workYear(y)[k] = el.tagName === 'SELECT' || el.type === 'text' ? el.value.trim() : (el.value === '' ? '' : +el.value);
+    save(); renderWork(k !== 'status'); renderTracker();
+  });
+  }
+  $('#workResTitle').textContent = 'What goes on the ' + y + ' return';
+  const k = [['Deductions that likely apply', money(c.deductions), 'lines 21200, 21900, 22900'], ['To confirm with your CPA', money(c.discuss), 'per diems, meals, lodging'], ['Tax already taken off', money(c.withheld), 'T4 and T4E box 22']];
+  if (c.ct) k.push(['Net contract income', money(c.ctNet), c.cppOwed ? money(c.cppOwed) + ' CPP on top' : 'line 13500']);
+  { const e = taxEst(y); k.push([e.balance >= 0 ? 'Rough balance owing' : 'Rough refund', money(Math.abs(e.balance)), PROV_TAX[provFor(y)] ? 'federal and provincial, estimate' : 'federal only, estimate']); }
+  $('#workKpis').innerHTML = k.map(([l, v, f]) => '<div class="card kpi" style="box-shadow:none"><div class="label">' + l + '</div><div class="value" style="font-size:20px">' + v + '</div><div class="foot">' + f + '</div></div>').join('');
+  const CONF = { sure: ['ok', 'From your slip'], likely: ['ok', 'Likely'], discuss: ['warn', 'Ask CPA'], unlikely: ['crit', 'Unlikely'] };
+  $('#workLines').innerHTML = c.L.length ? '<table class="data"><thead><tr><th>Item</th><th>Line</th><th class="n">Amount</th><th>Status</th></tr></thead><tbody>' +
+    c.L.map(l => '<tr><td>' + esc(l.label) + (l.note ? '<div style="font-size:11.5px;color:var(--muted)">' + esc(l.note) + '</div>' : '') + '</td><td>' + esc(l.line) + (l.form ? '<div style="font-size:11.5px;color:var(--muted)">' + esc(l.form) + '</div>' : '') + '</td><td class="n">' + (l.amt ? money2(l.amt) : '') + '</td><td><span class="pill ' + CONF[l.conf][0] + '">' + ICON[CONF[l.conf][0]] + CONF[l.conf][1] + '</span></td></tr>').join('') + '</tbody></table>'
+    : '<div class="empty">Fill in your ' + y + ' slips and work details in the form.</div>';
+  const cy = yr(y);
+  const Qs = c.Q.slice();
+  if (cy.disposals || cy.income) Qs.push('Review my ' + y + ' crypto summary from Year reports: ' + money(cy.taxableAfterLoss) + ' taxable gain and ' + money(cy.income) + ' crypto income.');
+  $('#workQs').innerHTML = Qs.length ? Qs.map(q => '<li>' + esc(q) + '</li>').join('') : '<li>Nothing yet. Questions appear as you fill in the year.</li>';
+}
+$('#btnWorkPrint').onclick = () => { $('#workPrintHead').innerHTML = '<h2 style="margin:0 0 4px">Work and deductions, ' + state.workYear + '</h2><p style="margin:0 0 14px;color:var(--muted)">Prepared ' + fdate(Date.now()) + ' with the offline Tax Coordinator. An estimate for your CPA to review.</p>'; $('#tab-work').classList.add('printing'); plainPrint(); $('#tab-work').classList.remove('printing'); };
+
+/* ---------- pay summary import (Dayforce or any payroll text) ---------- */
+// Reads text the user pastes or a .txt/.csv file. Everything stays in this page.
+const PAY_TARGETS = [['', 'Skip'], ['t4inc', 'Employment income (T4 box 14)'], ['t4tax', 'Income tax taken off'], ['t4dues', 'Union dues'], ['perdiem', 'Per diems / allowances'], ['t4cpp', 'CPP contributions (T4 box 16)'], ['t4ei', 'EI premiums (T4 box 18)'], ['t4rpp', 'Pension plan (T4 box 20)'], ['eiInc', 'EI benefits'], ['eiTax', 'Tax taken off EI']];
+const PAY_NUM = /\(?-?\$?\s?\d{1,3}(?:[ ,]\d{3})*(?:\.\d{2})\)?|\(?-?\$?\d+\.\d{2}\)?/g;
+function payGuess(label) {
+  const l = label.toLowerCase();
+  if (!/\bnet\b|employer/.test(l)) { if (/\bcpp\b|canada pension/.test(l)) return 't4cpp'; if (/^ei\b|\bei premium|employment insurance/.test(l) && !/benefit/.test(l)) return 't4ei'; if (/\brpp\b|pension plan|pension contrib/.test(l)) return 't4rpp'; }
+  if (/\bnet\b|cpp|qpp|\bei\b(?!.*benefit)|employment insurance(?!.*benefit)|pension|rrsp|benefit premium|health|dental|life ins|\bltd\b|\badd\b|parking|hours?\b|rate\b/.test(l)) return '';
+  if (/per\s*diem|meal|subsist|travel allow|living allow|camp allow|lodging allow|accommodation allow|incidental/.test(l)) return 'perdiem';
+  if (/union|dues|alpa|\bupa\b|\bcupe\b|unifor|teamsters/.test(l)) return 't4dues';
+  if (/income tax|federal tax|provincial tax|fed tax|prov tax|\bfit\b|\bpit\b|tax deducted|withholding/.test(l) && !/taxable/.test(l)) return 't4tax';
+  if (/gross|total earnings|total pay\b|taxable (income|earnings|wages)|employment income|total compensation/.test(l)) return 't4inc';
+  if (/salary|wage|regular|overtime|\bot\b|flight|flying|duty|standby|vacation|holiday|stat|bonus|premium|retro|hourly|base pay|earning|taxable benefit/.test(l)) return 'earn';
+  return '';
+}
+function payParse(text) {
+  const rows = [];
+  text.split(/\r?\n/).forEach(raw => {
+    const line = raw.replace(/\t/g, '  ').replace(/"/g, '').trim(); if (!line) return;
+    const nums = line.match(PAY_NUM); if (!nums) return;
+    const first = line.search(PAY_NUM), label = line.slice(0, first).replace(/(\s+[\d.,]+)+\s*$/, '').replace(/[,;:|$-]+\s*$/, '').trim();
+    if (!label || !/[a-z]/i.test(label)) return;
+    const s = nums[nums.length - 1], neg = /^\(|-/.test(s), v = +s.replace(/[^\d.]/g, '');
+    if (!v) return;
+    rows.push({ label, amt: neg ? -v : v, guess: payGuess(label) });
+  });
+  const hasTotal = rows.some(r => r.guess === 't4inc');
+  rows.forEach(r => { if (r.guess === 'earn') r.guess = hasTotal ? '' : 't4inc'; r.to = r.guess; });
+  return rows;
+}
+let payRows = [];
+function renderPay() {
+  const box = $('#payRows');
+  if (!payRows.length) { box.innerHTML = ''; $('#payApply').disabled = true; return; }
+  const sums = {}; payRows.forEach(r => { if (r.to) sums[r.to] = (sums[r.to] || 0) + Math.abs(r.amt); });
+  box.innerHTML = '<p class="desc" style="margin:10px 0 6px">I found ' + payRows.length + ' lines with amounts. I used the last amount on each line, which is usually the year-to-date column. Change where any line goes, then press Add.</p>' +
+    '<div style="overflow-x:auto"><table class="data"><thead><tr><th>Line in your pay summary</th><th class="n">Amount</th><th>Goes into</th></tr></thead><tbody>' +
+    payRows.map((r, i) => '<tr><td>' + esc(r.label) + '</td><td class="n">' + money2(r.amt) + '</td><td><select class="fld-in" data-pay="' + i + '">' + PAY_TARGETS.map(([v, t]) => '<option value="' + v + '"' + (r.to === v ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></td></tr>').join('') +
+    '</tbody></table></div><p class="desc" style="margin-top:8px">Will fill in: ' + (Object.keys(sums).length ? Object.entries(sums).map(([k, v]) => PAY_TARGETS.find(t => t[0] === k)[1] + ' ' + money2(v)).join(' · ') : 'nothing yet') + '</p>';
+  $$('[data-pay]').forEach(s => s.onchange = () => { payRows[+s.dataset.pay].to = s.value; renderPay(); });
+  $('#payApply').disabled = !Object.keys(sums).length;
+}
+function payRead(text) {
+  payRows = payParse(text); renderPay();
+  if (!payRows.length) toast('I couldn’t find any lines with amounts. Try copying the text again.');
+}
+$('#btnPayOpen').onclick = () => {
+  const p = $('#payPanel'); p.classList.toggle('hidden');
+  $('#payYear').innerHTML = FILE_YEARS.map(v => '<option' + (v === state.workYear ? ' selected' : '') + '>' + v + '</option>').join('');
+};
+$('#payRead').onclick = () => payRead($('#payText').value);
+$('#payFile').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  if (/\.pdf$/i.test(f.name)) { toast('Open the PDF, select all and copy, then paste it into the box.'); e.target.value = ''; return; }
+  f.text().then(t => { $('#payText').value = t; payRead(t); }); e.target.value = '';
+};
+$('#payClear').onclick = () => { $('#payText').value = ''; payRows = []; renderPay(); };
+$('#payApply').onclick = () => {
+  const y = +$('#payYear').value, w = workYear(y), sums = {};
+  payRows.forEach(r => { if (r.to) sums[r.to] = (sums[r.to] || 0) + Math.abs(r.amt); });
+  Object.entries(sums).forEach(([k, v]) => w[k] = Math.round(v * 100) / 100);
+  if (sums.t4inc || sums.t4tax || sums.perdiem) { if (w.status === 'none' || w.status === 'contractor') w.status = w.status === 'contractor' ? 'both' : 'employee'; }
+  state.workYear = y; save(); $('#payText').value = ''; payRows = []; renderPay(); $('#payPanel').classList.add('hidden');
+  renderWork(); renderTracker();
+  toast('Added to ' + y + '. Check the amounts against your T4 when it arrives.');
+};
+/* ---------- rough tax estimate, and the summary the Financial Advisor reads ---------- */
+// Federal brackets per year; provincial tables are 2024 figures used for every year. Rough by design: a CPA does the real return.
+const PROVS = [['', 'Choose your province'], ['ON', 'Ontario'], ['BC', 'British Columbia'], ['AB', 'Alberta'], ['SK', 'Saskatchewan'], ['MB', 'Manitoba'], ['other', 'Somewhere else']];
+const FED = {
+  2021: [13808, 1257, [[49020, .15], [98040, .205], [151978, .26], [216511, .29], [Infinity, .33]]],
+  2022: [14398, 1287, [[50197, .15], [100392, .205], [155625, .26], [221708, .29], [Infinity, .33]]],
+  2023: [15000, 1368, [[53359, .15], [106717, .205], [165430, .26], [235675, .29], [Infinity, .33]]],
+  2024: [15705, 1433, [[55867, .15], [111733, .205], [173205, .26], [246752, .29], [Infinity, .33]]],
+  2025: [16129, 1471, [[57375, .145], [114750, .205], [177882, .26], [253414, .29], [Infinity, .33]]]
+};
+const PROV_TAX = {
+  ON: [12399, [[51446, .0505], [102894, .0915], [150000, .1116], [220000, .1216], [Infinity, .1316]]],
+  BC: [12580, [[47937, .0506], [95875, .077], [110076, .105], [133664, .1229], [181232, .147], [252752, .168], [Infinity, .205]]],
+  AB: [21885, [[148269, .10], [177922, .12], [237230, .13], [355845, .14], [Infinity, .15]]],
+  SK: [18491, [[52057, .105], [148734, .125], [Infinity, .145]]],
+  MB: [15780, [[47000, .108], [100000, .1275], [Infinity, .174]]]
+};
+// Ontario by year: [basic personal amount, bracket 1, bracket 2, surtax threshold 1, surtax threshold 2]
+const ON_YEAR = { 2021: [10880, 45142, 90287, 4874, 6237], 2022: [11141, 46226, 92454, 4991, 6387], 2023: [11865, 49231, 98463, 5315, 6802], 2024: [12399, 51446, 102894, 5554, 7108], 2025: [12747, 52886, 105775, 5710, 7307] };
+function ohp(t) { // Ontario Health Premium
+  if (t <= 20000) return 0; if (t <= 36000) return Math.min(300, (t - 20000) * .06); if (t <= 48000) return Math.min(450, 300 + (t - 36000) * .06);
+  if (t <= 72000) return Math.min(600, 450 + (t - 48000) * .25); if (t <= 200000) return Math.min(750, 600 + (t - 72000) * .25); return Math.min(900, 750 + (t - 200000) * .25);
+}
+const EI_RATE = { 2021: [.0158, 56300], 2022: [.0158, 60300], 2023: [.0163, 61500], 2024: [.0166, 63200], 2025: [.0164, 65700] };
+function bracketTax(inc, br) { let t = 0, lo = 0; for (const [hi, r] of br) { if (inc > lo) t += (Math.min(inc, hi) - lo) * r; lo = hi; } return t; }
+const r2 = v => Math.round(v * 100) / 100;
+function provFor(y) { return (state.work && state.work[y] && state.work[y].prov) || taxSettings().province || ''; }
+function taxSettings() { state.settings = state.settings || {}; state.settings.room = state.settings.room || {}; return state.settings; }
+function taxEst(y) {
+  const c = workCalc(y), w = c.w, d = yr(y), st = taxSettings(), notes = [];
+  const emp = c.emp ? wn(w.t4inc) : 0, se = c.ct ? c.ctNet : 0, ei = wn(w.eiInc);
+  const pd = c.emp ? wn(w.perdiem) : 0;
+  const perDiemTaxable = w.perdiemT4 === 'yes' ? pd : 0, perDiemTaxFree = w.perdiemT4 === 'yes' ? 0 : pd;
+  if (pd && w.perdiemT4 === 'unsure') notes.push('Per diems are counted as tax-free until you confirm they weren’t in T4 box 14.');
+  const inv = wn(w.t5int) + wn(w.t5elig) + wn(w.t5div) + wn(w.t5for) + wn(w.t5cgd) * 0.5;
+  const cryptoGains = d.taxableAfterLoss || 0, other = (d.income || 0) + inv;
+  const deductions = c.L.filter(l => ['22900', '21200', '21900'].includes(l.line) && l.conf === 'likely' && l.amt > 0).map(l => ({ label: l.label, amount: r2(l.amt) }));
+  if (wn(w.rrsp)) deductions.push({ label: 'RRSP contributions', amount: r2(wn(w.rrsp)) });
+  if (c.emp && wn(w.t4rpp)) deductions.push({ label: 'Pension plan contributions (T4 box 20)', amount: r2(wn(w.t4rpp)) });
+  if (c.cppOwed) deductions.push({ label: 'Half of self-employed CPP', amount: r2(c.cppOwed / 2) });
+  const totalIncome = emp + se + ei + cryptoGains + other;
+  const [bpa, empAmt, fbr] = FED[y], low = fbr[0][1];
+  const cp = CPP[y], er = EI_RATE[y];
+  const cppEmp = emp ? (wn(w.t4cpp) || Math.max(0, Math.min(emp, cp[1]) - 3500) * cp[0] / 2) : 0, eiEmp = emp ? (wn(w.t4ei) || Math.min(emp, er[1]) * er[0]) : 0;
+  // Only the base part of CPP (4.95%) is a credit; the enhanced part and CPP2 are deductions (line 22215)
+  const cppBase = cppEmp * 0.0495 / (cp[0] / 2), cppEnh = cppEmp - cppBase + (c.emp ? wn(w.t4cpp2) : 0);
+  const payroll = cppBase + eiEmp + c.cppOwed / 2;
+  if (cppEnh > 0.5) deductions.push({ label: 'Enhanced CPP contributions', amount: r2(cppEnh) });
+  const taxable = Math.max(0, totalIncome - deductions.reduce((s, x) => s + x.amount, 0));
+  const fedBefore = Math.max(0, bracketTax(taxable, fbr) - low * (bpa + Math.min(emp, empAmt) + payroll + wn(w.tuition)) - wn(w.t5elig) * 0.150198 - wn(w.t5div) * 0.090301);
+  const fed = Math.max(0, fedBefore - Math.min(wn(w.t5ftax), fedBefore)); // dividend and foreign tax credits, roughly
+  const pv = provFor(y); let prov = 0; const P = PROV_TAX[pv];
+  if (P) {
+    const O = pv === 'ON' ? ON_YEAR[y] : null;
+    const br = O ? [[O[1], .0505], [O[2], .0915], [150000, .1116], [220000, .1216], [Infinity, .1316]] : P[1];
+    prov = Math.max(0, bracketTax(taxable, br) - br[0][1] * ((O ? O[0] : P[0]) + payroll));
+    if (O) prov += Math.max(0, prov - O[3]) * .2 + Math.max(0, prov - O[4]) * .36 + ohp(taxable);
+  } else notes.push(pv === 'other' ? 'Provincial tax isn’t estimated for your province, so the balance only covers federal tax.' : 'Choose your province on Work and deductions to include provincial tax.');
+  if (emp && !wn(w.t4tax)) notes.push('Tax taken off your T4 isn’t filled in, so the balance owing is overstated.');
+  if (d.missing) notes.push('Some crypto values or purchase history are missing, so the crypto figures may change.');
+  if (!totalIncome) notes.push('No income entered for this year yet.');
+  const netInc = totalIncome - deductions.reduce((t, x) => t + x.amount, 0);
+  const eiBack = ei && netInc > er[1] * 1.25 ? Math.min(ei, netInc - er[1] * 1.25) * .3 : 0; // EI benefit repayment, on net income
+  if (eiBack) notes.push('Your income may be high enough that 30% of regular EI is repaid, unless you had no regular EI in the 10 years before.');
+  const balance = fed + prov + c.cppOwed + eiBack - c.withheld;
+  return { c, d, emp, se, ei, perDiemTaxFree, perDiemTaxable, cryptoGains, other, deductions, taxable, fed, prov, balance, notes };
+}
+function filingStatus(y) {
+  const t = state.tracker[y] || {}, w = (state.work || {})[y] || {};
+  if (t.filed || t.noa) return 'filed';
+  if (t.cpa || (t.slips && t.crypto)) return 'ready';
+  if (t.slips || t.crypto || t.notes || wn(w.t4inc) || wn(w.ctGross) || yr(y).disposals || yr(y).income) return 'in-progress';
+  return 'not-started';
+}
+function taxSummary() {
+  const st = taxSettings(), room = st.room, years = [], opp = [];
+  const add = (id, title, text, amount, year) => opp.push({ id, title, text, amount: amount == null ? null : r2(amount), year: year == null ? null : year });
+  for (const y of FILE_YEARS) {
+    const e = taxEst(y), c = e.c, w = c.w;
+    years.push({ year: y, employer: w.employer || null, status: filingStatus(y), estimate: true,
+      income: { employment: r2(e.emp), selfEmployment: r2(e.se), perDiemTaxFree: r2(e.perDiemTaxFree), perDiemTaxable: r2(e.perDiemTaxable), ei: r2(e.ei), cryptoGains: r2(e.cryptoGains), other: r2(e.other) },
+      deductions: e.deductions, taxableIncome: r2(e.taxable), balance: r2(e.balance), notes: e.notes,
+      withheld: r2(c.withheld), federalTax: r2(e.fed), provincialTax: r2(e.prov), cppSelfEmployed: r2(c.cppOwed), province: provFor(y) || null });
+    const meal = c.L.find(l => l.line === '22900' && /meals/i.test(l.label));
+    if (meal && meal.amt > 0 && meal.conf !== 'unlikely') add('tl2-meals', 'Claim meals while away from base', 'As a transport employee with a signed TL2 you could deduct meals for days away 12 hours or more. Ask your CPA whether ' + (w.employer || 'your employer') + ' qualifies.', meal.amt, y);
+    if (c.emp && wn(w.perdiem) && w.perdiemT4 === 'unsure') add('perdiem-check', 'Confirm how your per diems were paid', 'If they were left off T4 box 14 they’re usually tax-free. If they were included, you may be able to claim meals instead.', wn(w.perdiem), y);
+    if (c.emp && w.forms === 'ask' && (wn(w.mealDays) || wn(w.lodging))) add('t2200', 'Ask your employer for a T2200 and TL2', 'Employees need these signed forms to claim meals, lodging or other work costs.', null, y);
+    if (wn(w.tuition)) add('tuition', 'Use your flight training tuition', 'Tuition on a T2202 is a credit. Unused amounts carry forward, and the Canada Training Credit may refund part of it.', wn(w.tuition), y);
+    if (w.twoT4 === 'yes' || w.twoT4 === 'unsure') add('cpp-ei-overpayment', 'Get back CPP and EI overpaid', 'With T4s from two employers in ' + y + ', you may have paid too much CPP and EI. CRA refunds it when the return is filed.', null, y);
+    if (c.ct && c.ctNet > 0) add('business-records', 'Keep receipts for contract flying', 'Licences, medicals, training, gear, travel and half of meals reduce your contract income and the CPP on it.', null, y);
+  }
+  const last = Object.values(R ? R.years : {}).sort((a, b) => b.year - a.year)[0];
+  if (last && last.carryAfter > 0) add('carryforward-loss', 'Use your crypto losses later', 'You have net capital losses that can be applied against future capital gains, with no time limit.', last.carryAfter, null);
+  const owing = years.filter(x => x.status !== 'filed' && x.balance > 0);
+  if (owing.length) add('vdp', 'Ask about the Voluntary Disclosures Program', 'Unfiled years with a balance owing can draw late-filing penalties and interest. Applying for a voluntary disclosure before CRA contacts you gets the most relief; ask your CPA whether that or a taxpayer-relief request (RC4288) fits.', owing.reduce((s, x) => s + x.balance, 0), null);
+  add('rrsp-room', 'Use your RRSP room', 'RRSP contributions are deducted from income, which saves the most in high-income seasons. You can contribute now and deduct later.', room.rrsp ?? null, null);
+  add('fhsa', 'Open an FHSA if you plan to buy a first home', 'Up to $8,000 a year (lifetime $40,000) is deductible like an RRSP and comes out tax-free for a first home. Room only starts once the account is open.', room.fhsa ?? 8000, null);
+  add('tfsa', 'Grow savings tax-free in a TFSA', 'Growth and withdrawals are tax-free. For future crypto exposure, an ETF held in a TFSA grows tax-free. Coins can’t be moved in, and selling them on an exchange to do this is a taxable sale.', room.tfsa ?? null, null);
+  add('business-expenses', 'If you start a business: what you can write off', 'Costs to earn the income: equipment and gear, training and licences, insurance, phone and internet (work share), software, professional fees, advertising, travel, and 50% of meals and entertainment. Equipment is claimed over time as capital cost allowance.', null, null);
+  add('business-home', 'If you start a business: home office and vehicle', 'A workspace used mainly for the business lets you claim a share of rent or mortgage interest, utilities and insurance. Keep a logbook to claim the business share of vehicle costs.', null, null);
+  add('business-gst', 'If you start a business: GST/HST', 'Registration is required once sales pass $30,000 over four quarters. Registering lets you recover GST/HST paid on business costs.', null, null);
+  add('business-cpp', 'If you start a business: CPP and tax instalments', 'Self-employed people pay both halves of CPP. CRA asks for quarterly instalments when tax owing is over $3,000 this year and in either of the two years before.', null, null);
+  const latest = [...FILE_YEARS].reverse().map(y => workYear(y).status).find(s => s && s !== 'none') || 'none';
+  const employment = latest === 'employee' ? 'employee' : latest === 'contractor' || latest === 'both' ? 'contractor' : 'unsure';
+  const num = v => v === '' || v == null || isNaN(+v) ? null : r2(+v);
+  return { v: 1, updated: new Date().toISOString(), employment, years, opportunities: opp, strategy: stratPlan(), room: { rrsp: num(room.rrsp), tfsa: num(room.tfsa), fhsa: num(room.fhsa) } };
+}
+const SUM_KEY = 'fa-tax-summary-v1';
+let sumWriting = Promise.resolve();
+function publishSummary() {
+  if (isLocked() || !R) return sumWriting;
+  sumWriting = sumWriting.then(async () => {
+    try { const o = taxSummary(); localStorage.setItem(SUM_KEY, JSON.stringify(CK ? await seal(o, CK, SALT) : o)); } catch (e) {}
+  });
+  return sumWriting;
+}
+// A summary written before the lock was turned on must not sit there unencrypted
+try { const o = JSON.parse(localStorage.getItem(SUM_KEY) || 'null'); if (o && !isSealed(o) && faSealed()) localStorage.removeItem(SUM_KEY); } catch (e) {}
+function renderTaxSettings() {
+  const st = taxSettings();
+  $('#taxProv').innerHTML = PROVS.map(([v, t]) => '<option value="' + v + '"' + ((st.province || '') === v ? ' selected' : '') + '>' + t + '</option>').join('');
+  ['rrsp', 'tfsa', 'fhsa'].forEach(k => { const el = $('#room_' + k); if (document.activeElement !== el) el.value = st.room[k] ?? ''; });
+}
+$('#taxProv').onchange = e => { taxSettings().province = e.target.value; save(); render(); };
+['rrsp', 'tfsa', 'fhsa'].forEach(k => $('#room_' + k).onchange = e => { taxSettings().room[k] = e.target.value === '' ? null : +e.target.value; save(); render(); });
+/* ---------- strategy interview and plan ---------- */
+const S_QS = [
+  ['goals', 'What are you working toward?', 'multi', [['home', 'Buying a first home'], ['debt', 'Paying off debt'], ['emergency', 'A cushion for the off-season'], ['retire', 'Retirement'], ['business', 'Starting a side business'], ['less', 'Owing less tax each year']]],
+  ['home', 'When might you buy a home?', 'one', [['soon', 'Within 2 years'], ['mid', 'In 2 to 5 years'], ['later', 'More than 5 years'], ['no', 'Not planning to'], ['own', 'I already own one']]],
+  ['pattern', 'How does your income come in now?', 'one', [['seasonal', 'Seasonal (fire season, then time off)'], ['steady', 'Steady all year'], ['mixed', 'A mix']]],
+  ['income', 'Roughly what do you expect to earn this year, before tax?', 'money'],
+  ['ei', 'Do you expect to claim EI in the off-season?', 'one', [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]],
+  ['cushion', 'How many months of bills could your savings cover?', 'one', [['0', 'Less than 1'], ['1', '1 to 3'], ['3', '3 to 6'], ['6', 'More than 6']]],
+  ['cards', 'Do you carry credit card or other high-interest debt from month to month?', 'one', [['yes', 'Yes'], ['no', 'No']]],
+  ['accounts', 'Which accounts do you already have?', 'multi', [['rrsp', 'RRSP'], ['tfsa', 'TFSA'], ['fhsa', 'FHSA'], ['rpp', 'A pension plan at work']]],
+  ['crypto', 'What’s your plan for your crypto?', 'one', [['hold', 'Hold for the long run'], ['sell', 'Sell some in the next year or two'], ['trade', 'Trade it often'], ['none', 'I don’t have any now']]],
+  ['side', 'Any side income, or plans for some (instructing, drone work, contract flying)?', 'one', [['no', 'No'], ['thinking', 'Thinking about it'], ['yes', 'Yes, already']]],
+  ['pay', 'If the catch-up years end with a balance owing, could you pay it in one go?', 'one', [['yes', 'Yes'], ['part', 'Part of it'], ['no', 'I’d need a payment plan']]]
+];
+function stratState() { state.strategy = state.strategy || { i: 0, a: { goals: [], accounts: [], pattern: 'seasonal' }, done: false }; return state.strategy; }
+function stratPlan() {
+  const S = stratState(), a = S.a, has = (k, v) => (a[k] || []).includes(v), out = [];
+  if (!S.done) return out;
+  const add = (priority, title, text, when) => out.push({ title, text, when: when || null, priority });
+  const est = FILE_YEARS.map(y => ({ y, e: taxEst(y), st: filingStatus(y) }));
+  const open = est.filter(x => x.st !== 'filed'), owe = open.filter(x => x.e.balance > 0), refund = open.filter(x => x.e.balance < 0);
+  const fmtY = l => l.map(x => x.y).join(', ');
+  // 1. catch-up filing
+  const noOwe = open.filter(x => x.e.balance <= 0);
+  if (noOwe.length) add(1, 'File ' + fmtY(noOwe) + ' now, oldest first', (refund.length ? 'Refunds look likely for ' + fmtY(refund) + ', and there’s no penalty for filing refund years late. ' : '') + 'Filing also restores benefits like the GST/HST credit and builds RRSP room.', 'As soon as possible');
+  if (owe.length) add(1, 'Hold ' + fmtY(owe) + ' until your CPA decides on a voluntary disclosure', 'A balance looks likely for ' + fmtY(owe) + '. Filing those years on their own first usually rules out the Voluntary Disclosures Program for them. Late-filing penalties are 5% of the balance plus 1% a month (up to 12 months), so decide quickly.', 'Within the next few weeks');
+  const cost = (R ? R.holdings : []).reduce((t, h) => t + h.acb, 0);
+  if (owe.length || cost > 100000 || yr(2020).disposals) add(1, 'Ask your CPA about a voluntary disclosure', 'Applying before CRA contacts you gets the most relief under the Voluntary Disclosures Program (penalties waived and most interest reduced). It also covers crypto gains missing from a filed return such as 2020. VDP expects payment of the estimated balance, or a request for a payment arrangement, with the application. Ask your CPA whether VDP or simply filing plus a taxpayer-relief request (form RC4288) is better.', 'Before filing the owing years');
+  if (owe.length && a.pay !== 'yes') add(1, 'Set up a payment arrangement', 'CRA accepts monthly payments on a balance owing. Interest still runs, but it stops collection action. Starting it right after filing keeps things calm.', 'Right after filing');
+  if (a.cards === 'yes') add(1, 'Pay off high-interest debt first', 'Paying off a card at 20% beats any tax break. Put refunds from the catch-up years toward it before investing.', 'As refunds arrive');
+  // 2. accounts
+  const inc = wn(a.income) || (est.slice(-1)[0].e.taxable), high = inc >= 100000, low = inc < 55000;
+  const homeSoon = has('goals', 'home') && (a.home === 'soon' || a.home === 'mid');
+  if (homeSoon || (has('goals', 'home') && a.home === 'later')) add(homeSoon ? 1 : 2, has('accounts', 'fhsa') ? 'Max out your FHSA' : 'Open an FHSA now', 'Up to $8,000 a year ($40,000 total) is deductible like an RRSP and comes out tax-free for a first home. Room only starts the year it’s opened, so opening it early matters even with a small deposit. You can hold the deduction for a higher-income year. Unused FHSA room carries forward, up to $8,000. With the FHSA you can also take up to $60,000 from an RRSP under the Home Buyers’ Plan, repaid over 15 years.', has('accounts', 'fhsa') ? 'Each year' : 'This year');
+  if (a.cushion === '0' || a.cushion === '1' || has('goals', 'emergency')) add(a.pattern === 'seasonal' ? 1 : 2, 'Build an off-season cushion in a TFSA', 'Aim for 3 to 6 months of bills. A TFSA keeps it growing tax-free and you can take it out any time, then put it back the next year.' + (a.pattern === 'seasonal' ? ' Fill it during fire season to cover the months off.' : ''), a.pattern === 'seasonal' ? 'During each fire season' : null);
+    add(2, high ? 'Make the RRSP a priority' : low ? 'Lean on the TFSA before the RRSP' : 'Split savings between RRSP and TFSA', (high ? 'At your income each RRSP dollar saves roughly 30 to 45 cents of tax. ' : low ? 'At your income an RRSP deduction saves less, and a TFSA keeps the money flexible. ' : 'At your income both help: the RRSP for the tax refund, the TFSA for flexibility. ') + 'Contributions made now count for 2026 or later, and you can hold the deduction for a higher-income year. Any RRSP contributions you already made but haven’t deducted can go on the catch-up returns. Your RRSP room is out of date until 2021 to 2025 are assessed, and going more than $2,000 over your real room costs 1% a month, so check the room on your new Notice of Assessment first.' + (has('accounts', 'rpp') ? ' Your work pension lowers your RRSP room (T4 box 52).' : ''), 'By March 1 for the year before');
+  // 3. work
+  if (a.pattern !== 'steady') add(2, 'Track per diems and days away each fire season', 'Ask your firefighting employer whether per diems are paid as a tax-free allowance or added to your T4, and whether they’ll sign a T2200 and TL2. Keep a simple log of days away from base.', 'During each fire season');
+  if (a.ei !== 'no') add(2, 'Have tax taken off your EI', 'Little tax comes off EI by default. You can ask Service Canada to withhold more, or set aside about 20% of each payment so spring doesn’t bring a bill. If your net income for the year passes about $86,000 (2026 figure), 30% of regular EI may have to be paid back, unless you had no regular EI in the 10 years before. RRSP and FHSA deductions lower net income, so they’re worth the most in years you claim EI.', 'When you apply for EI');
+  // 4. crypto
+  const cf = (Object.values(R ? R.years : {}).sort((p, q) => q.year - p.year)[0] || {}).carryAfter || 0;
+  if (cf > 0) add(2, 'Use your crypto losses', 'You have ' + money(cf) + ' of net capital losses left after carrying back. They offset future capital gains with no time limit.', null);
+  if (a.crypto === 'sell') add(2, 'Spread crypto sales across tax years', 'Selling over two or more years keeps gains in lower brackets. Selling coins below their cost in the same year offsets the gains, but don’t buy the same coin within 30 days before or after the sale (including in a TFSA, RRSP or a spouse’s account), or the loss is denied.', 'Before each December 31');
+  if (a.crypto === 'trade') add(2, 'Watch out for frequent trading', 'CRA can treat frequent, short-term trading as business income, which is fully taxable instead of half. Holding longer keeps it a capital gain.', null);
+  if (a.crypto === 'hold') add(3, 'Harvest losses in down years', 'If a coin is worth less than you paid by year end, selling it locks in a loss that offsets gains this year, the 3 years before, or later. Don’t buy the same coin within 30 days before or after (including in a TFSA, RRSP or a spouse’s account).', 'Before each December 31');
+  // 5. side business
+  if (a.side === 'thinking' || has('goals', 'business')) add(2, 'Set up a side business cleanly', 'Start as a sole proprietor with a separate bank account, and keep every receipt from day one: gear, training, insurance, phone, software, home office share. Register for GST/HST once sales pass $30,000 in four quarters.', 'Before your first sale');
+  if (a.side === 'yes') add(1, 'Report side income on a T2125', 'Claim the costs against it, set aside for both halves of CPP, and expect quarterly instalments once you owe more than $3,000 in the current year and one of the two before.', 'With each return');
+  if (cost > 100000) add(1, 'Ask whether you need form T1135', 'Crypto held on foreign exchanges may count as foreign property. If its total cost was over $100,000 at any time in a year, a T1135 is due, and missing it can cost $2,500 a year.', 'With each return');
+  add(2, 'Confirm your province of residence for each year', 'You’re taxed by the province you lived in on December 31. With no permanent home, CRA looks at your ties instead: where your belongings are stored, your driver’s licence, health card, bank address and where you return between trips. Set each year’s province on Work and deductions and have your CPA confirm it.', 'Before filing');
+  add(3, 'Keep slips and receipts for six years', 'CRA can ask for them for six years after each return is filed. A folder per year (slips, TL2, receipts, crypto exports) keeps it easy.', null);
+  return out.sort((p, q) => p.priority - q.priority);
+}
+function renderStrategy() {
+  const S = stratState(), box = $('#stratQ');
+  if (S.i >= S_QS.length) S.i = S_QS.length - 1;
+  const [k, q, type, opts] = S_QS[S.i], a = S.a;
+  let body = '';
+  if (type === 'money') body = '<input class="fld-in" type="number" min="0" step="1000" id="sqMoney" aria-labelledby="sqQ" placeholder="$" value="' + esc(a[k] ?? '') + '">';
+  else body = '<div class="sq-opts" role="' + (type === 'multi' ? 'group' : 'radiogroup') + '" aria-labelledby="sqQ">' + opts.map(([v, t]) => {
+    const on = type === 'multi' ? (a[k] || []).includes(v) : a[k] === v;
+    return '<label class="sq-opt"><input type="' + (type === 'multi' ? 'checkbox' : 'radio') + '" name="sq" value="' + v + '"' + (on ? ' checked' : '') + '> <span>' + esc(t) + '</span></label>';
+  }).join('') + '</div>';
+  box.innerHTML = '<div class="section-head"><div><h2>' + (S.done ? 'Your answers' : 'A few questions') + '</h2><p class="desc">Question ' + (S.i + 1) + ' of ' + S_QS.length + (type === 'multi' ? '. Pick all that apply.' : '') + '</p></div></div>' +
+    '<div class="bar" aria-hidden="true"><i style="width:' + ((S.i + 1) / S_QS.length * 100) + '%"></i></div>' +
+    '<h3 id="sqQ" class="sq-q" tabindex="-1">' + esc(q) + '</h3>' + body +
+    '<div class="actions" style="margin-top:14px"><button id="sqBack"' + (S.i ? '' : ' disabled') + '>Back</button>' +
+    (S.i < S_QS.length - 1 ? '<button class="primary" id="sqNext">Next</button>' : '<button class="primary" id="sqDone">' + (S.done ? 'Update my plan' : 'Build my plan') + '</button>') +
+    (S.done ? '<button class="ghost" id="sqRestart">Start over</button>' : '') + '</div>';
+  // answers update in place so keyboard focus stays put
+  $$('#stratQ input[name=sq]').forEach(inp => inp.onchange = () => {
+    if (type === 'multi') a[k] = $$('#stratQ input[name=sq]').filter(x => x.checked).map(x => x.value); else a[k] = inp.value;
+    save(); if (S.done) renderPlan();
+  });
+  const m = $('#sqMoney'); if (m) m.onchange = () => { a[k] = m.value === '' ? '' : +m.value; save(); };
+  const go = d => { if (m) a[k] = m.value === '' ? '' : +m.value; S.i += d; save(); renderStrategy.focus = true; renderStrategy(); };
+  $('#sqBack').onclick = () => go(-1);
+  if ($('#sqNext')) $('#sqNext').onclick = () => go(1);
+  if ($('#sqDone')) $('#sqDone').onclick = () => { if (m) a[k] = m.value === '' ? '' : +m.value; S.done = true; save(); renderStrategy(); toast('Your plan is ready, with ' + stratPlan().length + ' steps.'); $('#stratPlanTitle').focus(); };
+  if ($('#sqRestart')) $('#sqRestart').onclick = () => { if (!confirm('Clear your answers and start the questions again?')) return; state.strategy = null; stratState(); save(); renderStrategy.focus = true; renderStrategy(); };
+  if (renderStrategy.focus) { renderStrategy.focus = false; $('#sqQ').focus(); }
+  renderPlan();
+}
+function renderPlan() {
+  const plan = stratPlan();
+  const P = { 1: ['crit', 'Do first'], 2: ['warn', 'Next'], 3: ['ok', 'Keep in mind'] };
+  $('#stratPlanTitle').textContent = plan.length ? 'Your plan (' + plan.length + ' steps)' : 'Your plan';
+  $('#stratPlan').innerHTML = plan.length ? '<ol class="plan">' + plan.map(s => '<li><h3><span class="pill ' + P[s.priority][0] + '">' + P[s.priority][1] + '</span> ' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p>' + (s.when ? '<p class="when">When: ' + esc(s.when) + '</p>' : '') + '</li>').join('') + '</ol>'
+    : '<div class="empty">Answer the questions, then press Build my plan.</div>';
+}
+$('#btnStratPrint').onclick = () => { $('#stratPrintHead').innerHTML = '<h2 style="margin:0 0 4px">Tax strategy</h2><p style="margin:0 0 14px;color:var(--muted)">Prepared ' + fdate(Date.now()) + ' with the offline Tax Coordinator. General planning to go over with your CPA.</p>'; $('#tab-strategy').classList.add('printing'); plainPrint(); $('#tab-strategy').classList.remove('printing'); };
+/* ---------- lock dialog ---------- */
+const dlg = $('#lockDlg');
+let lockMode = null, lockCtx = null, oldPassStep = false;
+function openLock(mode, ctx) {
+  lockMode = mode; lockCtx = ctx || null; oldPassStep = false;
+  const T = {
+    unlock: ['Unlock your tax workspace', 'Type the passphrase you use for the Financial Advisor.', 'Unlock'],
+    file: ['This backup is locked', 'Type the passphrase that was in use when this backup was saved.', 'Open backup']
+  }[mode];
+  $('#lockTitle').textContent = T[0]; $('#lockMsg').textContent = T[1]; $('#lockGo').textContent = T[2];
+  $('#lockCancel').classList.toggle('hidden', mode === 'unlock');
+  $('#lp1').value = ''; $('#lockErr').textContent = ''; $('#lockGo').disabled = false;
+  if (!dlg.open) dlg.showModal();
+  $('#lp1').focus();
+}
+function closeLock() { $('#lp1').value = ''; lockCtx = null; if (dlg.open) dlg.close(); }
+function lockUI() {
+  document.body.classList.toggle('is-locked', isLocked());
+  const b = $('#btnLock');
+  b.classList.toggle('hidden', !NEED && !PENDING && !CK);
+  b.textContent = isLocked() ? 'Unlock' : 'Lock now';
+  b.title = isLocked() ? 'Type your passphrase to open your tax workspace' : 'Lock both pages until the passphrase is typed again';
+}
+dlg.addEventListener('cancel', e => { if (lockMode === 'unlock') e.preventDefault(); });
+$('#lockCancel').onclick = closeLock;
+$('#btnLock').onclick = async () => {
+  if (isLocked()) { openLock('unlock'); return; }
+  await save(); sessSet(null); signalLock(); location.reload();
+};
+// One unlock for both pages. The passphrase stays in this page's memory only. Clicking the page switcher hands it
+// to the other page through a one-time note that expires in 15 seconds, so a reload or a reopened tab always asks again.
+const HANDOFF = 'fa-unlock-handoff', LOCKED_AT = 'fa-locked-at';
+let MEMPASS = null, UNLOCKED_AT = 0;
+const lockedAt = () => { try { return +localStorage.getItem(LOCKED_AT) || 0; } catch (e) { return 0; } };
+const sessSet = p => { MEMPASS = p || null; if (p) UNLOCKED_AT = Date.now(); };
+const sessGet = () => {
+  let h = null;
+  try { sessionStorage.removeItem('fa-unlock-pass'); h = JSON.parse(sessionStorage.getItem(HANDOFF) || 'null'); sessionStorage.removeItem(HANDOFF); } catch (e) {}
+  return h && h.p && Date.now() - h.t < 15000 && h.t > lockedAt() ? h.p : null;
+};
+const signalLock = () => { try { localStorage.setItem(LOCKED_AT, String(Date.now())); } catch (e) {} };
+// Locking on either page locks the other one too
+const relockIfNeeded = () => { if (MEMPASS && lockedAt() > UNLOCKED_AT) location.reload(); };
+addEventListener('storage', e => { if (e.key === LOCKED_AT) relockIfNeeded(); });
+addEventListener('pageshow', e => { if (e.persisted) relockIfNeeded(); });
+document.querySelectorAll('.pageswitch a').forEach(a => a.addEventListener('click', e => {
+  if (!MEMPASS || e.button || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+  try { sessionStorage.setItem(HANDOFF, JSON.stringify({ p: MEMPASS, t: Date.now() })); } catch (x) {}
+}));
+// Returns 'ok', or 'old' when the passphrase is right but this page's data still uses the previous one. Throws if wrong.
+async function doUnlock(p) {
+  const fa = faSealed();
+  if (PENDING) {
+    let r = null;
+    try { r = await unseal(PENDING, p); } catch (x) {}
+    if (r) {
+      state = Object.assign(blank(), r.data); PENDING = null;
+      if (fa) { CK = r.key; SALT = r.salt; } else { CK = null; SALT = null; } // dashboard lock off: follow it
+    } else if (fa) { await unseal(fa, p); return 'old'; }
+    else throw new Error('bad');
+  } else {
+    await unseal(fa, p); // proves it's the dashboard's passphrase
+    if (PLAIN) { state = PLAIN; PLAIN = null; }
+    SALT = crypto.getRandomValues(new Uint8Array(16)); CK = await deriveKey(p, SALT);
+  }
+  NEED = !!fa; sessSet(fa ? p : null);
+  await save(); closeLock(); lockUI(); render();
+  return 'ok';
+}
+$('#lockForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const p = $('#lp1').value, err = $('#lockErr'), go = $('#lockGo');
+  if (!p) { err.textContent = 'Type the passphrase.'; return; }
+  go.disabled = true; err.textContent = 'Checking…';
+  try {
+    if (lockMode === 'file') { const r = await unseal(lockCtx, p); closeLock(); useBackup(r.data); return; }
+    if (oldPassStep) {
+      // passphrase was changed on the dashboard: open with the old one, re-lock with the current one
+      const r = await unseal(PENDING, p);
+      state = Object.assign(blank(), r.data); PENDING = null;
+      const cur = lockCtx; SALT = crypto.getRandomValues(new Uint8Array(16)); CK = await deriveKey(cur, SALT);
+      NEED = true; sessSet(cur); await save(); closeLock(); lockUI(); render(); toast('Unlocked'); return;
+    }
+    if (await doUnlock(p) === 'old') {
+      openLock('unlock'); oldPassStep = true; lockCtx = p;
+      $('#lockMsg').textContent = 'Your passphrase was changed on the Financial Advisor. Type your previous passphrase once so this page can switch to the new one.';
+      return;
+    }
+    toast('Unlocked');
+  } catch (x) { err.textContent = 'That passphrase didn’t work.'; go.disabled = false; $('#lp1').select(); }
+});
+
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => R && renderOverview(), 120); });
+try { const tb = sessionStorage.getItem('tc.tab'); if (tb) goTab(tb); } catch (e) {}
+render();
+lockUI();
+if (isLocked()) {
+  const sp = CRYPTO_OK && sessGet();
+  (async () => {
+    // opened from the Financial Advisor's page switcher while unlocked: open without asking
+    if (sp) { try { if (await doUnlock(sp) === 'ok') return; } catch (e) { sessSet(null); } }
+    openLock('unlock');
+    if (!CRYPTO_OK) $('#lockMsg').textContent = 'This browser can\u2019t unlock encrypted data.';
+  })();
+} else { if (!NEED) sessSet(null); if (CK === null && !NEED) save(); } // dashboard lock off: store unencrypted again
+// The passphrase note is one-time: never leave it in this tab, even if the switch didn't happen
+try { sessionStorage.removeItem(HANDOFF); } catch (e) {}
+addEventListener('pageshow', () => { try { sessionStorage.removeItem(HANDOFF); } catch (e) {} });
+// Lock turned on in the Financial Advisor while this page is open: reload so nothing more is saved unencrypted
+addEventListener('storage', e => { if (e.key === FA_KEY && !CK && faSealed()) location.reload(); });
+})();
+
+</script>
+</body>
+</html>

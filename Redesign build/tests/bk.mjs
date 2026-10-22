@@ -1,0 +1,36 @@
+import { spawn } from "child_process"; import fs from "fs";
+const CH = "C:/Program Files/Google/Chrome/Application/chrome.exe", PORT = 9339, prof = process.env.S + "/prof" + Date.now();
+const ch = spawn(CH, ["--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${prof}`, "--allow-file-access-from-files", "about:blank"]);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let tgt; for (let i = 0; i < 40 && !tgt; i++) { await sleep(250); try { tgt = (await (await fetch(`http://127.0.0.1:${PORT}/json`)).json()).find(t => t.type === "page"); } catch {} }
+const ws = new WebSocket(tgt.webSocketDebuggerUrl); await new Promise(r => ws.onopen = r);
+let id = 0; const pend = {}, errs = [];
+ws.onmessage = m => { const d = JSON.parse(m.data); if (d.id && pend[d.id]) { pend[d.id](d); delete pend[d.id]; } if (d.method === "Runtime.exceptionThrown") errs.push(d.params.exceptionDetails.exception?.description || d.params.exceptionDetails.text); if (d.method === "Runtime.consoleAPICalled" && d.params.type === "error") errs.push(JSON.stringify(d.params.args.map(a => a.value))); };
+const send = (method, params = {}) => new Promise(r => { const i = ++id; pend[i] = r; ws.send(JSON.stringify({ id: i, method, params })); });
+const ev = async e => { const r = await send("Runtime.evaluate", { expression: `(async()=>{${e}})()`, awaitPromise: true, returnByValue: true }); return r.result.exceptionDetails ? "EXC " + JSON.stringify(r.result.exceptionDetails) : r.result.result.value; };
+await send("Runtime.enable"); await send("Page.enable");
+await send("Page.addScriptToEvaluateOnNewDocument", { source: `window.confirm=()=>true; window.showSaveFilePicker=undefined; window.__saved=[]; const cu=URL.createObjectURL; URL.createObjectURL=function(b){ const u=cu.call(URL,b); window.__blobs=window.__blobs||{}; window.__blobs[u]=b; return u; }; const oc=HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click=function(){ if(this.download){ const n=this.download; window.__blobs[this.href].text().then(t=>window.__saved.push({name:n,text:t})); return;} return oc.call(this); };` });
+const URL_ = process.env.PAGE || "file:///C:/Claude%20Projects/Financial%20Advisor/My%20finances.html";
+await send("Page.navigate", { url: URL_ }); await sleep(1500);
+const W = ms => `await new Promise(r=>setTimeout(r,${ms}));`;
+const state = `const t=document.querySelector('#tx-tab-overview, [data-vol=tax]'); return {title:document.title, rail:document.querySelector('.tree').innerText, folio:document.querySelector('#folioHead').innerText, faItems: JSON.parse(localStorage.getItem('financial-advisor-data-v1')||'null'), tx: localStorage.getItem('taxCoordinator.state')||localStorage.getItem(Object.keys(localStorage).find(k=>/tax/i.test(k)&&!/theme|summ/i.test(k)))};`;
+const summary = `const k=Object.keys(localStorage); const fa=localStorage.getItem('financial-advisor-data-v1'); const txk=k.filter(x=>/tax/i.test(x)&&!/theme/i.test(x)); return {title:document.title, rail:document.querySelector('.tree').innerText.split(String.fromCharCode(10)).join(' | '), folio:document.querySelector('#folioHead').innerText, keys:k, faLen: fa&&fa.length, faSealed: fa&&fa.includes('"locked":1'), tx: txk.map(x=>[x,(localStorage.getItem(x)||'').length, (localStorage.getItem(x)||'').includes('"locked":1')])};`;
+const openFile = name => `const s=window.__saved.find(x=>x.name.startsWith(${JSON.stringify(name)}))||window.__saved.at(-1); const dt=new DataTransfer(); dt.items.add(new File([s.text], s.name, {type:'application/json'})); const i=document.getElementById('fileIn'); i.files=dt.files; i.dispatchEvent(new Event('change')); ${W(800)} return document.getElementById('toast').innerText;`;
+const out = {};
+out.start = await ev(summary);
+out.sample = await ev(`document.getElementById('btnSample').click(); ${W(500)} document.querySelector('[data-vol-go=tax]').click(); ${W(300)} document.getElementById('tx-btnSample').click(); ${W(1500)} ${summary}`);
+out.save = await ev(`document.getElementById('tx-btnSave').click(); ${W(800)} const s=window.__saved.at(-1); const o=JSON.parse(s.text); return {name:s.name, keys:Object.keys(o), money:Object.keys(o.money||{}).length, taxFiles:o.taxes&&o.taxes.files&&o.taxes.files.length};`);
+const plain = await ev(`return window.__saved.at(-1).text.length`);
+out.clear = await ev(`document.querySelector('[data-vol-go=money]').click(); ${W(200)} document.getElementById('btnClear').click(); ${W(800)} ${summary}`);
+out.open = await ev(`${openFile("My finances backup")} `);
+out.afterOpen = await ev(`${W(800)} ${summary}`);
+// lock on, save, clear, open with passphrase
+out.lock = await ev(`document.getElementById('btnLock').click(); ${W(300)} lp1.value='correct horse 42'; lp2.value='correct horse 42'; lockGo.click(); ${W(4000)} return [document.getElementById('toast').innerText, ${'(()=>{' + summary + '})()'}];`);
+out.lockedSave = await ev(`document.getElementById('btnSave').click(); ${W(1500)} const s=window.__saved.at(-1); const o=JSON.parse(s.text); return {name:s.name, keys:Object.keys(o), n: window.__saved.length};`);
+out.clear2 = await ev(`document.getElementById('btnClear').click(); ${W(1500)} ${summary}`);
+out.open2 = await ev(`window.__saved=[window.__saved.at(-1)]; ${openFile("My finances backup")} ; `);
+out.dlg = await ev(`return {open: lockDlg.open, title: lockTitle.innerText}`);
+out.unlockFile = await ev(`lp1.value='correct horse 42'; lockGo.click(); ${W(4000)} return [document.getElementById('toast').innerText, ${'(()=>{' + summary + '})()'}];`);
+out.taxView = await ev(`document.querySelector('[data-vol-go=tax]').click(); ${W(800)} return document.getElementById('volTax').innerText.slice(0,300);`);
+out.errs = errs; out.plainLen = plain;
+console.log(JSON.stringify(out, null, 1)); ws.close(); ch.kill();

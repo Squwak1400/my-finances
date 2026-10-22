@@ -1,0 +1,23 @@
+# Allow-list: everything in this folder stays private unless it is named below.
+# Tax forms, backups, notes, mockups and the owner's own built page are never committed.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/DESIGN.md
+!/.impeccable/
+!/Share/
+!/Originals (before redesign)/
+!/Redesign build/
+
+# The owner's own details and build output
+/Redesign build/personal/
+/Redesign build/out/
+/Redesign build/out-share/
+
+# Data files never belong in the repo, wherever they turn up
+*.csv
+*.pdf
+*.png
+*.jpg
+*backup*.json

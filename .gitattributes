@@ -1,0 +1,2 @@
+# Keep line endings exactly as built (the page carries hashes of its own scripts)
+* text=auto eol=lf

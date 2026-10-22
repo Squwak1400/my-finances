@@ -1,0 +1,904 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T21:41:47.914Z",
+  "title": "Design System: My finances",
+  "extensions": {
+    "colorMeta": {
+      "ledger-teal": {
+        "role": "primary",
+        "displayName": "Ledger Teal",
+        "canonical": "oklch(38.7% 0.057 221)",
+        "tonalRamp": [
+          "#000e13",
+          "#012934",
+          "#164655",
+          "#366575",
+          "#598899",
+          "#7dadbe",
+          "#a2d4e5",
+          "#d8f4ff"
+        ]
+      },
+      "sealing-sienna": {
+        "role": "secondary",
+        "displayName": "Sealing Sienna",
+        "canonical": "oklch(51.3% 0.123 40)",
+        "tonalRamp": [
+          "#1b0400",
+          "#431100",
+          "#6f2300",
+          "#954020",
+          "#bd6444",
+          "#e58967",
+          "#ffb79d",
+          "#fee9e2"
+        ]
+      },
+      "ledger-teal-night": {
+        "role": "primary",
+        "displayName": "Ledger Teal, night",
+        "canonical": "oklch(75.1% 0.054 202)",
+        "tonalRamp": [
+          "#000e10",
+          "#012a2d",
+          "#14484c",
+          "#35676b",
+          "#588a8e",
+          "#7cafb3",
+          "#a2d6da",
+          "#c5fafe"
+        ]
+      },
+      "sealing-sienna-night": {
+        "role": "secondary",
+        "displayName": "Sealing Sienna, night",
+        "canonical": "oklch(72.9% 0.113 45)",
+        "tonalRamp": [
+          "#190500",
+          "#3f1501",
+          "#6a2900",
+          "#90451f",
+          "#b76944",
+          "#df8d67",
+          "#feb898",
+          "#ffe9e0"
+        ]
+      },
+      "wants-teal": {
+        "role": "tertiary",
+        "displayName": "Wants Teal",
+        "canonical": "oklch(61.7% 0.059 212)",
+        "tonalRamp": [
+          "#000e12",
+          "#012931",
+          "#0e4852",
+          "#316671",
+          "#558a95",
+          "#79afba",
+          "#9ed5e1",
+          "#d1f6ff"
+        ]
+      },
+      "wants-teal-night": {
+        "role": "tertiary",
+        "displayName": "Wants Teal, night",
+        "canonical": "oklch(56.4% 0.063 209)",
+        "tonalRamp": [
+          "#000e11",
+          "#002a30",
+          "#034852",
+          "#2c6771",
+          "#518b95",
+          "#75b0ba",
+          "#9bd6e1",
+          "#cff7fe"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(94.9% 0.021 91)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#282419",
+          "#444033",
+          "#625d51",
+          "#858073",
+          "#a9a496",
+          "#cfcabc",
+          "#f3eedf"
+        ]
+      },
+      "paper-shade": {
+        "role": "neutral",
+        "displayName": "Paper Shade",
+        "canonical": "oklch(91.9% 0.028 90)",
+        "tonalRamp": [
+          "#100b01",
+          "#292414",
+          "#453f2f",
+          "#635d4c",
+          "#86806e",
+          "#aba491",
+          "#d1cab7",
+          "#f5eeda"
+        ]
+      },
+      "paper-edge": {
+        "role": "neutral",
+        "displayName": "Paper Edge",
+        "canonical": "oklch(89.2% 0.034 89)",
+        "tonalRamp": [
+          "#100a00",
+          "#2a2310",
+          "#473f2b",
+          "#655d48",
+          "#88806a",
+          "#ada48d",
+          "#d3cab2",
+          "#f7eed6"
+        ]
+      },
+      "desk-cream": {
+        "role": "neutral",
+        "displayName": "Desk Cream",
+        "canonical": "oklch(86.5% 0.037 89)",
+        "tonalRamp": [
+          "#100a00",
+          "#2b230e",
+          "#473f29",
+          "#665d46",
+          "#898068",
+          "#aea48b",
+          "#d4cab0",
+          "#f8eed3"
+        ]
+      },
+      "desk-cream-rule": {
+        "role": "neutral",
+        "displayName": "Desk Cream Rule",
+        "canonical": "oklch(78.1% 0.048 90)",
+        "tonalRamp": [
+          "#100a00",
+          "#2d2304",
+          "#493f21",
+          "#685d3e",
+          "#8b805f",
+          "#b0a483",
+          "#d6caa7",
+          "#faeecb"
+        ]
+      },
+      "desk-cream-soft": {
+        "role": "neutral",
+        "displayName": "Desk Cream Soft Text",
+        "canonical": "oklch(42.6% 0.025 85)",
+        "tonalRamp": [
+          "#100a01",
+          "#2a2316",
+          "#463f30",
+          "#645d4d",
+          "#877f6f",
+          "#aca493",
+          "#d2cab8",
+          "#f6eedc"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(21.7% 0.004 106)",
+        "tonalRamp": [
+          "#0b0b09",
+          "#242422",
+          "#40403e",
+          "#5e5e5b",
+          "#80807e",
+          "#a5a5a2",
+          "#cbcbc8",
+          "#efefec"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(39.5% 0.019 90)",
+        "tonalRamp": [
+          "#0e0b04",
+          "#27241a",
+          "#433f35",
+          "#625d52",
+          "#848074",
+          "#a9a498",
+          "#cfcabd",
+          "#f3eee1"
+        ]
+      },
+      "pencil": {
+        "role": "neutral",
+        "displayName": "Pencil",
+        "canonical": "oklch(50.1% 0.030 90)",
+        "tonalRamp": [
+          "#100a00",
+          "#2a2312",
+          "#463f2d",
+          "#645d4a",
+          "#87806c",
+          "#aca490",
+          "#d2cab5",
+          "#f6eed8"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "oklch(80.6% 0.037 89)",
+        "tonalRamp": [
+          "#100a00",
+          "#2b230d",
+          "#473f29",
+          "#665d46",
+          "#898067",
+          "#aea48b",
+          "#d4cab0",
+          "#f8eed3"
+        ]
+      },
+      "faint-rule": {
+        "role": "neutral",
+        "displayName": "Faint Rule",
+        "canonical": "oklch(87.1% 0.032 89)",
+        "tonalRamp": [
+          "#100a00",
+          "#2a2311",
+          "#473f2c",
+          "#655d49",
+          "#88806a",
+          "#ada48e",
+          "#d3cab3",
+          "#f7eed6"
+        ]
+      },
+      "night-paper": {
+        "role": "neutral",
+        "displayName": "Paper, night",
+        "canonical": "oklch(24.5% 0.012 84)",
+        "tonalRamp": [
+          "#0d0b06",
+          "#27241e",
+          "#433f39",
+          "#615d56",
+          "#838078",
+          "#a8a49c",
+          "#cecac2",
+          "#f2eee6"
+        ]
+      },
+      "night-paper-shade": {
+        "role": "neutral",
+        "displayName": "Paper Shade, night",
+        "canonical": "oklch(27.5% 0.014 81)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#27231d",
+          "#433f38",
+          "#625d55",
+          "#848077",
+          "#a9a49b",
+          "#cfcac1",
+          "#f3eee4"
+        ]
+      },
+      "night-desk": {
+        "role": "neutral",
+        "displayName": "Desk, night",
+        "canonical": "oklch(19.1% 0.010 97)",
+        "tonalRamp": [
+          "#0c0b07",
+          "#25241f",
+          "#41403a",
+          "#5f5e58",
+          "#82807a",
+          "#a6a59e",
+          "#cccbc4",
+          "#f0efe7"
+        ]
+      },
+      "night-desk-rule": {
+        "role": "neutral",
+        "displayName": "Desk Rule, night",
+        "canonical": "oklch(31.4% 0.018 88)",
+        "tonalRamp": [
+          "#0e0b04",
+          "#28241a",
+          "#443f35",
+          "#625d52",
+          "#848074",
+          "#a9a498",
+          "#cfcabe",
+          "#f3eee1"
+        ]
+      },
+      "night-desk-ink": {
+        "role": "neutral",
+        "displayName": "Desk Ink, night",
+        "canonical": "oklch(91.3% 0.026 90)",
+        "tonalRamp": [
+          "#0f0b01",
+          "#292415",
+          "#453f30",
+          "#635d4d",
+          "#86806f",
+          "#aba492",
+          "#d1cab8",
+          "#f5eedb"
+        ]
+      },
+      "night-desk-soft": {
+        "role": "neutral",
+        "displayName": "Desk Soft, night",
+        "canonical": "oklch(62.1% 0.031 88)",
+        "tonalRamp": [
+          "#100a00",
+          "#2a2312",
+          "#463f2d",
+          "#655d4a",
+          "#88806c",
+          "#aca48f",
+          "#d3cab5",
+          "#f7eed8"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Ink, night",
+        "canonical": "oklch(93.2% 0.025 89)",
+        "tonalRamp": [
+          "#0f0b02",
+          "#292416",
+          "#453f31",
+          "#635d4e",
+          "#868070",
+          "#aba493",
+          "#d1cab9",
+          "#f5eedc"
+        ]
+      },
+      "night-ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft, night",
+        "canonical": "oklch(81.5% 0.033 89)",
+        "tonalRamp": [
+          "#100a00",
+          "#2a2311",
+          "#473f2c",
+          "#655d48",
+          "#88806a",
+          "#ada48e",
+          "#d3cab3",
+          "#f7eed6"
+        ]
+      },
+      "night-pencil": {
+        "role": "neutral",
+        "displayName": "Pencil, night",
+        "canonical": "oklch(66.1% 0.034 89)",
+        "tonalRamp": [
+          "#100a00",
+          "#2b230f",
+          "#473f2a",
+          "#655d47",
+          "#888069",
+          "#ada48d",
+          "#d3cab2",
+          "#f8eed5"
+        ]
+      },
+      "night-rule": {
+        "role": "neutral",
+        "displayName": "Rule, night",
+        "canonical": "oklch(37.1% 0.022 81)",
+        "tonalRamp": [
+          "#100a03",
+          "#292318",
+          "#463f33",
+          "#645d50",
+          "#877f72",
+          "#aca396",
+          "#d2c9bb",
+          "#f6edde"
+        ]
+      },
+      "night-faint-rule": {
+        "role": "neutral",
+        "displayName": "Faint Rule, night",
+        "canonical": "oklch(31.1% 0.019 84)",
+        "tonalRamp": [
+          "#0f0b04",
+          "#28231a",
+          "#443f35",
+          "#625d52",
+          "#858074",
+          "#aaa498",
+          "#d0cabd",
+          "#f4eee1"
+        ]
+      },
+      "good": {
+        "role": "status",
+        "displayName": "Good",
+        "canonical": "oklch(47.6% 0.094 150)",
+        "tonalRamp": [
+          "#001003",
+          "#012d10",
+          "#0b4d23",
+          "#306c40",
+          "#549062",
+          "#78b685",
+          "#9edcaa",
+          "#c8ffd2"
+        ]
+      },
+      "warning": {
+        "role": "status",
+        "displayName": "Warning",
+        "canonical": "oklch(65.4% 0.121 78)",
+        "tonalRamp": [
+          "#120900",
+          "#322001",
+          "#553a01",
+          "#7c5503",
+          "#a77610",
+          "#ce9b42",
+          "#f5c16a",
+          "#ffeccf"
+        ]
+      },
+      "serious": {
+        "role": "status",
+        "displayName": "Serious",
+        "canonical": "oklch(57.8% 0.115 46)",
+        "tonalRamp": [
+          "#190500",
+          "#3f1600",
+          "#692a00",
+          "#90451b",
+          "#b76941",
+          "#df8d65",
+          "#ffb896",
+          "#ffeae0"
+        ]
+      },
+      "critical": {
+        "role": "status",
+        "displayName": "Critical",
+        "canonical": "oklch(49.0% 0.139 31)",
+        "tonalRamp": [
+          "#1e0100",
+          "#490400",
+          "#781103",
+          "#9d3727",
+          "#c55c4a",
+          "#ef816d",
+          "#feb6a8",
+          "#ffe9e4"
+        ]
+      },
+      "good-night": {
+        "role": "status",
+        "displayName": "Good, night",
+        "canonical": "oklch(77.9% 0.078 152)",
+        "tonalRamp": [
+          "#001004",
+          "#012d12",
+          "#194b2a",
+          "#396a48",
+          "#5c8e69",
+          "#80b38d",
+          "#a5dab2",
+          "#c8fed5"
+        ]
+      },
+      "warning-night": {
+        "role": "status",
+        "displayName": "Warning, night",
+        "canonical": "oklch(78.6% 0.102 84)",
+        "tonalRamp": [
+          "#110a00",
+          "#302101",
+          "#523c00",
+          "#775802",
+          "#9d7b2f",
+          "#c39f55",
+          "#eac57b",
+          "#feecc9"
+        ]
+      },
+      "critical-night": {
+        "role": "status",
+        "displayName": "Critical, night",
+        "canonical": "oklch(74.5% 0.119 31)",
+        "tonalRamp": [
+          "#1e0100",
+          "#490500",
+          "#721e11",
+          "#953f30",
+          "#bd6352",
+          "#e58775",
+          "#feb6a8",
+          "#fee9e5"
+        ]
+      },
+      "chart-green": {
+        "role": "chart",
+        "displayName": "Chart Green",
+        "canonical": "oklch(47.6% 0.094 150)",
+        "tonalRamp": [
+          "#001003",
+          "#012d10",
+          "#0b4d23",
+          "#306c40",
+          "#549062",
+          "#78b685",
+          "#9edcaa",
+          "#c8ffd2"
+        ]
+      },
+      "chart-ochre": {
+        "role": "chart",
+        "displayName": "Chart Ochre",
+        "canonical": "oklch(62.5% 0.112 83)",
+        "tonalRamp": [
+          "#120a00",
+          "#302101",
+          "#533b00",
+          "#785802",
+          "#a07920",
+          "#c69e4b",
+          "#eec471",
+          "#ffecc9"
+        ]
+      },
+      "chart-plum": {
+        "role": "chart",
+        "displayName": "Chart Plum",
+        "canonical": "oklch(50.3% 0.093 347)",
+        "tonalRamp": [
+          "#1c0010",
+          "#410a2c",
+          "#612849",
+          "#834767",
+          "#a9698b",
+          "#d08db0",
+          "#f8b2d6",
+          "#fee7f2"
+        ]
+      },
+      "chart-indigo": {
+        "role": "chart",
+        "displayName": "Chart Indigo",
+        "canonical": "oklch(44.4% 0.074 279)",
+        "tonalRamp": [
+          "#080429",
+          "#1d1e47",
+          "#383b66",
+          "#555987",
+          "#767cac",
+          "#9aa0d3",
+          "#c0c6fb",
+          "#ebedff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The opening sentence of a volume's Overview; accent italics for emphasis."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles over a 1px ink rule."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "KPI values; 28px on phones."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Italic heading inside a plate."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose with lining tabular numerals."
+      },
+      "note": {
+        "displayName": "Note",
+        "purpose": "Italic margin notes, chart annotations and empty states."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase tracked mono for eyebrows, table headers and form labels."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Mono for table numbers, inputs, buttons, tooltips and toasts."
+      },
+      "hand": {
+        "displayName": "Hand",
+        "purpose": "Notebook only: handwritten titles, plate and sticky-note titles, margin notes and chart annotations (serif again under 600px). Never long text or figures."
+      }
+    },
+    "shadows": [
+      {
+        "name": "folio-light",
+        "value": "0 24px 50px -24px rgba(60,45,20,.35)",
+        "purpose": "The paper folio lifting off the cream desk (light mode). Removed on phones."
+      },
+      {
+        "name": "folio-dark",
+        "value": "0 30px 60px -20px rgba(0,0,0,.55)",
+        "purpose": "The paper folio lifting off the dark desk (dark mode)."
+      },
+      {
+        "name": "overlay",
+        "value": "0 12px 28px rgba(0,0,0,.25)",
+        "purpose": "Tooltips and toasts."
+      },
+      {
+        "name": "dialog",
+        "value": "0 40px 80px -20px rgba(0,0,0,.6)",
+        "purpose": "Lock and setup dialogs, over a rgba(12,11,8,.62) backdrop with a 2px blur."
+      },
+      {
+        "name": "calendar-lift",
+        "value": "0 6px 14px -8px rgba(0,0,0,.45)",
+        "purpose": "A calendar day under the pointer, with a 2px rise."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent)",
+        "purpose": "Focused inputs, with an accent border."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-ledger",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "The one easing curve: exponential ease-out for every reveal and grow."
+      },
+      {
+        "name": "word-reveal",
+        "value": "opacity + translateY(18px), .8s, 60ms stagger per word",
+        "purpose": "The Overview's opening sentence."
+      },
+      {
+        "name": "rise",
+        "value": "opacity + translateY(14px), .7s",
+        "purpose": "Blocks entering the viewport, once."
+      },
+      {
+        "name": "grow",
+        "value": "scaleX from 0, 1.1s",
+        "purpose": "Bars (debt road, runway) drawing in."
+      },
+      {
+        "name": "state",
+        "value": ".18s",
+        "purpose": "Button and link colour and border changes."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "all reveals off; content shown in its final state",
+        "purpose": "prefers-reduced-motion and print."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "600px",
+        "purpose": "Editor rows become stacked labelled cards; bigger tap targets."
+      },
+      {
+        "name": "small",
+        "value": "560px",
+        "purpose": "Calendar squares compact; KPI values 28px."
+      },
+      {
+        "name": "rail-top",
+        "value": "900px",
+        "purpose": "The rail becomes a top block; the folio loses its shadow."
+      },
+      {
+        "name": "spread",
+        "value": "1180px",
+        "purpose": "The margin column flows under the main column."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "The everyday action: outlined, mono, squared.",
+      "html": "<button class=\"ds-btn\">Open backup</button>",
+      "css": ".ds-btn { font: 500 12px/1.2 var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .02em; color: var(--text, #1a1a18); background: transparent; border: 1px solid var(--line, #c9bfa5); border-radius: 0; padding: 9px 12px; cursor: pointer; transition: border-color .18s, background .18s, color .18s; } .ds-btn:hover { border-color: var(--text, #1a1a18); } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline: 2px solid var(--accent, #1b4b5a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one main action in a group. Ink block; fills with the volume accent on hover.",
+      "html": "<button class=\"ds-btn-primary\">Advisor's review</button>",
+      "css": ".ds-btn-primary { font: 500 12px/1.2 var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .02em; color: var(--surface, #f3eedf); background: var(--text, #1a1a18); border: 1px solid var(--text, #1a1a18); border-radius: 0; padding: 9px 12px; cursor: pointer; transition: background .18s, border-color .18s; } .ds-btn-primary:hover { background: var(--accent, #1b4b5a); border-color: var(--accent, #1b4b5a); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent, #1b4b5a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Low-stakes actions such as the theme switch.",
+      "html": "<button class=\"ds-btn-ghost\">Finish later</button>",
+      "css": ".ds-btn-ghost { font: 500 12px/1.2 var(--mono, \"Cascadia Mono\", Consolas, monospace); color: var(--text-2, #4a463b); background: transparent; border: 1px solid transparent; border-radius: 0; padding: 9px 12px; cursor: pointer; } .ds-btn-ghost:hover { border-color: var(--text, #1a1a18); color: var(--text, #1a1a18); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--accent, #1b4b5a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Square mono field with a mono uppercase label above.",
+      "html": "<label class=\"ds-field\"><span>Amount</span><input class=\"ds-input\" value=\"2150\" inputmode=\"decimal\"></label>",
+      "css": ".ds-field { display: grid; gap: 4px; max-width: 220px; } .ds-field span { font: 500 10.5px var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #6a6350); } .ds-input { font: 400 13.5px var(--mono, \"Cascadia Mono\", Consolas, monospace); color: var(--text, #1a1a18); background: color-mix(in srgb, var(--surface, #f3eedf) 60%, #fff 40%); border: 1px solid var(--line, #c9bfa5); border-radius: 0; padding: 8px 10px; text-align: right; } .ds-input:focus { outline: none; border-color: var(--accent, #1b4b5a); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #1b4b5a) 22%, transparent); }"
+    },
+    {
+      "name": "Index Rail",
+      "kind": "nav",
+      "refersTo": "rail",
+      "description": "The desk: brand, volume switch and roman-numbered sections; current section in desk ink with an accent dot.",
+      "html": "<nav class=\"ds-rail\"><div class=\"ds-brand\">My finances<small>Private ledger · offline</small></div><div class=\"ds-vols\"><button aria-current=\"page\">Vol. I · My finances</button><button>Vol. II · Taxes</button></div><div class=\"ds-tabs\"><button aria-selected=\"true\"><span>i</span>Overview</button><button><span>ii</span>My numbers</button><button><span>iii</span>Debt plan</button></div></nav>",
+      "css": ".ds-rail { width: 236px; padding: 26px 20px 22px; background: var(--desk, #dcd2b8); color: var(--desk-ink, #1a1a18); display: grid; gap: 22px; } .ds-brand { font: italic 400 26px/1 var(--display, \"Sitka Display\", Georgia, serif); } .ds-brand small { display: block; font: 400 10.5px var(--mono, \"Cascadia Mono\", Consolas, monospace); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--desk-soft, #554e3f); margin-top: 9px; } .ds-vols { display: grid; gap: 2px; } .ds-vols button { text-align: left; font: 500 11px var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .1em; text-transform: uppercase; color: var(--desk-soft, #554e3f); background: none; border: 0; border-bottom: 1px solid var(--desk-rule, #c3b795); padding: 8px 0; cursor: pointer; } .ds-vols button[aria-current] { color: var(--desk-ink, #1a1a18); border-bottom-color: var(--desk-ink, #1a1a18); } .ds-vols button:hover { color: var(--desk-ink, #1a1a18); } .ds-tabs button { display: grid; grid-template-columns: 34px 1fr; width: 100%; text-align: left; font: 400 13px/1.3 var(--mono, \"Cascadia Mono\", Consolas, monospace); color: var(--desk-soft, #554e3f); background: none; border: 0; padding: 7px 0; cursor: pointer; } .ds-tabs button span { font-size: 11px; position: relative; } .ds-tabs button[aria-selected=\"true\"] { color: var(--desk-ink, #1a1a18); } .ds-tabs button[aria-selected=\"true\"] span::before { content: \"●\"; position: absolute; left: -13px; color: var(--accent, #1b4b5a); } .ds-tabs button:hover { color: var(--desk-ink, #1a1a18); } .ds-rail button:focus-visible { outline: 2px solid var(--desk-ink, #1a1a18); outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "pill",
+      "description": "Outlined uppercase mono tag; colour carries the state.",
+      "html": "<span class=\"ds-pill\">filed</span> <span class=\"ds-pill ds-warn\">not filed</span> <span class=\"ds-pill ds-crit\">overdue</span>",
+      "css": ".ds-pill { font: 500 10px/1.3 var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .06em; text-transform: uppercase; padding: 3px 7px; border: 1px solid currentColor; border-radius: 0; color: var(--muted, #6a6350); display: inline-flex; } .ds-pill.ds-warn { color: var(--accent, #1b4b5a); } .ds-pill.ds-crit { color: var(--critical-text, #a03a2a); }"
+    },
+    {
+      "name": "Section",
+      "kind": "card",
+      "refersTo": "headline",
+      "description": "A section is not a box: a 1px ink rule, a serif headline, a description, then content.",
+      "html": "<section class=\"ds-section\"><h2>Monthly bills &amp; spending</h2><p>Regular costs. Leave out debt payments; those go under Debts.</p></section>",
+      "css": ".ds-section { border-top: 1px solid var(--text, #1a1a18); padding-top: 14px; max-width: 520px; } .ds-section h2 { font: 400 25px/1.15 var(--display, \"Sitka Display\", Georgia, serif); letter-spacing: -.01em; margin: 0; color: var(--text, #1a1a18); } .ds-section p { font: 400 14.5px/1.5 var(--serif, \"Sitka Text\", Georgia, serif); color: var(--text-2, #4a463b); margin: 4px 0 0; max-width: 70ch; }"
+    },
+    {
+      "name": "Plate",
+      "kind": "custom",
+      "refersTo": "plate",
+      "description": "Margin call-out: paper-shade block with an accent top edge.",
+      "html": "<aside class=\"ds-plate\"><span>Your next step</span><h3>File 2025 to 2021 now, oldest first.</h3><p>Those years show a refund or nothing owing, so there's no penalty.</p></aside>",
+      "css": ".ds-plate { background: var(--surface-2, #ebe4d0); border-top: 3px solid var(--accent, #1b4b5a); padding: 18px 18px 16px; max-width: 248px; } .ds-plate span { font: 500 11px/1.3 var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--accent, #1b4b5a); } .ds-plate h3 { font: italic 400 21px/1.22 var(--display, \"Sitka Display\", Georgia, serif); margin: 6px 0 8px; color: var(--text, #1a1a18); } .ds-plate p { font: 400 14.5px/1.5 var(--serif, \"Sitka Text\", Georgia, serif); color: var(--text-2, #4a463b); margin: 0; }"
+    },
+    {
+      "name": "Margin Note",
+      "kind": "custom",
+      "refersTo": "note",
+      "description": "Pencilled note beside a chart: italic serif with an accent rule.",
+      "html": "<p class=\"ds-note\"><span>On the chart</span>Hover any month for the exact figure.</p>",
+      "css": ".ds-note { font: italic 400 15px/1.5 var(--serif, \"Sitka Text\", Georgia, serif); color: var(--text-2, #4a463b); padding-left: 14px; border-left: 1px solid var(--accent, #1b4b5a); margin: 0; max-width: 248px; } .ds-note span { display: block; font: normal 500 11px/1.3 var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--accent, #1b4b5a); margin-bottom: 4px; }"
+    },
+    {
+      "name": "Key Figure",
+      "kind": "custom",
+      "refersTo": "figure",
+      "description": "KPI cell: mono label, 34px serif value, mono foot; cells divided by vertical rules.",
+      "html": "<div class=\"ds-kpi\"><span>Monthly take-home</span><b>$4,700</b><small>All income, per month</small></div>",
+      "css": ".ds-kpi { display: grid; gap: 6px; padding: 16px 0; border-top: 1px solid var(--text, #1a1a18); border-bottom: 1px solid var(--line, #c9bfa5); max-width: 220px; } .ds-kpi span { font: 500 11px/1.3 var(--mono, \"Cascadia Mono\", Consolas, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #6a6350); } .ds-kpi b { font: 400 34px/1.05 var(--display, \"Sitka Display\", Georgia, serif); letter-spacing: -.02em; color: var(--text, #1a1a18); } .ds-kpi small { font: 400 12px var(--mono, \"Cascadia Mono\", Consolas, monospace); color: var(--text-2, #4a463b); }"
+    },
+    {
+      "name": "Sketch Button",
+      "kind": "button",
+      "refersTo": "button (Notebook)",
+      "description": "Notebook's soft sketch key: the Ledger button's face and edge on a 10px, slightly uneven outline.",
+      "html": "<button class=\"ds-sketch\">Open backup</button>",
+      "css": ".ds-sketch { position: relative; font: 500 12px/1.2 var(--mono, \"Cascadia Mono\", Consolas, monospace); color: var(--text, #1a1a18); background: var(--btn-face, #e6e0cf); border: 0; border-radius: 10px; padding: 9px 12px; cursor: pointer; } .ds-sketch::after { content: \"\"; position: absolute; inset: -1px; border: 1.5px solid var(--btn-edge, #878272); border-bottom-width: 2.2px; border-radius: 11px 9px 12px 10px / 10px 12px 9px 11px; pointer-events: none; } .ds-sketch:active { transform: translateY(1px); } .ds-sketch:focus-visible { outline: 2px solid var(--accent, #1b4b5a); outline-offset: 3px; }"
+    },
+    {
+      "name": "Hand-drawn Box",
+      "kind": "card",
+      "refersTo": ".card in Notebook",
+      "description": "A section enclosed by four inked pen strokes that overshoot at the corners; each stroke is a mask layer stretched only along its edge.",
+      "html": "<div class=\"ds-nbbox\"><h3>Monthly backup</h3><p>Choose a folder once.</p></div>",
+      "css": ".ds-nbbox { position: relative; padding: 16px 18px 14px; background: var(--surface, #f3eedf); color: var(--text, #1a1a18); } .ds-nbbox h3 { margin: 0 0 4px; font: 400 21px 'Segoe Print', 'Ink Free', cursive; } .ds-nbbox p { margin: 0; font: 400 14.5px Sitka Text, Georgia, serif; } .ds-nbbox::after { content: ''; position: absolute; inset: -3px; background: var(--text, #1a1a18); pointer-events: none; -webkit-mask: var(--nb-box); mask: var(--nb-box); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }"
+    },
+    {
+      "name": "Sticky Note",
+      "kind": "custom",
+      "refersTo": ".rules > div and Advisor findings in Notebook",
+      "description": "A short rule or finding on a slightly tilted Paper Shade note with a strip of tape; handwritten title, Sitka body.",
+      "html": "<div class=\"ds-sticky\"><i></i><b>Per diems</b>A reasonable travel allowance for work away from your home base is usually tax-free.</div>",
+      "css": ".ds-sticky { position: relative; max-width: 260px; padding: 18px 16px 14px; background: var(--surface-2, #ebe4d0); color: var(--text-2, #4a463b); font: 400 14px/1.55 Sitka Text, Georgia, serif; transform: rotate(-.7deg); } .ds-sticky i { position: absolute; top: -9px; left: 50%; width: 62px; height: 16px; margin-left: -31px; background: color-mix(in srgb, var(--accent, #1b4b5a) 22%, transparent); border: 1px solid color-mix(in srgb, var(--accent, #1b4b5a) 45%, transparent); transform: rotate(-3deg); } .ds-sticky b { display: block; margin-bottom: 6px; font: 400 17px/1.3 'Segoe Print', 'Ink Free', cursive; color: var(--text, #1a1a18); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Private Ledger",
+    "overview": "This is one person's account book, kept on their own desk and never sent anywhere. Every screen is a page in a cream folio lying on a desk. The desk is the index rail on the left: the book's name, its two volumes (Vol. I · My finances, Vol. II · Taxes) and a numbered list of sections. The folio is where the reading and writing happen. It reads like a well-kept bound ledger rather than a web dashboard: serif prose, mono figures, hairline rules, margin notes in italic, and no rounded corners anywhere.\n\nThe voice is warm, editorial and personal. Figures are told as a story (\"You're worth $7,400 this month, up $930 since September\"), charts carry handwritten-style annotations, and each section opens with a plain sentence about what it's for. Density is moderate: generous space between sections, tight space inside a group, and long tables are ruled rather than boxed.\n\nThe book can be read in two page styles, switched at the top of every page or on Settings → Appearance. **Notebook** is the default, chosen by the owner on 2026-10-12. Sections are hand-drawn boxes, titles are handwritten, charts are pencil-hatched, the calendar is a scrapbook page and longer rules become sticky notes. **Ledger** is the plain printed look described throughout this document. Both styles share every token: Notebook changes how the marks are drawn, not the palette. The CPA report keeps the professional Ledger look in both styles.\n\nThe page works fully offline under a strict content-security policy. Fonts are the ones Windows already has (Sitka and Cascadia Mono), nothing loads from the network, and every colour comes from the tokens on `:root`.",
+    "keyCharacteristics": [
+      "A desk and a paper folio. In light mode the desk is cream, one step darker than the paper; in dark mode the desk is near-black and the paper is a dark brown-grey.",
+      "One accent per volume: Ledger Teal for My finances, Sealing Sienna for Taxes.",
+      "Serif for words, mono for numbers and labels.",
+      "Hairline rules instead of boxes; square corners everywhere.",
+      "Margin notes and chart annotations in italic serif, like pencilled notes.",
+      "Motion is a single quiet reveal as content scrolls into view, and it switches off under reduced motion.",
+      "Notebook (default) draws it all by hand: inked box edges, handwritten titles, hatched chart fills, soft sketch buttons, sticky notes. Words stay readable in Sitka, and figures stay in mono."
+    ],
+    "rules": [
+      {
+        "name": "The One Foil Rule",
+        "body": "Each volume has exactly one accent. Ledger Teal never appears as an accent in Taxes chrome, and Sealing Sienna never appears as one in My finances chrome. The only crossover is the second series inside a chart.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token-Only Rule",
+        "body": "Every colour in the page comes from a custom property on `:root`, so light, dark and both volumes stay in step. No raw hex in component rules.",
+        "section": "colors"
+      },
+      {
+        "name": "The Hand-for-Titles Rule",
+        "body": "In Notebook, handwriting is only for titles and short notes. Descriptions, body text, tables and anything longer than a couple of lines stay in Sitka. Ink Free proved hard to read in long text, so Segoe Print comes first. A figure inside a handwritten title is wrapped back into Cascadia Mono (`.nbn`).",
+        "section": "typography"
+      },
+      {
+        "name": "The Words-and-Numbers Rule",
+        "body": "Words are set in serif and numbers in mono. A figure inside a sentence stays in the serif, with tabular lining numerals. Inputs, table figures and buttons are mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Small-Caps-Label Rule",
+        "body": "Labels are uppercase mono with tracking, set in Pencil. They name things and never shout. Never bold them and never enlarge them past 11px.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Sheet Rule",
+        "body": "Only the folio, overlays and dialogs cast shadows. Cards, plates, KPIs and buttons never do.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square Corner Rule",
+        "body": "In Ledger, `border-radius` is 0 everywhere. Any leftover radius, including inline styles inherited from the original pages, is a bug and gets overridden in `theme.css`.",
+        "section": "shapes"
+      },
+      {
+        "name": "Notebook shapes",
+        "body": "Buttons are soft sketch keys: 10px radius with slightly uneven corners (`11px 9px 12px 10px / 10px 12px 9px 11px`), and text fields are 7px. The My numbers dropdowns keep their square Ledger shape. A section, KPI or notice is enclosed by a **hand-drawn box**: four pen strokes that overshoot a little at the corners. Each stroke is one SVG mask layer (`--nb-box`, `--nb-box-dash` for notices), stretched only along its own edge, so the wobble stays a few pixels on any size of box. Section heads get one drawn pen-stroke rule instead of the Ink hairline.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Inked-Line Rule",
+        "body": "Never put a displacement (wobble) filter on a thin border or rule. It breaks a 1.6px line into 1px stair-steps that read as a rendering glitch. Draw lines as SVG strokes (masks), and keep the wobble filter for icons and chart lines.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** take every colour from the `:root` tokens and set the volume's accent through `body.vol-tax`, so one switch recolours the page.",
+      "**Do** open every section with a 1px Ink rule and a 25px serif headline, and divide within it using Rule or Faint Rule.",
+      "**Do** set numbers, inputs, labels and buttons in Cascadia Mono, and words in Sitka.",
+      "**Do** annotate charts with short italic notes that say what the figure means for this person.",
+      "**Do** keep text at 4.5:1 or better on Paper, Paper Shade, every calendar shade and the desk, in both modes.",
+      "**Do** keep the reveal motion behind `prefers-reduced-motion`, and keep content visible by default for print.",
+      "**Do** make phone rows stack with a label on every field instead of scrolling a wide editor table.",
+      "**Do** keep Notebook as a skin over the same markup. Its rules live under `:root.nb` in `notebook.css`, and `notebook.js` only reads what the app renders (plus `window.__nb` for month figures), so Ledger keeps working untouched."
+    ],
+    "donts": [
+      "**Don't** round any corner (`border-radius` stays 0), including inline styles carried over from the original pages.",
+      "**Don't** use both accents as chrome in one volume. Teal belongs to My finances and Sienna to Taxes.",
+      "**Don't** box sections in bordered, shadowed cards. A section is a rule and a headline on the paper.",
+      "**Don't** load web fonts, images or scripts from the network. The page is offline under a strict CSP, and new script means recomputing its hash.",
+      "**Don't** add shadows to anything inside the folio except tooltips, toasts and the calendar's hover lift.",
+      "**Don't** add decorative characters that repeat a label (the old \"I / II\" after the volume names was removed for that reason).",
+      "**Don't** set long text or any figure in the hand font, and don't use AI-generated images for anything with numbers in it. The hand-drawn look is built in code, so figures stay live and nothing leaves the computer.",
+      "**Don't** give the CPA report the Notebook skin, or a bright white page on screen."
+    ]
+  }
+}

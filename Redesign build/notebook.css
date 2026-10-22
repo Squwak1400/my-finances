@@ -1,0 +1,406 @@
+/* ───────── Notebook view ─────────
+   Hand-drawn reading of My finances, Taxes and Settings. Ledger tokens only.
+   Owner's feedback: handwriting only on titles and short notes (Segoe Print),
+   long text stays in Sitka; icons on headings; soft rounded sketch buttons;
+   charts and the day-by-day calendar get the hand-drawn treatment;
+   the CPA report stays professional (its dark-on-screen rules live with the report in build-one.js). */
+:root { --hand: "Segoe Print", "Ink Free", cursive;
+  /* hand-drawn box: four pen strokes, one mask layer per edge, each stretched only along its own length,
+     so the wobble stays a few pixels on any box (a displacement filter on a 1.6px border makes stair-steps) */
+  --nb-box: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 8' preserveAspectRatio='none'><path d='M2 4.6C250 3 610 5.6 998 3.4' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 100% 8px,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 8' preserveAspectRatio='none'><path d='M999 3.6C700 4.8 300 2.6 1.4 4.4' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 100% / 100% 8px,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 1000' preserveAspectRatio='none'><path d='M4.4 999C3.2 700 5 300 3.8 1.6' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 8px 100%,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 1000' preserveAspectRatio='none'><path d='M3.6 1.2C4.8 300 2.6 700 4.1 998.6' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 100% 0 / 8px 100%;
+  --nb-box-dash: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 8' preserveAspectRatio='none'><path d='M2 4.6C250 3 610 5.6 998 3.4' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 100% 8px,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 8' preserveAspectRatio='none'><path d='M999 3.6C700 4.8 300 2.6 1.4 4.4' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/></svg>") 0 100% / 100% 8px,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 1000' preserveAspectRatio='none'><path d='M4.4 999C3.2 700 5 300 3.8 1.6' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 8px 100%,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 1000' preserveAspectRatio='none'><path d='M3.6 1.2C4.8 300 2.6 700 4.1 998.6' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-dasharray='5 4' vector-effect='non-scaling-stroke'/></svg>") 100% 0 / 8px 100%; }
+
+/* Ledger / Notebook switch in every folio head */
+.folio-head { align-items: center; }
+.folio-head .nb-views { margin: -4px 0 -4px 16px; }
+@media (max-width: 600px) { .folio-head { flex-wrap: wrap; row-gap: 8px; } .folio-head .nb-views { margin: 0 0 0 auto; } .nb-views button { min-height: 32px; } }
+#folioDate, #volTax .folio-head > .lbl:last-of-type, #volSettings .folio-head > .lbl:last-of-type { margin-left: auto; }
+.nb-views { display: inline-flex; border: 1px solid var(--btn-edge); border-bottom-width: 2px; border-radius: 9px; overflow: hidden; }
+.nb-views button { font: 500 10.5px var(--mono) !important; letter-spacing: .08em; text-transform: uppercase; background: var(--btn-face) !important; color: var(--text-2) !important;
+  border: 0 !important; border-left: 1px solid var(--btn-edge) !important; padding: 6px 11px 5px !important; cursor: pointer; border-radius: 0 !important; }
+.nb-views button::after { display: none !important; }
+.nb-views button:first-child { border-left: 0 !important; }
+.nb-views button[aria-pressed="true"] { background: var(--text) !important; color: var(--surface) !important; box-shadow: inset 0 -3px 0 var(--accent) !important; }
+
+/* ── type: handwriting on titles and short notes only; long text stays Sitka ── */
+:root.nb :is(#volMoney, #volTax, #volSettings) :is(h1, h2, h3):not(.folio-head *):not(#tx-tab-cpa *) {
+  font-family: var(--hand) !important; font-style: normal !important; font-weight: 400 !important; letter-spacing: 0 !important; }
+:root.nb :is(#volMoney, #volTax) :is(.margin .note, .ann:not(text)) { font-family: var(--hand); font-style: normal; }
+/* chart annotations are handwritten too, except on a phone: the hand font's tall line box would make close labels collide */
+@media (min-width: 601px) { :root.nb :is(#volMoney, #volTax) text.ann { font-family: var(--hand); font-style: normal; } }
+/* notes get room to breathe; chart annotations (svg text) keep their size so they don't collide */
+:root.nb :is(#volMoney, #volTax) :is(.margin .note, .ann:not(text)) { font-size: 13.5px; line-height: 1.6; }
+:root.nb :is(#volMoney, #volTax, #volSettings) .nbn { font-family: var(--mono); font-size: .88em; font-variant-numeric: tabular-nums; }
+:root.nb #volMoney .opening h1 em { font-style: normal; }
+
+/* ── heading icons ── */
+.nbico { width: 1.05em; height: 1.05em; vertical-align: -.14em; margin-right: .42em; flex: none; display: none; }
+.nbico * { fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+:root.nb .nbico { display: inline-block; filter: url(#nbwob); }
+
+/* ── hand-drawn boxes instead of the top rule ── */
+:root.nb :is(#volMoney, #volTax, #volSettings) :is(.card, .kpi):not(.card .card):not(.memo):not(.nb-skip):not(#tx-tab-cpa *) {
+  position: relative; border-top: 0 !important; padding: 16px 18px 14px !important; margin-bottom: 18px; }
+:root.nb :is(#volMoney, #volTax, #volSettings) :is(.card, .kpi):not(.card .card):not(.memo):not(.nb-skip):not(#tx-tab-cpa *)::after {
+  content: ""; position: absolute; inset: -3px; pointer-events: none; background: var(--text); -webkit-mask: var(--nb-box); mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; mask: var(--nb-box); mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; }
+:root.nb :is(#volMoney, #volTax) .g-kpi { gap: 12px; border: 0; }
+:root.nb :is(#volMoney, #volTax) .g-kpi > .card.kpi { border-left: 0 !important; background: none !important; }
+:root.nb :is(#volMoney, #volTax) .kpi .value { font-family: var(--mono); font-size: 30px; }
+:root.nb :is(#volMoney, #volTax) .notice { border-left: 0; position: relative; border-radius: 6px; }
+:root.nb :is(#volMoney, #volTax) .notice::after { content: ""; position: absolute; inset: -3px; background: var(--accent); -webkit-mask: var(--nb-box-dash); mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; mask: var(--nb-box-dash); mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; pointer-events: none; }
+:root.nb :is(#volMoney, #volTax) .block-head { border-bottom-color: transparent; position: relative; }
+/* a drawn rule under section heads: one pen stroke stretched to the width (a wobble filter breaks a line this thin into steps) */
+:root.nb :is(#volMoney, #volTax) .block-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 6px; pointer-events: none; background: var(--text);
+  -webkit-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 6' preserveAspectRatio='none'><path d='M1 3.4C60 2.3 112 4.3 170 3.2S288 2.1 338 3.7 399 2.6 399 2.6' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 100% 100% no-repeat; mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 6' preserveAspectRatio='none'><path d='M1 3.4C60 2.3 112 4.3 170 3.2S288 2.1 338 3.7 399 2.6 399 2.6' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 100% 100% no-repeat; }
+:root.nb :is(#volMoney, #volTax) table.data :is(td, th) { border-bottom-color: transparent !important; background-image: linear-gradient(var(--line), var(--line)); background-size: 100% 1px; background-position: 0 100%; background-repeat: no-repeat; }
+
+/* ── soft rounded sketch buttons (tabs, chips and tiny icon buttons keep their own look) ── */
+:root.nb :is(#volMoney, #volTax, #volSettings, .rail-foot) button:not([role="tab"]):not(.linkish):not(.go):not(.rm):not(.xun):not(.stnav):not(.fold):not([data-txm]):not(.chips button):not(.nb-views button):not(.stviews button):not(.jar):not(.nbst button) {
+  border-radius: 10px; position: relative; border-color: transparent !important; }
+:root.nb :is(#volMoney, #volTax, #volSettings, .rail-foot) button:not([role="tab"]):not(.linkish):not(.go):not(.rm):not(.xun):not(.stnav):not(.fold):not([data-txm]):not(.chips button):not(.nb-views button):not(.stviews button):not(.jar):not(.nbst button)::after {
+  content: ""; position: absolute; inset: -1px; border: 1.5px solid var(--btn-edge); border-bottom-width: 2.2px; border-radius: 11px 9px 12px 10px / 10px 12px 9px 11px; pointer-events: none; }
+:root.nb :is(#volMoney, #volTax, #volSettings, .rail-foot) button.primary::after { border-color: var(--text); }
+:root.nb :is(#volMoney, #volTax, #volSettings, .rail-foot) button.ghost::after { border-style: dashed; border-bottom-width: 1.5px; }
+:root.nb :is(#volMoney, #volTax, #volSettings, .rail-foot) button.danger::after { border-color: var(--critical); }
+:root.nb .stviews, :root.nb .chips button, :root.nb .stnav, :root.nb .tx-jump button { border-radius: 9px !important; }
+:root.nb .stviews { overflow: hidden; }
+:root.nb :is(#volMoney, #volTax) :is(input:not([type=checkbox]):not([type=radio]), textarea) { border-radius: 7px !important; }
+
+/* ── charts: hand-drawn marks and pencil-shaded fills (the calendar has its own scrapbook rules below) ── */
+:root.nb :is(#volMoney, #volTax) svg.chart :is(rect:not([fill="transparent"]), polygon, path[fill^="var("]) { filter: url(#nbsketchsvg); }
+:root.nb :is(#volMoney, #volTax) svg.chart :is(circle, ellipse) { filter: url(#nbwob); }
+:root.nb :is(#volMoney, #volTax) svg.chart :is(path:not([fill^="var("]), line, polyline) { filter: url(#nbwob); }
+:root.nb :is(#volMoney, #volTax) :is(.card, .block) [style*="width:"][style*="background"]:not(.cal *):not(.day):not(.legend *),
+:root.nb #volMoney :is(.units i:not(.u), .unit-key .sw),
+:root.nb :is(#volMoney, #volTax) :is(.road-bar, .runway div > i, .bar > i, .yrs .div i, .rail-steps .fill) { filter: url(#nbsketch); }
+:root.nb :is(#volMoney, #volTax) .road-bar, :root.nb #volMoney .runway div { border-radius: 4px 2px 5px 3px; }
+:root.nb :is(#volMoney, #volTax) .steps li::before { background: none !important; color: var(--accent) !important; border: 1.6px solid var(--accent); border-radius: 50%; filter: url(#nbwob); }
+
+/* ── Where your money went: picker + the two notebook views (Illustrated, Jars) ── */
+.nb-flowpick { display: none; margin: 4px 0 14px; }
+:root.nb .nb-flowpick { display: inline-flex; }
+:root.nb .flow-hide { display: none !important; }
+#nbFlow { display: none; position: relative; }
+:root.nb #nbFlow.on { display: block; }
+#nbFlow .head { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; margin: 0 0 16px; font: 400 15px var(--serif); color: var(--text-2); }
+#nbFlow .head b { font: 500 15px var(--mono); color: var(--text); }
+/* each jar spans four shared rows, so names that wrap don't knock a row's figures out of line */
+#nbFlow .jars { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 0 14px; }
+#nbFlow .jar { all: unset; box-sizing: border-box; display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 2px; align-items: start; justify-items: center; margin-bottom: 18px; cursor: pointer; padding: 6px 4px 8px; border-radius: 10px; text-align: center; }
+#nbFlow .jar:hover, #nbFlow .jar:focus-visible { background: var(--foil-wash); }
+#nbFlow .jar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#nbFlow .jar svg { width: 84px; height: 104px; overflow: visible; }
+#nbFlow .jar .nm { font: 400 14.5px/1.2 var(--hand); color: var(--text); }
+#nbFlow .jar .fg { font: 500 12px var(--mono); color: var(--text-2); }
+#nbFlow .jar .st { font: 400 13px var(--serif); }
+#nbFlow .jar .st.over { color: var(--critical-text); }
+#nbFlow .jar .st.left { color: var(--good-text); }
+#nbFlow .jar .st.none { color: var(--muted); }
+#nbFlow .jar .drip * { fill: none; stroke: var(--s2); stroke-width: 2.4; stroke-linecap: round; filter: url(#nbwob); }
+#nbFlow .jar .heap { stroke: var(--s2); stroke-width: 1.8; filter: url(#nbwob); }
+#nbFlow .jar .drip path + path { fill: var(--s2); stroke-width: 1; }
+#nbFlow .fnote { margin: 14px 0 0; font: 400 13.5px var(--serif); color: var(--muted); }
+/* Illustrated: cute cartoon infographic. Line work in Ink, fills are light washes of each card's
+   series colour; pointing at a card or its slice lights both up and dims the rest */
+#nbFlow .ill { position: relative; }
+#nbFlow .ill svg :is(.b, .w) { fill: color-mix(in srgb, var(--c, var(--accent)) 26%, var(--surface)); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+#nbFlow .ill svg .w { fill: var(--text); }
+#nbFlow .ill svg .ln { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#nbFlow .ill svg .ln.c { stroke: var(--c, var(--accent)); }
+#nbFlow .ill svg .c.f { fill: var(--c, var(--accent)); stroke: var(--text); stroke-width: 1.6; stroke-linejoin: round; }
+#nbFlow .ill svg .face circle, #nbFlow .ill svg .face path { fill: var(--text); stroke: none; }
+#nbFlow .ill svg .face path { fill: none; stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
+#nbFlow .ill svg .face .blush { fill: color-mix(in srgb, var(--s5) 45%, transparent); stroke: none; }
+#nbFlow .ill svg .drop { fill: color-mix(in srgb, var(--s1) 35%, var(--surface)); stroke: var(--text); stroke-width: 1.4; }
+#nbFlow .ill svg .spark { fill: var(--s4); stroke: none; }
+#nbFlow .ill svg .coin { fill: color-mix(in srgb, var(--s4) 55%, var(--surface)); stroke: var(--text); stroke-width: 1.6; }
+#nbFlow .ill svg .flap { fill: var(--accent); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+#nbFlow .ill svg :is(.b, .ln, .c.f, .flap, .coin) { filter: url(#nbwob); }
+/* pay cheque mascot and its tag */
+#nbFlow .ill-top { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; margin: 4px 0 6px; }
+#nbFlow .mascot { width: 150px; height: 120px; overflow: visible; }
+#nbFlow .ill-pay { position: relative; display: grid; gap: 2px; padding: 16px 20px 12px; background: var(--surface-2); transform: rotate(-1.2deg); max-width: 300px; }
+#nbFlow .ill-pay::after { content: ""; position: absolute; inset: -3px; background: var(--text); pointer-events: none; -webkit-mask: var(--nb-box); mask: var(--nb-box); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+#nbFlow .ill-pay .tape { position: absolute; top: -9px; left: 50%; width: 64px; height: 16px; margin-left: -32px; background: var(--foil-wash); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); transform: rotate(-3deg); }
+#nbFlow .ill-pay .k { font: 400 17px var(--hand); color: var(--text); }
+#nbFlow .ill-pay > b { font: 500 32px/1.1 var(--mono); color: var(--text); letter-spacing: -.02em; }
+#nbFlow .ill-pay .src, #nbFlow .ill-pay .dip { font: 400 13.5px/1.4 var(--serif); color: var(--text-2); }
+#nbFlow .ill-pay .dip b { font: 500 13px var(--mono); color: var(--critical-text); }
+/* the dollar bar: one hatched slice per card */
+#nbFlow .ill-k { margin: 14px 0 6px; font: 400 16px var(--hand); color: var(--text); }
+#nbFlow .ill-bar { display: flex; height: 30px; gap: 2px; }
+#nbFlow .ill-bar .seg { position: relative; display: block; cursor: pointer; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1.5px var(--c);
+  background: repeating-linear-gradient(-45deg, var(--c) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--c) 22%, transparent); transition: opacity .18s, transform .18s; }
+#nbFlow .ill-arrow { display: block; width: 200px; height: 40px; margin: 2px 0 6px 18%; overflow: visible; }
+#nbFlow .ill-arrow path { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 4 5; filter: url(#nbwob); }
+#nbFlow .ill-arrow path + path { stroke-dasharray: none; }
+/* the cards */
+#nbFlow .ill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(146px, 1fr)); gap: 18px 14px; }
+#nbFlow .ill-card { all: unset; box-sizing: border-box; position: relative; display: grid; justify-items: center; align-content: start; gap: 2px; padding: 12px 8px 12px; cursor: default; text-align: center;
+  background: color-mix(in srgb, var(--c) 7%, var(--surface)); border-radius: 12px 9px 13px 10px / 10px 13px 9px 12px; transform: rotate(var(--r));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c) 55%, transparent); transition: transform .2s var(--ease, ease), box-shadow .2s, background .2s, opacity .2s; }
+#nbFlow .ill-card[data-open] { cursor: pointer; }
+#nbFlow .ill-card .art { width: 64px; height: 64px; overflow: visible; transform-origin: 50% 90%; }
+#nbFlow .ill-card .nm { font: 400 15px/1.2 var(--hand); color: var(--text); }
+#nbFlow .ill-card .fg { font: 500 15px var(--mono); color: var(--text); }
+#nbFlow .ill-card .pc { font: 400 12.5px var(--serif); color: var(--text-2); }
+#nbFlow .ill-card .stk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; padding: 1px 8px 1px 4px; font: 500 11.5px var(--mono); border-radius: 10px; background: var(--surface); }
+#nbFlow .ill-card .stk svg { width: 15px; height: 15px; }
+#nbFlow .ill-card .stk svg circle { fill: none; stroke: currentColor; stroke-width: 1.4; }
+#nbFlow .ill-card .stk svg .e { fill: currentColor; stroke: none; }
+#nbFlow .ill-card .stk svg path { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+#nbFlow .ill-card .stk.over { color: var(--critical-text); }
+#nbFlow .ill-card .stk.ok { color: var(--good-text); }
+/* light up: the pointed-at card and slice glow in their colour, the art gives a little wiggle, the rest step back */
+#nbFlow .ill.focus :is(.ill-card, .seg):not(.on) { opacity: .42; }
+#nbFlow .ill-card.on { transform: rotate(0) translateY(-4px) scale(1.04); background: color-mix(in srgb, var(--c) 18%, var(--surface));
+  box-shadow: inset 0 0 0 2px var(--c), 0 0 0 4px color-mix(in srgb, var(--c) 24%, transparent), 0 14px 24px -14px var(--c); z-index: 1; }
+#nbFlow .ill-card.on .art { animation: nb-wiggle .6s ease-in-out; }
+#nbFlow .ill-bar .seg.on { transform: scaleY(1.25); box-shadow: inset 0 0 0 2px var(--c), 0 0 0 3px color-mix(in srgb, var(--c) 28%, transparent); }
+#nbFlow .ill-card:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; }
+#nbFlow .ill-note b { font: 500 13px var(--mono); color: var(--text); }
+#nbFlow .ill-note b.over { color: var(--critical-text); }
+#nbFlow .ill-note b.left { color: var(--good-text); }
+@keyframes nb-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-7deg) translateY(-2px); } 60% { transform: rotate(6deg); } }
+@media (prefers-reduced-motion: reduce) { #nbFlow .ill-card, #nbFlow .ill-bar .seg { transition: none; } #nbFlow .ill-card.on .art { animation: none; } }
+@media (max-width: 600px) {
+  #nbFlow .ill-grid { grid-template-columns: repeat(2, 1fr); gap: 14px 10px; }
+  #nbFlow .mascot { width: 116px; height: 92px; }
+  #nbFlow .ill-arrow { margin-left: 4%; }
+}
+
+/* ── day-by-day calendar, scrapbook style: pencil shading instead of solid squares.
+   More spending = denser shading; figures stay mono on a paper tag so they read on any shade ── */
+:root.nb #volMoney .cal { gap: 6px; }
+:root.nb #volMoney .cal .day:not(.pad) { background: none; color: var(--text-2); transform: rotate(var(--tilt, -.35deg)); }
+:root.nb #volMoney .cal .day:not(.pad):nth-child(even) { --tilt: .3deg; }
+:root.nb #volMoney .cal .day:not(.pad):nth-child(3n) { --tilt: -.15deg; }
+:root.nb #volMoney .cal .day:not(.pad):hover { transform: rotate(0) translateY(-2px); box-shadow: 0 8px 16px -10px rgba(0,0,0,.45); }
+:root.nb #volMoney .cal .day:not(.pad)::before { content: ""; position: absolute; inset: -2px; pointer-events: none; background: color-mix(in srgb, var(--text) 62%, transparent); -webkit-mask: var(--nb-box); mask: var(--nb-box); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+:root.nb #volMoney .cal .day.zero { box-shadow: none; }
+:root.nb #volMoney .cal .day.zero::before { -webkit-mask: var(--nb-box-dash); mask: var(--nb-box-dash); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; background: var(--muted); }
+:root.nb #volMoney .cal .day.l1 { background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent) 55%, transparent) 0 1.2px, transparent 1.2px 9px); }
+:root.nb #volMoney .cal .day.l2 { background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent) 80%, transparent) 0 1.5px, transparent 1.5px 5.5px); }
+:root.nb #volMoney .cal .day.l3 { background: repeating-linear-gradient(-45deg, var(--accent) 0 1.6px, transparent 1.6px 5px), repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 70%, transparent) 0 1.2px, transparent 1.2px 7px); }
+:root.nb #volMoney .cal .day.l4 { background: repeating-linear-gradient(-45deg, var(--accent) 0 2px, transparent 2px 4.5px), repeating-linear-gradient(45deg, var(--accent) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--accent) 22%, transparent); }
+:root.nb #volMoney .cal .day.rent { background: repeating-linear-gradient(-45deg, var(--text) 0 2px, transparent 2px 4.5px), repeating-linear-gradient(45deg, color-mix(in srgb, var(--text) 80%, transparent) 0 1.4px, transparent 1.4px 5px); }
+:root.nb #volMoney .cal .day:not(.pad) > span { position: relative; align-self: flex-start; background: var(--surface); color: var(--text-2); padding: 0 3px; border-radius: 3px; line-height: 1.45; }
+:root.nb #volMoney .cal .day:not(.pad) > .amt { align-self: flex-end; color: var(--text); font-weight: 500; }
+:root.nb #volMoney .cal .day.zero > span { background: none; }
+:root.nb #volMoney .cal .day.zero > .amt { color: var(--muted); font-weight: 400; }
+/* payday: a little hand-drawn stamp */
+:root.nb #volMoney .cal .day.pay::after { content: "PAY"; top: 5px; right: 5px; padding: 1px 5px; font: 600 8.5px var(--mono); letter-spacing: .08em; color: var(--good-text) !important; background: var(--surface); border: 1.3px solid var(--good-text); border-radius: 50% 45% 52% 48%; transform: rotate(-8deg); }
+/* on a phone the stamp would cover the date, so payday becomes a green dot (the key shows the same dot) */
+@media (max-width: 600px) {
+  :root.nb #volMoney .cal .day.pay::after { content: ""; width: 8px; height: 8px; padding: 0; top: 5px; right: 5px; border: 0; background: var(--good-text); transform: none; }
+  :root.nb #volMoney .cal-key b::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 4px; border-radius: 50%; background: var(--good-text); }
+}
+/* the key below the calendar uses the same shading */
+:root.nb #volMoney .cal-key span { position: relative; width: 16px; height: 12px; border-radius: 2px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 45%, transparent); }
+:root.nb #volMoney .cal-key span:nth-of-type(1) { background: none !important; }
+:root.nb #volMoney .cal-key span:nth-of-type(2) { background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent) 55%, transparent) 0 1.2px, transparent 1.2px 6px) !important; }
+:root.nb #volMoney .cal-key span:nth-of-type(3) { background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--accent) 80%, transparent) 0 1.5px, transparent 1.5px 4px) !important; }
+:root.nb #volMoney .cal-key span:nth-of-type(4) { background: repeating-linear-gradient(-45deg, var(--accent) 0 1.6px, transparent 1.6px 4px), repeating-linear-gradient(45deg, var(--accent) 0 1.2px, transparent 1.2px 5px) !important; }
+:root.nb #volMoney .cal-key span:nth-of-type(5) { background: repeating-linear-gradient(-45deg, var(--accent) 0 2px, transparent 2px 3.5px), repeating-linear-gradient(45deg, var(--accent) 0 1.6px, transparent 1.6px 4px), color-mix(in srgb, var(--accent) 22%, transparent) !important; }
+:root.nb #volMoney .cal-key span:nth-of-type(6) { background: repeating-linear-gradient(-45deg, var(--text) 0 2px, transparent 2px 3.5px), repeating-linear-gradient(45deg, var(--text) 0 1.4px, transparent 1.4px 4px) !important; }
+
+/* ── rule cards (e.g. What usually applies to pilots) as sticky notes ── */
+:root.nb #volTax .rules:not([style*="1fr"]) { gap: 22px 18px; margin-top: 14px; align-items: start; }
+:root.nb #volTax .rules:not([style*="1fr"]) > div { position: relative; padding: 18px 16px 14px; font: 400 14px/1.55 var(--serif); color: var(--text-2); transform: rotate(var(--r, -.7deg)); }
+:root.nb #volTax .rules:not([style*="1fr"]) > div:nth-child(3n+2) { --r: .6deg; --tp: var(--s2); }
+:root.nb #volTax .rules:not([style*="1fr"]) > div:nth-child(3n) { --r: -.3deg; --tp: var(--s4); }
+:root.nb #volTax .rules:not([style*="1fr"]) > div::before { content: ""; position: absolute; inset: 6px 5px 4px 7px; z-index: -1; background: var(--surface-2); border-radius: 3px; transform: rotate(.5deg); }
+:root.nb #volTax .rules:not([style*="1fr"]) > div::after { content: ""; position: absolute; top: -9px; left: 50%; width: 62px; height: 16px; margin-left: -31px; background: color-mix(in srgb, var(--tp, var(--accent)) 22%, transparent); border: 1px solid color-mix(in srgb, var(--tp, var(--accent)) 45%, transparent); transform: rotate(-3deg); }
+:root.nb #volTax .rules:not([style*="1fr"]) > div { isolation: isolate; }
+:root.nb #volTax .rules:not([style*="1fr"]) > div > b { font: 400 17px/1.3 var(--hand); color: var(--text); margin-bottom: 6px; }
+
+/* ── Advisor's review, notebook page ── */
+:root.nb #volMoney #memo { display: none; }
+#nbMemo { display: none; }
+:root.nb #volMoney #nbMemo { display: block; }
+#nbMemo { color: var(--text); }
+#nbMemo .lh { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid var(--text); }
+#nbMemo .lh h2 { font: 400 30px/1.1 var(--hand); margin: 0; }
+#nbMemo .summary { font: 400 17px/1.6 var(--serif); margin: 18px 0 4px; max-width: 70ch; }
+#nbMemo .num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: .9em; }
+#nbMemo .big { font: 500 34px/1 var(--mono); letter-spacing: -.02em; }
+#nbMemo .sec { margin-top: 28px; }
+#nbMemo .h3 { font: 400 22px/1.2 var(--hand); margin: 0 0 10px; display: flex; align-items: center; }
+#nbMemo .badge { display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: 10px; font: 500 13px var(--mono); color: var(--accent); position: relative; flex: none; background: none; border: 0; padding: 0; }
+#nbMemo .badge::before { content: ""; position: absolute; inset: 0; border: 1.6px solid var(--accent); border-radius: 50%; filter: url(#nbwob); }
+#nbMemo .hb { position: relative; padding: 16px 18px 14px; }
+#nbMemo .hb > .edge { position: absolute; inset: -3px; background: var(--text); -webkit-mask: var(--nb-box); mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; mask: var(--nb-box); mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; pointer-events: none; }
+#nbMemo .hb > .wash { position: absolute; inset: 6px 7px 5px 5px; background: var(--surface-2); transform: rotate(-.4deg); pointer-events: none; border-radius: 4px; }
+#nbMemo .hb.tinted > .wash { background: var(--foil-wash); }
+#nbMemo .hb > :not(.edge):not(.wash):not(.tape) { position: relative; }
+#nbMemo .grid-a { display: grid; grid-template-columns: 1.2fr 1fr; gap: 26px; margin-top: 22px; align-items: start; }
+#nbMemo .note { font: 400 15.5px/1.5 var(--serif); }
+#nbMemo .quiet { font: 400 14px/1.5 var(--serif); color: var(--text-2); }
+#nbMemo .hbar { display: flex; height: 46px; margin: 14px 0 10px; }
+#nbMemo .hbar i { display: block; height: 100%; position: relative; filter: url(#nbpencil); }
+#nbMemo .hbar i::after { content: ""; position: absolute; inset: 0; border: 1.6px solid var(--text); border-left-width: 0; filter: url(#nbwob); }
+#nbMemo .hbar i:first-child::after { border-left-width: 1.6px; }
+#nbMemo .hatch { background-image: repeating-linear-gradient(-45deg, transparent 0 5px, var(--c2) 5px 6.5px); }
+#nbMemo .legend { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px 18px; font: 400 14px var(--serif); }
+#nbMemo .legend > span { display: flex; align-items: center; gap: 8px; }
+#nbMemo .legend > span::before { content: ""; width: 15px; height: 11px; background: var(--c); border: 1.4px solid var(--text); flex: none; border-radius: 2px; }
+#nbMemo .legend > span.h::before { background: repeating-linear-gradient(-45deg, var(--c) 0 3px, transparent 3px 5px); }
+#nbMemo .legend .num { margin-left: auto; font-size: 13px; }
+#nbMemo .steps-nb { display: grid; gap: 8px; }
+#nbMemo .step .row { display: flex; gap: 12px; align-items: flex-start; }
+#nbMemo .doodle { width: 40px; height: 40px; flex: none; }
+#nbMemo .doodle * { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#nbMemo .down { display: block; margin: 0 auto; width: 30px; height: 20px; }
+#nbMemo .down * { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; }
+#nbMemo .checks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+#nbMemo .chk { text-align: center; padding: 12px 10px; }
+#nbMemo .chk svg.face { width: 26px; height: 26px; display: block; margin: 0 auto 2px; filter: url(#nbwob); }
+#nbMemo .chk svg.face * { fill: none; stroke: var(--st); stroke-width: 1.8; stroke-linecap: round; }
+#nbMemo .chk .k { font: 400 14px var(--serif); color: var(--text-2); }
+#nbMemo .chk .v { font: 500 22px/1.2 var(--mono); margin: 2px 0; }
+#nbMemo .chk .aim { font: 400 13px var(--serif); color: var(--muted); }
+#nbMemo .chk .st { display: inline-block; margin-top: 6px; font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: color-mix(in srgb, var(--st) 60%, var(--text)); }
+#nbMemo .heads { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 16px; }
+#nbMemo .sticky { transform: rotate(var(--r, -.8deg)); }
+#nbMemo .sticky .tape { position: absolute; top: -9px; left: 50%; width: 64px; height: 16px; margin-left: -32px; background: color-mix(in srgb, var(--st) 22%, transparent); border: 1px solid color-mix(in srgb, var(--st) 45%, transparent); transform: rotate(-3deg); }
+#nbMemo .sticky .sev { display: flex; align-items: center; gap: 6px; font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: color-mix(in srgb, var(--st) 60%, var(--text)); }
+#nbMemo .sticky .sev svg { width: 15px; height: 15px; flex: none; }
+#nbMemo .sticky .sev svg * { fill: none; stroke: var(--st); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#nbMemo .sticky h4 { font: 400 17px/1.3 var(--hand); margin: 4px 0 6px; }
+#nbMemo .sticky p { font: 400 14px/1.55 var(--serif); margin: 0; color: var(--text-2); }
+#nbMemo .grp { font: 500 10.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 18px 0 10px; }
+#nbMemo .foot { margin-top: 26px; padding-top: 10px; border-top: 1px solid var(--line); font: 400 11px/1.6 var(--mono); color: var(--muted); }
+@media (max-width: 760px) {
+  :root.nb :is(#volMoney, #volTax, #volSettings) :is(.card, .kpi):not(.card .card):not(.memo):not(.nb-skip):not(#tx-tab-cpa *) { padding: 14px 10px 12px !important; }
+  :root.nb #volMoney div:not(.card):has(> table.data:only-child) { overflow-x: auto; }
+  #nbMemo .grid-a, #nbMemo .heads { grid-template-columns: 1fr; }
+  #nbMemo .checks { grid-template-columns: repeat(2, 1fr); }
+  #nbMemo .legend { grid-template-columns: 1fr; }
+  #nbFlow .jars { grid-template-columns: repeat(3, 1fr); gap: 0 6px; }
+  #nbFlow .jar svg { width: 62px; height: 77px; }
+  #nbFlow .jar .nm { font-size: 13px; }
+  #nbFlow .jar .fg { font-size: 10.5px; }
+  #nbFlow .jar .st { font-size: 12px; }
+}
+
+/* ── Statements: compact sketched cards (owner chose the v2 mockup, 2026-10-13). notebook.js → st ── */
+:root.nb .nbst-hide { display: none !important; }
+.nbst, .nbst-mascot { display: none; }
+:root.nb .nbst.on { display: block; }
+:root.nb .nbst-card { position: relative; }
+:root.nb .nbst-card > .nbst-mascot { display: block; position: absolute; top: 12px; right: 14px; width: 62px; height: 50px; overflow: visible; pointer-events: none; }
+:root.nb .nbst-card > h2, :root.nb .nbst-card > .desc { padding-right: 74px; }
+.nbst :is(.b, .w), .nbst-mascot :is(.b, .w) { fill: color-mix(in srgb, var(--c, var(--accent)) 26%, var(--surface)); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.nbst .w { fill: var(--text); }
+.nbst .ln, .nbst-mascot .ln { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nbst .ln.c { stroke: var(--c, var(--accent)); }
+.nbst .c.f { fill: var(--c, var(--accent)); stroke: var(--text); stroke-width: 1.6; stroke-linejoin: round; }
+.nbst .face circle, .nbst-mascot .face circle { fill: var(--text); stroke: none; }
+.nbst .face path, .nbst-mascot .face path { fill: none; stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
+.nbst .ic .face path, .nbst-cc .face path { stroke-width: 2.4; }
+.nbst .face .blush, .nbst-mascot .face .blush { fill: color-mix(in srgb, var(--s5) 45%, transparent); stroke: none; }
+.nbst .drop { fill: color-mix(in srgb, var(--s1) 35%, var(--surface)); stroke: var(--text); stroke-width: 1.4; }
+.nbst .spark, .nbst-mascot .spark { fill: var(--s4); stroke: none; }
+.nbst-mascot .coin { fill: color-mix(in srgb, var(--s4) 55%, var(--surface)); stroke: var(--text); stroke-width: 1.6; }
+.nbst-mascot .flap { fill: var(--accent); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.nbst :is(.b, .ln, .c.f), .nbst-mascot :is(.b, .ln, .flap, .coin) { filter: url(#nbwob); }
+.nbst .over { color: var(--critical-text); } .nbst .good { color: var(--good-text); } .nbst .warn { color: color-mix(in srgb, var(--warning) 60%, var(--text)); }
+.nbst-say { margin: 10px 0 12px; font: 400 15.5px/1.5 var(--hand); color: var(--text); }
+.nbst-say b { font: 600 15px var(--mono); }
+.nbst-foot { margin: 10px 0 0; font: 400 13px/1.5 var(--serif); color: var(--muted); }
+.nbst-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 10px 0 0; padding: 0; list-style: none; font: 400 13px var(--hand); color: var(--text-2); }
+.nbst-legend li { display: flex; align-items: center; gap: 6px; }
+.nbst-legend .sw { width: 20px; height: 11px; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1.4px var(--c);
+  background: repeating-linear-gradient(-45deg, var(--c) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--c) 22%, transparent); }
+.nbst-legend .sw.dash { width: 0; height: 14px; box-shadow: none; background: none; border-left: 2px dashed var(--text); }
+.nbst-k { font: 600 12px var(--mono); color: var(--good-text); }
+/* rows: a small cartoon, the name, a hatched bar, the figure */
+.nbst-rows { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.nbst-rows .row { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 34px 120px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; min-height: 40px; padding: 2px 6px; border-radius: 8px 6px 9px 7px; }
+.nbst-rows.wide .row { grid-template-columns: 34px minmax(120px, 42%) minmax(0, 1fr) auto; }
+.nbst-rows button.row { cursor: pointer; transition: background-color .15s, transform .15s; }
+.nbst-rows button.row:hover, .nbst-rows button.row:focus-visible { background: color-mix(in srgb, var(--accent) 9%, transparent); transform: translateX(2px); }
+.nbst-rows button.row:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.nbst .ic { width: 34px; height: 34px; overflow: visible; }
+.nbst-rows .nm { min-width: 0; font: 400 14.5px/1.25 var(--hand); color: var(--text); overflow-wrap: anywhere; }
+.nbst-rows .nm small { display: block; font: 400 12px/1.35 var(--serif); color: var(--text-2); }
+.nbst-rows .fig { font: 600 13.5px var(--mono); text-align: right; white-space: nowrap; color: var(--text); }
+.nbst-rows .fig small { display: block; font: 400 12px var(--serif); color: var(--text-2); }
+.nbst-rows .fig small.over { color: var(--critical-text); } .nbst-rows .fig small.good { color: var(--good-text); }
+.nbst .track { position: relative; height: 14px; }
+.nbst :is(.track, .split) .bar { position: absolute; top: 0; bottom: 0; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1.5px var(--c);
+  background: repeating-linear-gradient(-45deg, var(--c) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--c) 22%, transparent); }
+.nbst .track .bar { left: 0; }
+.nbst .track .plan { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--text); }
+.nbst .split { display: grid; grid-template-columns: 1fr 1fr; height: 14px; }
+.nbst .split > span { position: relative; }
+.nbst .split > span:first-child { border-right: 1.6px solid var(--text); }
+.nbst .nbst-pill { display: inline-block; padding: 0 8px; border-radius: 10px 8px 11px 9px; font: 600 12.5px/1.6 var(--mono); box-shadow: inset 0 0 0 1.4px currentColor; }
+.nbst .rank { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 5px; border-radius: 50%; font: 600 11px var(--mono); box-shadow: inset 0 0 0 1.5px var(--accent); vertical-align: 1px; }
+/* the month chart and its sticky notes */
+.nbst-mwrap.notes { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 14px; align-items: start; }
+.nbst-chart { display: block; max-width: 100%; height: auto; overflow: visible; }
+.nbst-chart text { font: 400 11.5px var(--mono); fill: var(--text-2); }
+.nbst-chart text.v { font-weight: 600; } .nbst-chart text.pos { fill: var(--good-text); } .nbst-chart text.neg { fill: var(--critical-text); }
+.nbst-chart text.h { font: 400 13px var(--hand); fill: var(--text); }
+.nbst-chart .axis { stroke: var(--text); stroke-width: 1.6; fill: none; stroke-linecap: round; filter: url(#nbwob); }
+.nbst-chart .cur-line { stroke: var(--accent); stroke-width: 2.2; }
+.nbst-chart .mk { stroke-width: 1.6; filter: url(#nbwob); }
+.nbst-chart .hit { fill: transparent; }
+.nbst-chart g.mo { cursor: pointer; outline: none; }
+.nbst-chart g.mo.part .mk { opacity: .45; }
+.nbst-chart g.mo:is(:hover, :focus-visible) .hit { fill: color-mix(in srgb, var(--accent) 9%, transparent); }
+.nbst-chart g.mo:focus-visible .hit { stroke: var(--accent); stroke-width: 2; }
+.nbst-notes { display: grid; gap: 16px; padding-top: 8px; }
+.nbst .sticky { position: relative; isolation: isolate; margin: 0; padding: 16px 12px 10px; transform: rotate(1.2deg); font: 400 13px/1.45 var(--serif); color: var(--text-2); }
+.nbst .sticky::before { content: ""; position: absolute; inset: 0; z-index: -1; background: color-mix(in srgb, var(--s4) 16%, var(--surface-2)); border-radius: 3px; }
+.nbst .sticky + .sticky { transform: rotate(-.8deg); --tp: var(--s2); }
+.nbst .sticky b { display: block; font: 400 14.5px/1.3 var(--hand); color: var(--text); }
+.nbst .sticky .tape { position: absolute; top: -8px; left: 50%; width: 48px; height: 14px; margin-left: -24px; transform: rotate(-3deg);
+  background: color-mix(in srgb, var(--tp, var(--accent)) 22%, transparent); border: 1px solid color-mix(in srgb, var(--tp, var(--accent)) 45%, transparent); }
+.nbst .sticky.nbst-warn { margin-top: 18px; max-width: 520px; transform: rotate(-.6deg); --tp: var(--critical); }
+.nbst .sticky.nbst-warn::before { background: color-mix(in srgb, var(--critical) 10%, var(--surface-2)); }
+/* credit cards: a month per column with a cartoon card, a mark per card, a stamp */
+.nbst-cc { display: grid; grid-template-columns: minmax(84px, max-content) repeat(var(--n), minmax(0, 1fr)); gap: 6px 8px; align-items: center; text-align: center; margin-top: 6px; }
+.nbst-cc .lab { text-align: left; font: 400 15px var(--hand); color: var(--text); padding-right: 6px; }
+.nbst-cc .mo { display: grid; justify-items: center; font: 400 14px/1.2 var(--hand); color: var(--text); }
+.nbst-cc .mo.cur { text-decoration: underline 2px var(--accent); text-underline-offset: 4px; }
+.nbst-cc .mo svg { width: 46px; height: 46px; overflow: visible; }
+.nbst-cc .cell { all: unset; box-sizing: border-box; display: grid; justify-items: center; min-height: 44px; padding: 2px 0; border-radius: 8px; }
+.nbst-cc button.cell { cursor: pointer; } .nbst-cc button.cell:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--critical) 10%, transparent); }
+.nbst-cc button.cell:focus-visible { outline: 2px solid var(--critical); }
+.nbst-cc .cell svg { width: 30px; height: 30px; overflow: visible; }
+.nbst-cc .cell circle { stroke-width: 1.7; filter: url(#nbwob); }
+.nbst-cc .cell path { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nbst-cc .mk-good circle { fill: color-mix(in srgb, var(--good) 16%, transparent); stroke: var(--good); } .nbst-cc .mk-good path { stroke: var(--good); }
+.nbst-cc .mk-bad circle { fill: color-mix(in srgb, var(--critical) 16%, transparent); stroke: var(--critical); } .nbst-cc .mk-bad path { stroke: var(--critical); }
+.nbst-cc .mk-info circle { fill: color-mix(in srgb, var(--warning) 16%, transparent); stroke: var(--warning); } .nbst-cc .mk-info path { stroke: var(--warning); }
+.nbst-cc .cell .dash { stroke: var(--muted); }
+.nbst-cc .cell small { font: 400 11.5px var(--mono); color: var(--text-2); }
+.nbst-cc .cell small.over { color: var(--critical-text); font-weight: 600; }
+.nbst .stamp { display: inline-block; padding: 1px 6px; font: 700 10px/1.45 var(--mono); letter-spacing: .06em; text-transform: uppercase; transform: rotate(-4deg);
+  border: 1.8px dashed currentColor; border-radius: 4px 3px 5px 3px; white-space: nowrap; }
+.nbst .stamp.good { color: var(--good-text); } .nbst .stamp.bad { color: var(--critical-text); } .nbst .stamp.info { color: color-mix(in srgb, var(--warning) 60%, var(--text)); }
+.nbst-chips { display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.nbst-chips li { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px 3px 8px; border-radius: 12px 9px 13px 10px; font: 400 13.5px var(--hand); color: var(--text);
+  box-shadow: inset 0 0 0 1.4px color-mix(in srgb, var(--text) 45%, transparent); }
+.nbst-chips svg { width: 18px; height: 18px; flex: none; } .nbst-chips svg * { fill: none; stroke: var(--c); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.nbst-chips b { font: 600 13px var(--mono); }
+@media (prefers-reduced-motion: reduce) { .nbst-rows button.row { transition: none; } .nbst-rows button.row:hover { transform: none; } }
+@media (max-width: 600px) {
+  :root.nb .nbst-card > .nbst-mascot { width: 48px; height: 38px; top: 10px; right: 8px; }
+  :root.nb .nbst-card > h2, :root.nb .nbst-card > .desc { padding-right: 54px; }
+  .nbst-rows .row, .nbst-rows.wide .row { grid-template-columns: 30px minmax(0, 1fr) auto; row-gap: 3px; }
+  .nbst .ic { width: 30px; height: 30px; grid-row: span 2; }
+  .nbst-rows :is(.track, .split) { grid-column: 2 / -1; grid-row: 2; }
+  .nbst-cc { grid-template-columns: minmax(64px, max-content) repeat(var(--n), minmax(0, 1fr)); gap: 6px 2px; }
+  .nbst-cc .lab { font-size: 12.5px; }
+  .nbst-cc .mo { font-size: 12px; } .nbst-cc .mo svg { width: 30px; height: 30px; }
+  .nbst-cc .cell small, .nbst-cc .st-row { display: none; }
+}
