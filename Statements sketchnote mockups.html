@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statements sketchnotes</title>
+<style>
+/* Mockups only: the Statements graphs as sketchnote covers. Colours are the My finances Ledger tokens. */
+:root {
+  --bg: #dcd2b8; --surface: #f3eedf; --surface-2: #ebe4d0; --line: #c9bfa5;
+  --text: #1a1a18; --text-2: #4a463b; --muted: #6a6350;
+  --s1: #1b4b5a; --s2: #a04a2a; --s3: #2f6b3f; --s4: #a8812a; --s5: #8a4d6e; --s7: #4b4f7c;
+  --good: #2f6b3f; --bad: #a03a2a;
+  --serif: "Sitka Text", "Sitka Small", Cambria, Georgia, serif;
+  --mono: "Cascadia Mono", "Cascadia Code", Consolas, ui-monospace, monospace;
+  --hand: "Segoe Print", "Ink Free", cursive;
+  --sk-box:
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 8' preserveAspectRatio='none'><path d='M2 4.6C250 3 610 5.6 998 3.4' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 100% 8px,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 8' preserveAspectRatio='none'><path d='M999 3.6C700 4.8 300 2.6 1.4 4.4' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 100% / 100% 8px,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 1000' preserveAspectRatio='none'><path d='M4.4 999C3.2 700 5 300 3.8 1.6' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 8px 100%,
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 1000' preserveAspectRatio='none'><path d='M3.6 1.2C4.8 300 2.6 700 4.1 998.6' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") 100% 0 / 8px 100%;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15140f; --surface: #23201a; --surface-2: #2b2720; --line: #463f33;
+    --text: #efe8d6; --text-2: #cbc2ab; --muted: #9b927b;
+    --s1: #86b9bd; --s2: #e2906a; --s3: #92c69f; --s4: #d8b46a; --s5: #c98fb0; --s7: #9da2d6;
+    --good: #92c69f; --bad: #ee8f7d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15140f; --surface: #23201a; --surface-2: #2b2720; --line: #463f33;
+  --text: #efe8d6; --text-2: #cbc2ab; --muted: #9b927b;
+  --s1: #86b9bd; --s2: #e2906a; --s3: #92c69f; --s4: #d8b46a; --s5: #c98fb0; --s7: #9da2d6;
+  --good: #92c69f; --bad: #ee8f7d;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 15px/1.5 var(--serif); padding: 28px 16px 40px; }
+.drawn { position: relative; }
+.drawn::after { content: ""; position: absolute; inset: -3px; pointer-events: none; background: var(--text);
+  -webkit-mask: var(--sk-box); mask: var(--sk-box); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.mock-k { max-width: 1280px; margin: 0 auto 10px; font: 500 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.page { max-width: 1280px; margin: 0 auto 56px; padding: 34px 36px 26px; background-color: var(--surface);
+  background-image: radial-gradient(color-mix(in srgb, var(--muted) 28%, transparent) 1px, transparent 1.2px); background-size: 22px 22px; }
+.cover { position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 44px 40px; align-items: center; }
+.arrows { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.arrows path { fill: none; stroke: var(--muted); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; filter: url(#skwob); }
+.arrows .trail { stroke-dasharray: 4 6; }
+
+/* hub: a hand-drawn browser window */
+.hub { grid-row: 2; position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; min-width: 0; }
+.win { background: var(--surface); border-radius: 14px 10px 15px 11px / 11px 15px 10px 14px; box-shadow: inset 0 0 0 2.2px var(--text); padding: 0 0 18px; }
+.win .bar { display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-bottom: 2px solid var(--text); }
+.win .dot { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1.6px var(--text); }
+.win .dot:nth-child(1) { background: color-mix(in srgb, var(--s2) 45%, var(--surface)); }
+.win .dot:nth-child(2) { background: color-mix(in srgb, var(--s4) 45%, var(--surface)); }
+.win .dot:nth-child(3) { background: color-mix(in srgb, var(--s3) 45%, var(--surface)); }
+.win .url { flex: 1; min-width: 0; margin-left: 8px; padding: 1px 12px; border-radius: 9px 7px 10px 8px; box-shadow: inset 0 0 0 1.4px color-mix(in srgb, var(--text) 55%, transparent);
+  font: 400 12.5px var(--mono); color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.win .tools { font: 400 14px var(--mono); color: var(--text-2); letter-spacing: 4px; }
+.win .body { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 18px; padding: 16px 26px 0; }
+.win .mascot { grid-row: span 2; width: 104px; height: 84px; overflow: visible; }
+.win h1 { margin: 0; font: 700 31px/1.25 var(--hand); text-wrap: balance; }
+.win .uline { display: block; width: 92%; height: 10px; margin-top: -2px; overflow: visible; }
+.win .uline path { fill: none; stroke: var(--s2); stroke-width: 2.6; stroke-linecap: round; filter: url(#skwob); }
+.win .sub { grid-column: 1 / -1; margin: 6px 0 0; font: 400 16px var(--hand); color: var(--text-2); }
+.win .sub b { font: 600 16.5px var(--mono); color: var(--text); }
+.win .sub b.over { color: var(--bad); } .win .sub b.good { color: var(--good); }
+.win .viz { grid-column: 1 / -1; justify-self: stretch; margin-top: 8px; }
+.win .viz svg { display: block; width: 100%; height: auto; overflow: visible; }
+.viz text { font: 400 11.5px var(--mono); fill: var(--text-2); }
+.viz text.v { fill: var(--text); font-weight: 600; }
+.viz text.h { font: 400 13px var(--hand); fill: var(--text); }
+.viz .axis { stroke: var(--text); stroke-width: 1.6; fill: none; stroke-linecap: round; filter: url(#skwob); }
+.viz .guide { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 4; fill: none; }
+.viz .mk { stroke-width: 1.6; filter: url(#skwob); }
+.dollar { display: flex; gap: 3px; height: 26px; }
+.dollar span { display: block; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1.5px var(--c); background: repeating-linear-gradient(-45deg, var(--c) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--c) 24%, transparent); }
+.dollar-k { display: flex; justify-content: space-between; gap: 10px; margin-top: 3px; font: 400 12px var(--serif); color: var(--text-2); }
+.dollar-k b { font: 600 12px var(--mono); color: var(--text); }
+
+/* icon tiles */
+.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tile { display: grid; justify-items: center; gap: 1px; padding: 10px 4px 9px; text-align: center; background: var(--surface); }
+.tile svg { width: 26px; height: 26px; overflow: visible; }
+.tile svg * { fill: none; stroke: var(--c, var(--s1)); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tile .k { font: 400 13px/1.3 var(--hand); }
+.tile b { font: 600 14px/1.3 var(--mono); }
+
+/* panels */
+.panel { position: relative; z-index: 1; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; align-items: center; padding: 16px 16px 14px 18px;
+  background: color-mix(in srgb, var(--c) 10%, var(--surface)); transform: rotate(var(--r)); }
+.panel .hd { grid-column: 1 / -1; display: flex; align-items: center; gap: 9px; margin-bottom: 4px; }
+.badge { display: grid; place-items: center; flex: none; width: 27px; height: 27px; border-radius: 50%; font: 600 13px var(--mono); box-shadow: inset 0 0 0 1.8px var(--s1); background: var(--surface); }
+.panel .nm { font: 400 19px/1.25 var(--hand); min-width: 0; }
+.panel .art { width: 62px; height: 62px; overflow: visible; }
+.panel .amt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font: 600 22px/1.2 var(--mono); }
+.panel .amt small { font: 400 13px var(--serif); color: var(--text-2); }
+.panel ul { margin: 2px 0 0; padding: 0; list-style: none; font: 400 13.5px/1.45 var(--serif); color: var(--text-2); }
+.panel li::before { content: "✓"; margin-right: 6px; font: 700 13px var(--hand); color: var(--c); }
+.panel li.x::before { content: "✗"; color: var(--bad); }
+.panel li b { font: 600 13px var(--mono); color: var(--text); }
+.panel li b.over { color: var(--bad); } .panel li b.good { color: var(--good); }
+/* extras inside panels */
+.meter { position: relative; display: block; height: 12px; margin: 6px 0 2px; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 25%, transparent); background: color-mix(in srgb, var(--text) 6%, transparent); }
+.meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1.5px var(--c); background: repeating-linear-gradient(-45deg, var(--c) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--c) 24%, transparent); }
+.meter i.over { --c: var(--bad); }
+.meter b { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--text); }
+.delta { display: inline-flex; align-items: center; gap: 4px; padding: 0 9px; border-radius: 11px 9px 12px 10px; font: 600 13.5px/1.6 var(--mono); box-shadow: inset 0 0 0 1.5px currentColor; }
+.delta.good { color: var(--good); } .delta.bad { color: var(--bad); }
+.stamp { justify-self: start; margin-top: 4px; padding: 1px 8px; font: 700 11.5px/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; transform: rotate(-4deg);
+  border: 2px dashed currentColor; border-radius: 4px 3px 5px 3px; }
+.stamp.good { color: var(--good); } .stamp.bad { color: var(--bad); }
+
+/* cartoon objects */
+svg :is(.b, .w) { fill: color-mix(in srgb, var(--c, var(--s1)) 26%, var(--surface)); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+svg .w { fill: var(--text); }
+svg .ln { fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+svg .ln.c { stroke: var(--c, var(--s1)); }
+svg .c.f { fill: var(--c, var(--s1)); stroke: var(--text); stroke-width: 1.6; stroke-linejoin: round; }
+svg .face circle { fill: var(--text); }
+svg .face path { fill: none; stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
+svg .face .blush { fill: color-mix(in srgb, var(--s5) 45%, transparent); }
+svg .drop { fill: color-mix(in srgb, var(--s1) 35%, var(--surface)); stroke: var(--text); stroke-width: 1.4; }
+svg .spark { fill: var(--s4); }
+svg .coin { fill: color-mix(in srgb, var(--s4) 55%, var(--surface)); stroke: var(--text); stroke-width: 1.6; }
+svg .flap { fill: var(--s1); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+svg .lbl { font: 700 9px var(--mono); fill: var(--surface); }
+svg :is(.b, .ln, .c.f, .flap, .coin) { filter: url(#skwob); }
+
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 30px; }
+.sprig { width: 120px; height: 34px; flex: none; overflow: visible; }
+.sprig path { fill: none; stroke: var(--s3); stroke-width: 1.7; stroke-linecap: round; filter: url(#skwob); }
+.sprig .lf { fill: color-mix(in srgb, var(--s3) 30%, var(--surface)); }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; margin: 0; padding: 0; list-style: none; font: 400 15px var(--hand); }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.legend .sw { width: 26px; height: 14px; border-radius: 3px 2px 4px 2px; box-shadow: inset 0 0 0 1.5px var(--c); background: repeating-linear-gradient(-45deg, var(--c) 0 1.6px, transparent 1.6px 5px), color-mix(in srgb, var(--c) 24%, transparent); }
+.legend .sw.dash { box-shadow: none; background: none; border-left: 2px dashed var(--text); width: 2px; }
+.fnote { margin: 10px 0 0; text-align: center; font: italic 400 13px var(--serif); color: var(--muted); }
+
+@media (max-width: 980px) {
+  .cover { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
+  .cover > * { grid-column: auto !important; grid-row: auto !important; }
+  .hub { grid-column: 1 / -1 !important; order: -1; }
+  .arrows { display: none; }
+}
+@media (max-width: 640px) {
+  body { padding: 16px 16px 28px; }
+  .page { padding: 20px 14px 18px; }
+  .cover { grid-template-columns: minmax(0, 1fr); }
+  .win .body { padding: 14px 14px 0; grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .win .mascot { grid-row: auto; width: 90px; height: 72px; }
+  .win h1 { font-size: 25px; } .win .uline { margin: 0 auto; }
+  .win .tools { display: none; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tiles .tile:last-child { grid-column: 1 / -1; }
+  .foot { flex-direction: column; } .sprig { display: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="skwob" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/>
+    <feDisplacementMap in="SourceGraphic" scale="2.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+</svg>
+<div id="root"></div>
+
+<script>
+// ── Sample data for every Statements graph (made up; agrees with the "Where my money goes" mockups:
+// pay $5,000, October spending $3,470, saved $1,180, debt payments $350).
+const GROUPS = {
+  home: { name: "Home", c: "var(--s1)" }, everyday: { name: "Everyday", c: "var(--s4)" }, fun: { name: "Fun", c: "var(--s2)" },
+  debt: { name: "Debt", c: "var(--s5)" }, savings: { name: "Savings", c: "var(--s3)" }
+};
+const CATS = {
+  "Housing": { group: "home", art: "house" }, "Utilities": { group: "home", art: "bulb" },
+  "Groceries": { group: "everyday", art: "bag" }, "Transportation": { group: "everyday", art: "car" },
+  "Dining out": { group: "fun", art: "bowl" }, "Shopping": { group: "fun", art: "shop" },
+  "Debt payments": { group: "debt", art: "card" }, "Saved": { group: "savings", art: "piggy" }
+};
+// Actual vs planned, by category (October)
+const ACTUAL = [
+  { cat: "Housing", actual: 1650, plan: 1650 }, { cat: "Saved", actual: 1180, plan: 1000 },
+  { cat: "Groceries", actual: 620, plan: 550 }, { cat: "Transportation", actual: 420, plan: 450 },
+  { cat: "Debt payments", actual: 350, plan: 350 }, { cat: "Dining out", actual: 310, plan: 200 },
+  { cat: "Shopping", actual: 280, plan: 300 }, { cat: "Utilities", actual: 190, plan: 220 }
+];
+// Money in and out by month
+const MONTHS = [
+  { m: "May", inc: 5000, spend: 3290, debt: 350 }, { m: "Jun", inc: 5000, spend: 3610, debt: 350 },
+  { m: "Jul", inc: 5400, spend: 3980, debt: 350, note: "summer bonus" }, { m: "Aug", inc: 5000, spend: 3350, debt: 350 },
+  { m: "Sep", inc: 5000, spend: 3720, debt: 350 }, { m: "Oct", inc: 5000, spend: 3470, debt: 350 }
+];
+// What changed since last month (September → October), biggest moves first
+const CHANGES = [
+  { cat: "Saved", was: 930, now: 1180 }, { cat: "Dining out", was: 480, now: 310 },
+  { cat: "Shopping", was: 410, now: 280 }, { cat: "Transportation", was: 360, now: 420 },
+  { cat: "Utilities", was: 240, now: 190 }, { cat: "Groceries", was: 580, now: 620 }
+];
+// Where you spent the most (October top merchants)
+const MERCHANTS = [
+  { name: "Maple St. Rentals", amount: 1650, visits: 1, cat: "Housing", art: "house" },
+  { name: "Costco", amount: 310, visits: 2, cat: "Groceries", art: "cart" },
+  { name: "No Frills", amount: 210, visits: 4, cat: "Groceries", art: "bag" },
+  { name: "Petro-Canada", amount: 190, visits: 5, cat: "Transportation", art: "fuel" },
+  { name: "Amazon", amount: 160, visits: 3, cat: "Shopping", art: "box" },
+  { name: "Hydro One", amount: 120, visits: 1, cat: "Utilities", art: "bulb" },
+  { name: "Uber Eats", amount: 96, visits: 4, cat: "Dining out", art: "bowl" },
+  { name: "Tim Hortons", amount: 64, visits: 11, cat: "Dining out", art: "coffee" }
+];
+const MONTH_SPEND = 3470, PLACES = 34, VISITS = 71;
+// Credit cards: paid in full? (interest or fees found on the next statement)
+const CARDS = ["Visa", "Mastercard"];
+const CC = [
+  { m: "May", paid: { Visa: 820, Mastercard: 410 }, interest: {} }, { m: "Jun", paid: { Visa: 905, Mastercard: 380 }, interest: {} },
+  { m: "Jul", paid: { Visa: 1140, Mastercard: 455 }, interest: {} }, { m: "Aug", paid: { Visa: 760, Mastercard: 390 }, interest: {} },
+  { m: "Sep", paid: { Visa: 980, Mastercard: 300 }, interest: { Mastercard: 14.2 } }, { m: "Oct", paid: { Visa: 870, Mastercard: 430 }, interest: {} }
+];
+
+// ── Drawings (64 × 64 cartoons, the app's Illustrated set plus a few new ones)
+const face = (x, y, mood = "") => `<g class="face">${mood === "worry" ? `<path d="M${x - 9} ${y - 4.5}l4.5 -2.2M${x + 9} ${y - 4.5}l-4.5 -2.2"/>` : ""}<circle cx="${x - 6}" cy="${y}" r="1.9"/><circle cx="${x + 6}" cy="${y}" r="1.9"/>` +
+  (mood === "worry" ? `<path d="M${x - 3} ${y + 6}q3 -3 6 0"/>` : `<path d="M${x - 3.2} ${y + 4}q3.2 3 6.4 0"/>`) +
+  `<ellipse class="blush" cx="${x - 10}" cy="${y + 4}" rx="2.6" ry="1.5"/><ellipse class="blush" cx="${x + 10}" cy="${y + 4}" rx="2.6" ry="1.5"/></g>`;
+const ART = {
+  house: m => `<path class="b" d="M13 31 32 14l19 17v22H13z"/><path class="ln c" d="M8 32 32 10l24 22"/><path class="ln" d="M27 53v-7h10v7"/>${face(32, 34, m)}`,
+  bag: m => `<path class="ln c" d="M24 24c-3-6-5-9-4-13M27 24c0-5 2-9 6-11M38 24c2-5 6-8 10-8"/><path class="b" d="M14 24h36l-3 30H17z"/>${face(32, 38, m)}`,
+  bowl: m => `<path class="ln" d="M24 26c-3-4 3-6 0-11M32 26c-3-4 3-6 0-11"/><path class="ln c" d="M40 30 53 11M44 31 57 14"/><path class="b" d="M9 31h46c0 12-10 21-23 21S9 43 9 31z"/>${face(32, 38, m)}`,
+  car: m => `<path class="b" d="M7 44v-8c0-3 2-5 5-5h5l6-10h18l6 10h5c3 0 5 2 5 5v8z"/><path class="ln" d="M24 31l4-6h8l4 6"/><circle class="w" cx="19" cy="46" r="5"/><circle class="w" cx="45" cy="46" r="5"/>${face(32, 37, m)}`,
+  shop: m => `<path class="ln" d="M24 22c0-11 16-11 16 0"/><path class="b" d="M14 22h36l-2 32H16z"/><path class="c f" d="M44 26c-1.5-2.5-5.5-1-4 2l4 3.5 4-3.5c1.5-3-2.5-4.5-4-2z"/>${face(30, 40, m)}`,
+  bulb: m => `<path class="ln c" d="M7 22h-4M61 22h-4M12 8 9 5M52 8l3-3"/><path class="b" d="M32 7c-11 0-18 8-18 17 0 7 5 11 8 15v6h20v-6c3-4 8-8 8-15 0-9-7-17-18-17z"/><path class="ln" d="M24 50h16M26 55h12"/>${face(32, 25, m)}`,
+  card: (m = "worry") => `<rect class="b" x="5" y="17" width="54" height="34" rx="5"/><path class="c f" d="M5 25h54v6H5z"/>${m === "worry" ? `<path class="drop" d="M54 5c-3 4-3 7 0 7s3-3 0-7z"/>` : `<path class="spark" d="M56 4q1 5 6 6q-5 1-6 6q-1-5-6-6q5-1 6-6z"/>`}${face(28, 41, m)}`,
+  piggy: m => `<circle class="c f" cx="34" cy="8" r="4.5"/><path class="b" d="M11 35c0-10 9-17 21-17s21 7 21 16c0 6-3 10-7 12v7h-6v-5H26v5h-6v-7c-5-2-9-6-9-11z"/><path class="ln" d="M53 31l5-2M27 18c1-4 6-5 8-2"/>${face(29, 33, m)}`,
+  box: m => `<path class="b" d="M10 24 32 14l22 10v24L32 58 10 48z"/><path class="ln" d="M10 24l22 10 22-10M32 34v24"/><path class="ln c" d="M17 44c5 3 10 3 13 0"/>${face(21, 38, m)}`,
+  cart: m => `<path class="ln" d="M4 12h8l6 30h30l6-22H15"/><path class="b" d="M16 20h36l-5 18H19z"/><circle class="w" cx="22" cy="50" r="4"/><circle class="w" cx="44" cy="50" r="4"/>${face(34, 28, m)}`,
+  fuel: m => `<path class="b" d="M12 12h26v44H12z"/><path class="c f" d="M17 17h16v9H17z"/><path class="ln" d="M38 24h6l4 6v18c0 3 4 3 4 0V22l-5-6"/>${face(25, 40, m)}`,
+  coffee: m => `<path class="ln c" d="M22 18c-2-3 2-5 0-9M30 18c-2-3 2-5 0-9M38 18c-2-3 2-5 0-9"/><path class="ln" d="M44 30h4c4 0 6 3 6 6s-2 6-6 6h-4"/><path class="b" d="M12 22h32v20c0 7-5 12-12 12h-8c-7 0-12-5-12-12z"/>${face(28, 37, m)}`,
+  cal: (m, label = "") => `<path class="ln" d="M20 8v9M44 8v9"/><rect class="b" x="9" y="13" width="46" height="42" rx="5"/><path class="c f" d="M9 18c0-3 2-5 5-5h36c3 0 5 2 5 5v6H9z"/><text class="lbl" x="32" y="22.5" text-anchor="middle">${label.toUpperCase()}</text>${face(32, 40, m)}`
+};
+const ICON = {
+  coins: `<circle cx="9" cy="14" r="5.5"/><circle cx="15" cy="9" r="5.5"/>`, spent: `<path d="M4 8h16v11H4zM4 11h16"/><path d="M8 15h3"/>`,
+  saved: `<path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 18v2h16v-2"/>`, check: `<path d="M5 12l4 4 10-10"/><path d="M4 20h16"/>`,
+  star: `<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.4 6.8 19.2l1-5.9L3.5 9.2l5.9-.8z"/>`, target: `<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/>`,
+  up: `<path d="M4 17l6-6 4 4 6-7"/><path d="M15 8h5v5"/>`, down: `<path d="M4 7l6 6 4-4 6 7"/><path d="M15 16h5v-5"/>`,
+  cal: `<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>`, store: `<path d="M4 9l2-5h12l2 5M4 9h16v11H4zM10 20v-5h4v5"/>`,
+  walk: `<circle cx="13" cy="4.5" r="1.8"/><path d="M11 21l2-6-3-3 1-4 4 3 3 1M9 12l-3 2"/>`, card: `<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>`,
+  warn: `<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/>`, flame: `<path d="M12 21c-4 0-6-3-6-6 0-4 4-6 4-11 3 2 4 4 4 6 1-1 2-2 2-3 2 2 2 5 2 8 0 3-2 6-6 6z"/>`
+};
+const SPARK = (x, y, s = 1) => `<path class="spark" d="M${x} ${y - 6 * s}q${s} ${5 * s} ${6 * s} ${6 * s}q${-5 * s} ${s} ${-6 * s} ${6 * s}q${-s} ${-5 * s} ${-6 * s} ${-6 * s}q${5 * s} ${-s} ${6 * s} ${-6 * s}z"/>`;
+const WALLET = mood => `<svg class="mascot" viewBox="0 0 120 96" aria-hidden="true" style="--c:var(--s1)">
+  ${SPARK(14, 20, .9)}${SPARK(106, 14, 1.1)}${SPARK(100, 50, .7)}
+  <circle class="coin" cx="30" cy="12" r="6"/><circle class="coin" cx="88" cy="28" r="5"/><circle class="coin" cx="18" cy="44" r="4.5"/>
+  <path class="ln" d="M33 56c-8-2-12-10-10-16M87 56c8-2 12-12 9-18"/>
+  <path class="b" d="M30 40h58c3 0 5 2 5 5v36c0 3-2 5-5 5H30c-3 0-5-2-5-5V45c0-3 2-5 5-5z"/><path class="flap" d="M70 54h23v16H70z"/><circle class="ln" cx="77" cy="62" r="2"/>
+  ${face(48, 60, mood)}</svg>`;
+const SPRIG = flip => `<svg class="sprig" viewBox="0 0 120 34" aria-hidden="true"${flip ? ' style="transform:scaleX(-1)"' : ""}><path d="M4 30C30 26 60 22 116 8"/><path class="lf" d="M30 26c-2-8 4-12 9-12-1 6-4 10-9 12zM55 21c0-8 7-11 11-10-2 6-6 9-11 10zM80 15c1-7 8-9 12-8-3 6-7 8-12 8zM42 24c6-5 13-3 15 1-6 2-11 2-15-1zM68 18c6-4 13-2 14 2-6 1-10 1-14-2z"/></svg>`;
+const fmt = (n, d = 0) => (n < 0 ? "−" : "") + "$" + Math.abs(n).toLocaleString("en-CA", { minimumFractionDigits: d, maximumFractionDigits: d });
+const colOf = cat => GROUPS[CATS[cat].group].c;
+const sum = (a, f) => a.reduce((t, x) => t + f(x), 0);
+// a hatch pattern for SVG marks, in a token colour
+const pat = (id, c) => `<pattern id="${id}" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><rect width="6" height="6" style="fill:${c};opacity:.2"/><line x1="1" y1="0" x2="1" y2="6" style="stroke:${c}" stroke-width="1.8" opacity=".85"/></pattern>`;
+
+// ring positions on a 12-column grid, clockwise from top-left
+const RINGS = {
+  8: { hub: "4 / 10", spots: [["1 / 5", 1], ["5 / 9", 1], ["9 / 13", 1], ["10 / 13", 2], ["9 / 13", 3], ["5 / 9", 3], ["1 / 5", 3], ["1 / 4", 2]] },
+  6: { hub: "3 / 11", spots: [["1 / 5", 1], ["5 / 9", 1], ["9 / 13", 1], ["9 / 13", 3], ["5 / 9", 3], ["1 / 5", 3]] }
+};
+const TILT = [-.9, .6, -.4, .8, -.7, .5, -.8, .6];
+
+function cover(o) {
+  const ring = RINGS[o.panels.length];
+  return `<p class="mock-k">${o.kicker}</p>
+  <main class="page drawn" id="${o.id}">
+    <div class="cover">
+      <svg class="arrows" aria-hidden="true"></svg>
+      <div class="hub" style="grid-column:${ring.hub}">
+        <div class="win">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">my-finances / statements / ${o.id}</span><span class="tools" aria-hidden="true">‹ › ⋯</span></div>
+          <div class="body">${WALLET(o.mood || "")}
+            <div><h1>${o.title}</h1><svg class="uline" viewBox="0 0 380 10" preserveAspectRatio="none" aria-hidden="true"><path d="M4 6C70 3 140 8 200 5S320 3 376 6"/></svg></div>
+            <p class="sub">${o.sub}</p>
+            <div class="viz">${o.viz}</div>
+          </div>
+        </div>
+        <div class="tiles">${o.tiles.map(t => `<div class="tile drawn" style="--c:${t.c}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[t.icon]}</svg><span class="k">${t.k}</span><b>${t.v}</b></div>`).join("")}</div>
+      </div>
+      ${o.panels.map((p, i) => `<div class="panel drawn" style="grid-column:${ring.spots[i][0]};grid-row:${ring.spots[i][1]};--c:${p.c};--r:${TILT[i]}deg">
+        <div class="hd"><span class="badge">${i + 1}</span><span class="nm">${p.name}</span></div>
+        <svg class="art" viewBox="0 0 64 64" aria-hidden="true">${p.art}</svg>
+        <div>${p.body}</div></div>`).join("")}
+    </div>
+    <div class="foot">${SPRIG()}<ul class="legend">${o.legend}</ul>${SPRIG(true)}</div>
+    <p class="fnote">Mockup with sample numbers, not your real statements.</p>
+  </main>`;
+}
+const groupLegend = groups => groups.map(g => `<li style="--c:${GROUPS[g].c}"><span class="sw"></span>${GROUPS[g].name}</li>`).join("");
+
+// ── 1. Actual vs planned, by category
+function mockActual() {
+  const spendRows = ACTUAL.filter(r => !["Saved", "Debt payments"].includes(r.cat));
+  const spent = sum(spendRows, r => r.actual), plan = sum(spendRows, r => r.plan), diff = spent - plan;
+  const overs = ACTUAL.filter(r => r.cat !== "Saved" && r.actual > r.plan);
+  const max = Math.max(...ACTUAL.map(r => Math.max(r.actual, r.plan))) * 1.05;
+  // hub chart: one hand-drawn bar per category, plan as a dashed tick
+  const W = 560, rowH = 22, H = ACTUAL.length * rowH + 6, x0 = 112, bw = W - x0 - 70;
+  const viz = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Actual against planned for each category">
+    <defs>${ACTUAL.map((r, i) => pat("pa" + i, r.cat !== "Saved" && r.actual > r.plan ? "var(--bad)" : colOf(r.cat))).join("")}</defs>
+    ${ACTUAL.map((r, i) => { const y = i * rowH + 4, w = r.actual / max * bw, px = x0 + r.plan / max * bw, over = r.cat !== "Saved" && r.actual > r.plan;
+      return `<text x="${x0 - 8}" y="${y + 13}" text-anchor="end" class="h">${r.cat}</text>
+      <rect class="mk" x="${x0}" y="${y + 2}" width="${w}" height="14" rx="2" fill="url(#pa${i})" style="stroke:${over ? "var(--bad)" : colOf(r.cat)}"/>
+      <path class="guide" d="M${px} ${y - 1}v20" style="stroke:var(--text);stroke-dasharray:3 2;stroke-width:1.8"/>
+      <text x="${Math.max(x0 + w, px) + 8}" y="${y + 13}" class="v">${fmt(r.actual)}</text>`; }).join("")}
+  </svg>`;
+  const panels = ACTUAL.map(r => {
+    const saved = r.cat === "Saved", over = !saved && r.actual > r.plan + .5, d = r.actual - r.plan, top = Math.max(r.actual, r.plan) * 1.08;
+    const st = saved ? (d > 0 ? `<li><b class="good">${fmt(d)}</b> more than planned</li>` : `<li class="x"><b class="over">${fmt(-d)}</b> short</li>`)
+      : over ? `<li class="x"><b class="over">${fmt(d)} over</b></li>` : Math.abs(d) < 1 ? `<li>right on plan</li>` : `<li><b class="good">${fmt(-d)}</b> left</li>`;
+    return { name: r.cat, c: colOf(r.cat), art: ART[CATS[r.cat].art](over ? "worry" : ""),
+      body: `<div class="amt">${fmt(r.actual)}<small>of ${fmt(r.plan)}</small></div>
+        <span class="meter"><i class="${over ? "over" : ""}" style="width:${r.actual / top * 100}%"></i><b style="left:${r.plan / top * 100}%"></b></span>
+        <ul>${st}</ul>` };
+  });
+  return cover({ id: "actual-vs-planned", kicker: "Mockup 1 of 5 · Actual vs planned, by category", title: "Actual vs planned", mood: diff > 0 ? "worry" : "",
+    sub: `Spent <b>${fmt(spent)}</b> of a <b>${fmt(plan)}</b> plan this month · <b class="${diff > 0 ? "over" : "good"}">${fmt(Math.abs(diff))} ${diff > 0 ? "over" : "under"}</b>`,
+    viz, panels,
+    tiles: [{ k: "Spent", v: fmt(spent), icon: "spent", c: "var(--s2)" }, { k: "Planned", v: fmt(plan), icon: "target", c: "var(--s1)" },
+      { k: "On or under", v: `${ACTUAL.length - overs.length} of ${ACTUAL.length}`, icon: "check", c: "var(--s3)" },
+      { k: "Over plan", v: overs.map(r => r.cat).join(", "), icon: "warn", c: "var(--bad)" },
+      { k: "Extra saved", v: fmt(ACTUAL[1].actual - ACTUAL[1].plan), icon: "saved", c: "var(--s3)" }],
+    legend: groupLegend(["home", "everyday", "fun", "debt", "savings"]) + `<li><span class="sw dash"></span>the plan</li><li style="--c:var(--bad)"><span class="sw"></span>over plan</li>` });
+}
+
+// ── 2. Money in and out by month
+function mockMonths() {
+  const rows = MONTHS.map(r => ({ ...r, kept: r.inc - r.spend - r.debt }));
+  const max = Math.max(...rows.map(r => Math.max(r.inc, r.spend + r.debt))) * 1.08;
+  const W = 760, H = 196, base = 166, ch = 140, gw = W / rows.length, bw = 30;
+  const y = v => base - v / max * ch;
+  const viz = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Money in compared with money out for six months">
+    <defs>${pat("pin", "var(--s1)")}${pat("pout", "var(--s2)")}${pat("pdebt", "var(--s5)")}</defs>
+    <path class="axis" d="M4 ${base}H${W - 4}"/>
+    ${rows.map((r, i) => { const cx = i * gw + gw / 2;
+      return `<rect class="mk" x="${cx - bw - 2}" y="${y(r.inc)}" width="${bw}" height="${base - y(r.inc)}" rx="2" fill="url(#pin)" style="stroke:var(--s1)"/>
+      <rect class="mk" x="${cx + 2}" y="${y(r.spend)}" width="${bw}" height="${base - y(r.spend)}" rx="2" fill="url(#pout)" style="stroke:var(--s2)"/>
+      <rect class="mk" x="${cx + 2}" y="${y(r.spend + r.debt)}" width="${bw}" height="${y(r.spend) - y(r.spend + r.debt)}" rx="2" fill="url(#pdebt)" style="stroke:var(--s5)"/>
+      <text x="${cx}" y="${base + 18}" text-anchor="middle" class="h">${r.m}</text>
+      <text x="${cx}" y="${y(r.inc) - 6}" text-anchor="middle" class="v" style="font-size:10.5px">+${(r.kept / 1000).toFixed(1)}k</text>`; }).join("")}
+  </svg>`;
+  const avgIn = sum(rows, r => r.inc) / rows.length, avgOut = sum(rows, r => r.spend + r.debt) / rows.length;
+  const best = rows.reduce((a, r) => r.kept > a.kept ? r : a), worst = rows.reduce((a, r) => r.kept < a.kept ? r : a);
+  const panels = rows.map(r => ({ name: r.m === "Oct" ? "October (now)" : { May: "May", Jun: "June", Jul: "July", Aug: "August", Sep: "September" }[r.m],
+    c: r === worst ? "var(--s2)" : r === best ? "var(--s3)" : "var(--s1)", art: ART.cal(r === worst ? "worry" : "", r.m),
+    body: `<div class="amt">+${fmt(r.kept)}<small>kept</small></div>
+      <ul><li>in <b>${fmt(r.inc)}</b>${r.note ? ` · ${r.note}` : ""}</li><li>out <b>${fmt(r.spend)}</b> + debt <b>${fmt(r.debt)}</b></li></ul>` }));
+  return cover({ id: "in-and-out", kicker: "Mockup 2 of 5 · Money in and out by month", title: "Money in and out", mood: "",
+    sub: `Six months · you kept <b class="good">${fmt(sum(rows, r => r.kept))}</b> in all`, viz, panels,
+    tiles: [{ k: "Average in", v: fmt(avgIn), icon: "coins", c: "var(--s1)" }, { k: "Average out", v: fmt(avgOut), icon: "spent", c: "var(--s2)" },
+      { k: "Best month", v: `${best.m} +${fmt(best.kept)}`, icon: "star", c: "var(--s3)" }, { k: "Toughest", v: `${worst.m} +${fmt(worst.kept)}`, icon: "down", c: "var(--s2)" },
+      { k: "In the green", v: `${rows.filter(r => r.kept > 0).length} of ${rows.length}`, icon: "cal", c: "var(--s3)" }],
+    legend: `<li style="--c:var(--s1)"><span class="sw"></span>money in</li><li style="--c:var(--s2)"><span class="sw"></span>spending</li><li style="--c:var(--s5)"><span class="sw"></span>debt payments</li><li><span style="font:600 12px var(--mono)">+1.2k</span>&nbsp;kept that month</li>` });
+}
+
+// ── 3. What changed since last month
+function mockChanges() {
+  const rows = CHANGES.map(r => ({ ...r, d: r.now - r.was, good: r.cat === "Saved" ? r.now >= r.was : r.now <= r.was }));
+  const spendWas = 3720, spendNow = MONTH_SPEND, net = spendNow - spendWas;
+  const max = Math.max(...rows.map(r => Math.abs(r.d))) * 1.15;
+  const W = 640, rowH = 24, H = rows.length * rowH + 26, mid = 360, half = 170;
+  const viz = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Change in each category since last month">
+    <defs>${pat("pg", "var(--good)")}${pat("pb", "var(--bad)")}</defs>
+    <path class="axis" d="M${mid} 0V${H}"/>
+    ${rows.map((r, i) => { const y = i * rowH + 5, w = Math.abs(r.d) / max * half, x = r.d < 0 ? mid - w : mid;
+      return `<text x="12" y="${y + 13}" class="h">${r.cat}</text>
+      <rect class="mk" x="${x}" y="${y + 1}" width="${w}" height="15" rx="2" fill="url(#${r.good ? "pg" : "pb"})" style="stroke:${r.good ? "var(--good)" : "var(--bad)"}"/>
+      <text x="${r.d < 0 ? x - 6 : x + w + 6}" y="${y + 13}" text-anchor="${r.d < 0 ? "end" : "start"}" class="v">${r.d > 0 ? "+" : "−"}${fmt(Math.abs(r.d))}</text>`; }).join("")}
+    <text x="${mid - 8}" y="${H - 4}" text-anchor="end">← less</text><text x="${mid + 8}" y="${H - 4}">more →</text>
+  </svg>`;
+  const panels = rows.map(r => ({ name: r.cat, c: colOf(r.cat), art: ART[CATS[r.cat].art](r.good ? "" : "worry"),
+    body: `<div class="amt"><span class="delta ${r.good ? "good" : "bad"}">${r.d > 0 ? "▲" : "▼"} ${fmt(Math.abs(r.d))}</span></div>
+      <ul><li>was <b>${fmt(r.was)}</b>, now <b>${fmt(r.now)}</b></li>${r.good ? `<li>${r.cat === "Saved" ? "nice, more put away" : "nice, spent less"}</li>` : `<li class="x">spent more</li>`}</ul>` }));
+  const better = rows.filter(r => r.good).length;
+  return cover({ id: "what-changed", kicker: "Mockup 3 of 5 · What changed since last month", title: "What changed since September", mood: "",
+    sub: `Spending <b class="${net < 0 ? "good" : "over"}">${net < 0 ? "down" : "up"} ${fmt(Math.abs(net))}</b> · ${fmt(spendWas)} → <b>${fmt(spendNow)}</b>`, viz, panels,
+    tiles: [{ k: "September", v: fmt(spendWas), icon: "cal", c: "var(--s1)" }, { k: "October", v: fmt(spendNow), icon: "cal", c: "var(--s1)" },
+      { k: "Spending", v: `${net < 0 ? "−" : "+"}${fmt(Math.abs(net))}`, icon: net < 0 ? "down" : "up", c: net < 0 ? "var(--good)" : "var(--bad)" },
+      { k: "Biggest drop", v: rows.filter(r => r.cat !== "Saved").sort((a, b) => a.d - b.d)[0].cat, icon: "down", c: "var(--good)" },
+      { k: "Moves in your favour", v: `${better} of ${rows.length}`, icon: "check", c: "var(--s3)" }],
+    legend: `<li style="--c:var(--good)"><span class="sw"></span>good move</li><li style="--c:var(--bad)"><span class="sw"></span>costs more</li>` });
+}
+
+// ── 4. Where you spent the most
+function mockMerchants() {
+  const top = sum(MERCHANTS, m => m.amount), mostVisits = MERCHANTS.reduce((a, m) => m.visits > a.visits ? m : a);
+  const viz = `<div class="dollar" aria-hidden="true">${MERCHANTS.map(m => `<span style="--c:${colOf(m.cat)};flex:${m.amount}"></span>`).join("")}<span style="--c:var(--muted);flex:${MONTH_SPEND - top}"></span></div>
+    <div class="dollar-k"><span>top 8 places <b>${fmt(top)}</b></span><span>everywhere else <b>${fmt(MONTH_SPEND - top)}</b></span></div>`;
+  const panels = MERCHANTS.map(m => ({ name: m.name, c: colOf(m.cat), art: ART[m.art](""),
+    body: `<div class="amt">${fmt(m.amount)}<small>${Math.round(m.amount / MONTH_SPEND * 100)}%</small></div>
+      <ul><li>${m.visits} visit${m.visits > 1 ? "s" : ""}${m.visits > 1 ? ` · about <b>${fmt(m.amount / m.visits)}</b> each` : ""}</li><li>${m.cat}</li></ul>` }));
+  return cover({ id: "spent-the-most", kicker: "Mockup 4 of 5 · Where you spent the most", title: "Where you spent the most", mood: "",
+    sub: `Your top 8 places took <b>${Math.round(top / MONTH_SPEND * 100)}%</b> of <b>${fmt(MONTH_SPEND)}</b> this month`, viz, panels,
+    tiles: [{ k: "Places", v: String(PLACES), icon: "store", c: "var(--s1)" }, { k: "Visits", v: String(VISITS), icon: "walk", c: "var(--s1)" },
+      { k: "Most visits", v: `${mostVisits.name.split(" ")[0]} ×${mostVisits.visits}`, icon: "star", c: "var(--s4)" },
+      { k: "Average visit", v: fmt(MONTH_SPEND / VISITS), icon: "coins", c: "var(--s4)" }, { k: "Biggest", v: "rent", icon: "flame", c: "var(--s2)" }],
+    legend: groupLegend(["home", "everyday", "fun"]) + `<li style="--c:var(--muted)"><span class="sw"></span>everywhere else</li>` });
+}
+
+// ── 5. Credit cards: paid in full?
+function mockCards() {
+  const clean = CC.filter(r => !Object.keys(r.interest).length).length, interest = sum(CC, r => sum(Object.values(r.interest), v => v));
+  const W = 560, cw = (W - 120) / CC.length, H = CARDS.length * 40 + 28;
+  const viz = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Paid in full or not, each card and month">
+    ${CC.map((r, i) => `<text x="${120 + i * cw + cw / 2}" y="12" text-anchor="middle" class="h">${r.m}</text>`).join("")}
+    ${CARDS.map((c, j) => { const y = 24 + j * 40;
+      return `<text x="8" y="${y + 21}" class="h">${c}</text>` + CC.map((r, i) => { const x = 120 + i * cw + cw / 2, bad = r.interest[c];
+        return `<circle class="mk" cx="${x}" cy="${y + 16}" r="13" style="fill:color-mix(in srgb, ${bad ? "var(--bad)" : "var(--good)"} 16%, transparent);stroke:${bad ? "var(--bad)" : "var(--good)"}"/>
+          <path class="mk" d="${bad ? `M${x - 5} ${y + 11}l10 10M${x + 5} ${y + 11}l-10 10` : `M${x - 6} ${y + 16}l4 4 8-9`}" style="fill:none;stroke:${bad ? "var(--bad)" : "var(--good)"};stroke-width:2.2;stroke-linecap:round"/>`; }).join(""); }).join("")}
+  </svg>`;
+  const full = { May: "May", Jun: "June", Jul: "July", Aug: "August", Sep: "September", Oct: "October" };
+  const panels = CC.map(r => { const bad = Object.keys(r.interest).length;
+    return { name: full[r.m], c: bad ? "var(--s5)" : "var(--s3)", art: ART.card(bad ? "worry" : ""),
+      body: `<ul>${CARDS.map(c => r.interest[c] ? `<li class="x">${c}: <b class="over">${fmt(r.interest[c], 2)}</b> interest</li>` : `<li>${c} paid <b>${fmt(r.paid[c])}</b></li>`).join("")}</ul>
+        <span class="stamp ${bad ? "bad" : "good"}">${bad ? "interest charged" : "paid in full"}</span>` }; });
+  return cover({ id: "cards-paid-in-full", kicker: "Mockup 5 of 5 · Credit cards: paid in full?", title: "Credit cards: paid in full?", mood: "",
+    sub: `<b class="good">${clean} of ${CC.length}</b> months with no interest on either card`, viz, panels,
+    tiles: [{ k: "Clean months", v: `${clean} of ${CC.length}`, icon: "check", c: "var(--s3)" }, { k: "Interest paid", v: fmt(interest, 2), icon: "warn", c: "var(--bad)" },
+      { k: "Fees", v: "$0.00", icon: "card", c: "var(--s1)" }, { k: "Visa streak", v: "6 months", icon: "flame", c: "var(--s4)" },
+      { k: "Mastercard streak", v: "1 month", icon: "flame", c: "var(--s4)" }],
+    legend: `<li style="--c:var(--good)"><span class="sw"></span>paid in full, no interest</li><li style="--c:var(--bad)"><span class="sw"></span>interest or fees on the next statement</li>` });
+}
+
+const MOCKS = { actual: mockActual, months: mockMonths, changes: mockChanges, merchants: mockMerchants, cards: mockCards };
+const only = new URLSearchParams(location.search).get("m");
+document.getElementById("root").innerHTML = Object.entries(MOCKS).filter(([k]) => !only || k === only).map(([, f]) => f()).join("");
+
+// curvy dotted arrows from each window out to its panels (wide screens only)
+function drawArrows() {
+  document.querySelectorAll(".cover").forEach(cover => {
+    const svg = cover.querySelector(".arrows");
+    if (getComputedStyle(svg).display === "none") return;
+    const box = cover.getBoundingClientRect(), hb = cover.querySelector(".hub").getBoundingClientRect();
+    const cx = hb.left + hb.width / 2 - box.left, cy = hb.top + hb.height / 2 - box.top;
+    svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+    svg.innerHTML = [...cover.querySelectorAll(".panel")].map((el, i) => {
+      const r = el.getBoundingClientRect(), tx = r.left + r.width / 2 - box.left, ty = r.top + r.height / 2 - box.top;
+      const dx = tx - cx, dy = ty - cy, len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len;
+      const s = Math.min(Math.abs(hb.width / 2 / (ux || 1e-6)), Math.abs(hb.height / 2 / (uy || 1e-6))) + 6;
+      const e = Math.min(Math.abs(r.width / 2 / (ux || 1e-6)), Math.abs(r.height / 2 / (uy || 1e-6))) + 8;
+      const x1 = cx + ux * s, y1 = cy + uy * s, x2 = tx - ux * e, y2 = ty - uy * e;
+      if (Math.hypot(x2 - x1, y2 - y1) < 18) return "";
+      const bend = (i % 2 ? 1 : -1) * 14, mx = (x1 + x2) / 2 - uy * bend, my = (y1 + y2) / 2 + ux * bend;
+      const ang = Math.atan2(y2 - my, x2 - mx), h = 9;
+      const a1 = [x2 - h * Math.cos(ang - .5), y2 - h * Math.sin(ang - .5)], a2 = [x2 - h * Math.cos(ang + .5), y2 - h * Math.sin(ang + .5)];
+      return `<path class="trail" d="M${x1} ${y1}Q${mx} ${my} ${x2} ${y2}"/><path d="M${a1}L${x2} ${y2}L${a2}"/>`;
+    }).join("");
+  });
+}
+drawArrows();
+addEventListener("resize", drawArrows);
+document.fonts?.ready.then(drawArrows);
+</script>
+</body>
+</html>

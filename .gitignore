@@ -5,7 +5,14 @@
 !/.gitattributes
 !/README.md
 !/DESIGN.md
+!/CLAUDE.md
+!/.claude/
 !/.impeccable/
+!/sketchy-briefs/
+!/Statements sketch mockups v2.html
+!/Statements sketchnote mockups.html
+!/Where my money goes (sketchnote cover).html
+!/Where my money goes (sketchy).html
 !/Share/
 !/Originals (before redesign)/
 !/Redesign build/
@@ -14,6 +21,17 @@
 /Redesign build/personal/
 /Redesign build/out/
 /Redesign build/out-share/
+
+# Local Claude settings stay private
+/.claude/settings*.json
+/.claude/settings*.local.json
+
+# Skills whose licence is not confirmed (animation, book-serif-index, awwwards, scroll, word reveal)
+/.claude/skills/animation-systems/
+/.claude/skills/book-serif-index/
+/.claude/skills/build-awwwards-quality-sites/
+/.claude/skills/scroll-progress-timeline/
+/.claude/skills/staggered-word-reveal/
 
 # Data files never belong in the repo, wherever they turn up
 *.csv
