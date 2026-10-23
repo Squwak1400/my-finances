@@ -4,6 +4,11 @@ const B = __dirname, P = process.argv[2];
 const src = path.join(P, "Originals (before redesign)", "Financial Advisor.html");
 const out = path.join(process.argv[3] || P, "Financial Advisor.html");
 let h = fs.readFileSync(src, "utf8");
+// The owner's own profile conversion (personal/money.js), left out of shareable builds
+for (const [mine, plain] of [...(require("./personal.js")("money.js") || [])].reverse()) {
+  if (h.split(plain).length !== 2) throw new Error("personal money anchor: " + plain.slice(0, 60));
+  h = h.replace(plain, () => mine);
+}
 const theme = fs.readFileSync(path.join(B, "theme.css"), "utf8");
 const story = fs.readFileSync(path.join(B, "fa-overview.js"), "utf8");
 

@@ -12,7 +12,7 @@ Everything you enter is saved in your own browser's storage on your own computer
 
 It has two volumes:
 
-- **My finances:** budget, net worth, debts, goals, and statements imported from your bank's CSV files.
+- **My finances:** budget, net worth, debts, goals, and statements imported from your bank's CSV files. Under **My numbers → About you**, describe your own work: line of work, licence or medical, per diems, union dues, and a seasonal job and its name. The advice follows your answers. **Your work suppliers** sends purchases from places you name to Work & licensing.
 - **Taxes:** help catching up on Canadian returns. It reads crypto exchange CSVs (Crypto.com, Kraken or a manual template) and works out the adjusted cost base. It also has year-by-year estimates and questions to bring to your accountant. Pick the years you're filing at the top of **Filing plan**; it has tax tables for 2021 to 2025 and for Ontario, BC, Alberta, Saskatchewan and Manitoba. It is not tax advice.
 
 ## Build it

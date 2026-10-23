@@ -6,7 +6,7 @@
 <!-- Privacy lock: this page is not allowed to load or send anything over the network. -->
 <meta name="google" content="notranslate">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dtrv5XPPOh1vQjx1L3pQtoNRtCTILT25Q4s7QJNb8EA=' 'sha256-N3/2qtH6R1lEHQaxYBiahmyueVX4XPsaba1xqeX0wEM=' 'sha256-lnKK2Sni+ay1/jRtl8PuiZYCFyp38wls2hEqxLx5PmU=' 'sha256-Tkgl2FsS+pkoSkPYO/RsBkTu80QTH1kbrbrtvCByyWc=' 'sha256-w8o3O2BjbudqdkQ7qFIYYKXDPm8AcOoQyvIRqC1FctI=' ; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-OHItNqUG46T+huVKiAveon9A/RGqth4gYbxNqgaSmz4=' 'sha256-N3/2qtH6R1lEHQaxYBiahmyueVX4XPsaba1xqeX0wEM=' 'sha256-ft1e0WcL4nfGuOKAkR93ufEgfw0SlSnueebyQLg3L2w=' 'sha256-Tkgl2FsS+pkoSkPYO/RsBkTu80QTH1kbrbrtvCByyWc=' 'sha256-u2ggpPXFs4+Z1nRmNBMjDVyaCy/Z4zoqaa4opUQ2UnY=' ; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
 <title>My finances</title>
 <link rel="icon" id="favicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'1'%20y%3D'1'%20width%3D'30'%20height%3D'30'%20fill%3D'%23f3eedf'%20stroke%3D'%2315140f'%20stroke-width%3D'2'%2F%3E%3Cpath%20fill%3D'%231b4b5a'%20d%3D'M6%2017h5v9H6zM13.5%2012h5v14h-5zM21%206h5v20h-5z'%2F%3E%3C%2Fsvg%3E">
 <style>
@@ -529,6 +529,11 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
 table.data { font: 400 14.5px var(--serif); }
 table.data th { font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--text); padding: 6px 8px 8px; }
 table.data td { border-bottom: 1px solid var(--grid); padding: 9px 8px; }
+/* Your work suppliers (My numbers) */
+.wp-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 12px; }
+.wp { display: inline-flex; align-items: center; gap: 2px; padding: 1px 1px 1px 10px; border: 1px solid var(--line); font: 400 12.5px var(--mono); }
+.wp-none { color: var(--muted); font-size: 13px; }
+.wp-add { display: flex; gap: 8px; max-width: 440px; } .wp-add input { flex: 1; min-width: 0; }
 table.data td.n { font-family: var(--mono); font-size: 13px; }
 table.data th.n { font-family: var(--mono); }
 table.data tbody tr:hover > td { background: var(--surface-2); }
@@ -1166,7 +1171,7 @@ body.tx-locked [data-vol="tax"].folio::after { content: "Locked. Press Unlock an
 :root.nb #volMoney .cal-key span:nth-of-type(5) { background: repeating-linear-gradient(-45deg, var(--accent) 0 2px, transparent 2px 3.5px), repeating-linear-gradient(45deg, var(--accent) 0 1.6px, transparent 1.6px 4px), color-mix(in srgb, var(--accent) 22%, transparent) !important; }
 :root.nb #volMoney .cal-key span:nth-of-type(6) { background: repeating-linear-gradient(-45deg, var(--text) 0 2px, transparent 2px 3.5px), repeating-linear-gradient(45deg, var(--text) 0 1.4px, transparent 1.4px 4px) !important; }
 
-/* ── rule cards (e.g. What usually applies to pilots) as sticky notes ── */
+/* ── rule cards (e.g. What usually applies to travelling and seasonal jobs) as sticky notes ── */
 :root.nb #volTax .rules:not([style*="1fr"]) { gap: 22px 18px; margin-top: 14px; align-items: start; }
 :root.nb #volTax .rules:not([style*="1fr"]) > div { position: relative; padding: 18px 16px 14px; font: 400 14px/1.55 var(--serif); color: var(--text-2); transform: rotate(var(--r, -.7deg)); }
 :root.nb #volTax .rules:not([style*="1fr"]) > div:nth-child(3n+2) { --r: .6deg; --tp: var(--s2); }
@@ -1638,7 +1643,7 @@ body.tx-locked [data-vol="tax"].folio::after { content: "Locked. Press Unlock an
       <div class="card" id="taxYears"></div>
       <div class="card" id="taxIdeas"></div>
       <div class="card" id="taxBiz">
-        <div class="section-head"><div><h2>Thinking of starting a business?</h2><p class="desc">A side business, like flight instruction, drone work or off-season consulting, is reported on your own return as a sole proprietor. Here's what you could expense and what to set aside.</p></div></div>
+        <div class="section-head"><div><h2>Thinking of starting a business?</h2><p class="desc">A side business, like consulting, tutoring or off-season contract work, is reported on your own return as a sole proprietor. Here's what you could expense and what to set aside.</p></div></div>
         <div class="mapgrid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:12px">
           <label>Expected sales per year<input type="number" id="bizRev" min="0" step="any" inputmode="decimal" placeholder="0" class="fld-in" autocomplete="off"></label>
           <label>Expected business costs per year<input type="number" id="bizExp" min="0" step="any" inputmode="decimal" placeholder="0" class="fld-in" autocomplete="off"></label>
@@ -1668,7 +1673,7 @@ body.tx-locked [data-vol="tax"].folio::after { content: "Locked. Press Unlock an
   <section id="tx-tab-overview">
     <div id="tx-welcome" class="card hidden" style="margin-top:24px">
       <h2>Let's get your crypto <em>sorted for CRA.</em></h2>
-      <p class="desc" style="margin-bottom:12px">Import your full transaction history from Crypto.com and Kraken, from your very first purchase. I'll match transfers between your accounts, work out your average cost (ACB) the way CRA requires, and give you a gain, loss and income summary for each year you need to file. Nothing leaves this computer.</p>
+      <p class="desc" style="margin-bottom:12px">Import your full transaction history from every exchange and wallet you've used, from your very first purchase. I'll match transfers between your accounts, work out your average cost (ACB) the way CRA requires, and give you a gain, loss and income summary for each year you need to file. Nothing leaves this computer.</p>
       <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" data-goto="import">Import my files</button><button id="tx-btnSample">Try it with sample data</button></div>
     </div>
     <div id="sampleNote" class="notice hidden" style="margin-top:20px"><b>You're looking at made-up sample data.</b> <button id="btnClearSample" style="margin-left:8px">Remove sample data</button></div>
@@ -1816,11 +1821,11 @@ body.tx-locked [data-vol="tax"].folio::after { content: "Locked. Press Unlock an
 
   <!-- WORK -->
   <section id="tx-tab-work" class="hidden">
-    <div class="notice"><b>Set up for a flying career.</b> Fill in each year from your T4, T4E and pay records. I'll sort each amount onto the right line and flag what to ask your CPA. These are estimates; the per diem and meal rules in particular depend on your employer's paperwork.</div>
-    <div class="actions noprint" style="margin:-4px 0 12px"><button class="primary" id="btnPayOpen">Import a pay summary (Dayforce)</button></div>
+    <div class="notice"><b>Your work, year by year.</b> Fill in each year from your T4, T4E and pay records. I'll sort each amount onto the right line and flag what to ask your CPA. These are estimates; the per diem and meal rules in particular depend on your employer's paperwork.</div>
+    <div class="actions noprint" style="margin:-4px 0 12px"><button class="primary" id="btnPayOpen">Import a pay summary</button></div>
     <div class="card hidden noprint" id="payPanel" style="margin-bottom:16px">
       <h2>Import a pay summary</h2>
-      <p class="desc">In Dayforce, open your year-to-date pay or total compensation statement. If it's a PDF, open it, press Ctrl+A then Ctrl+C, and paste it below. A .txt or .csv export works too. This page reads it right here on your computer; nothing is sent anywhere, and I never see it.</p>
+      <p class="desc">On your payroll site, open your year-to-date pay or total compensation statement. If it's a PDF, open it, press Ctrl+A then Ctrl+C, and paste it below. A .txt or .csv export works too. This page reads it right here on your computer; nothing is sent anywhere, and I never see it.</p>
       <div class="mapgrid" style="grid-template-columns:1fr auto;align-items:end">
         <label>Paste your pay summary<textarea id="payText" rows="6" style="width:100%;font:inherit;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;resize:vertical" placeholder="Paste the copied text here"></textarea></label>
         <label>Tax year<select class="fld-in" id="payYear"></select></label>
@@ -1857,18 +1862,18 @@ body.tx-locked [data-vol="tax"].folio::after { content: "Locked. Press Unlock an
       </div>
     </div>
     <div class="card">
-      <h2>What usually applies to pilots</h2>
+      <h2>What usually applies to travelling and seasonal jobs</h2>
       <p class="desc">General CRA rules. Your employer's setup decides which ones you can use.</p>
       <div class="rules">
         <div><b>Per diems</b>A reasonable travel allowance for work away from your home base is usually tax-free and stays off your T4. If your employer put it in box 14, it was taxed and you may be able to claim meals instead. You can't have both for the same meals.</div>
         <div><b>Transport employee meals and lodging</b>Form TL2, signed by your employer, lets transport employees claim meals by the simplified method ($17 a meal, up to $51 a day before 2023; $23 and $69 from 2023; one meal per 4 hours away; 50% deductible) and lodging they paid on trips of 12 hours or more away from base. Ask each employer whether it counts as a transport employer and will sign a TL2.</div>
-        <div><b>Other employment expenses</b>Transport employee meals use the employer-signed TL2. Other work costs on line 22900, including travel meals for other employees, need a signed T2200. Licence renewals, medicals, headsets and uniforms usually aren't deductible for employees.</div>
+        <div><b>Other employment expenses</b>Transport employee meals use the employer-signed TL2. Other work costs on line 22900, including travel meals for other employees, need a signed T2200. Licence renewals, medicals, tools and uniforms usually aren't deductible for employees.</div>
         <div><b>Union and professional dues</b>Dues on your T4 (box 44) or receipts go on line 21200.</div>
-        <div><b>Training</b>Flight training at a Transport Canada certified school can give a T2202 for the tuition credit (line 32300), and the Canada Training Credit from 2020 on.</div>
+        <div><b>Training</b>Training at a certified school can give a T2202 for the tuition credit (line 32300), and the Canada Training Credit from 2020 on.</div>
         <div><b>Camps and remote bases</b>Board and lodging at a special or remote work site your employer provides is usually tax-free. Northern residents deduction (line 25500) only applies if you lived in a prescribed zone for 6 months or more.</div>
         <div><b>Two employers in one year</b>Each employer takes off CPP and EI from zero, so a job change partway through a year can mean you paid too much. CRA refunds the extra when you file (lines 44800 and 45000).</div>
         <div><b>Seasonal EI</b>Off-season EI (T4E) is taxable and often has little tax taken off, so it can leave a balance owing.</div>
-        <div><b>Contracting</b>If you flew as a self-employed contractor, licences, medicals, training, gear, travel and 50% of meals are business expenses on form T2125, and you pay both halves of CPP.</div>
+        <div><b>Contracting</b>If you worked as a self-employed contractor, licences, medicals, training, gear, travel and 50% of meals are business expenses on form T2125, and you pay both halves of CPP.</div>
       </div>
     </div>
   </section>
@@ -1899,7 +1904,7 @@ body.tx-locked [data-vol="tax"].folio::after { content: "Locked. Press Unlock an
         <h2>The catch-up plan</h2>
         <p class="desc">In order. The oldest unfiled year goes first.</p>
         <ol class="steps">
-          <li><div><b>Import every crypto record</b><br><span style="color:var(--text-2)">Crypto.com and Kraken from the very first purchase, plus anything else in the manual template.</span></div></li>
+          <li><div><b>Import every crypto record</b><br><span style="color:var(--text-2)">Every exchange and wallet from the very first purchase. Anything the Import tab can't read goes on the manual template.</span></div></li>
           <li><div><b>Clear the Review list</b><br><span style="color:var(--text-2)">Confirm transfers, fill in missing prices, close history gaps.</span></div></li>
           <li><div><b>Download your slips from CRA My Account</b><br><span style="color:var(--text-2)">T4, T4A, T5, T4E and RRSP receipts for <span data-yspan>2021 to 2025</span>, under Tax information slips.</span></div></li>
           <li><div><b>Book a CPA review</b><br><span style="color:var(--text-2)">Bring the year exports from Year reports, your slips and your last notice of assessment. Ask whether the Voluntary Disclosures Program makes sense if you'll owe a lot.</span></div></li>
@@ -2059,10 +2064,15 @@ const SCHEMA = {
 };
 const PROFILE_FIELDS = [
   { k:"gross", label:"Gross yearly income (before tax)", type:"money", hint:"Used to suggest TFSA or RRSP first" },
-  { k:"job", label:"Your line of work", type:"select", opts:["other","pilot"], labels:{ other:"Other", pilot:"Pilot or aerial firefighting" } },
+  { k:"job", label:"Your line of work", type:"text", hint:"Optional, in your own words, like Nurse or Electrician" },
   { k:"employment", label:"How you're paid", type:"select", opts:["unsure","employee","contractor"], labels:{ unsure:"Not sure", employee:"Employee (I get a T4)", contractor:"Contractor (I invoice, no tax taken off)" } },
-  { k:"seasonal", label:"Is your work seasonal?", type:"select", opts:["no","yes"], labels:{ no:"No, it's year-round", yes:"Yes, like a fire season" } },
-  { k:"seasonMonths", label:"Months you work each year", type:"number", def: 5, hint:"Fire season often runs May to September" },
+  { k:"licence", label:"Does your work depend on a licence or medical?", type:"select", opts:["no","yes"], labels:{ no:"No", yes:"Yes, I can't work without it" } },
+  { k:"perdiem", label:"Are you paid per diems or travel allowances?", type:"select", opts:["no","yes"], labels:{ no:"No", yes:"Yes" } },
+  { k:"union", label:"Do you pay union or professional dues?", type:"select", opts:["no","yes"], labels:{ no:"No", yes:"Yes" } },
+  { k:"transport", label:"Does your employer mainly move people or goods?", type:"select", opts:["no","unsure","yes"], labels:{ no:"No", unsure:"Not sure", yes:"Yes (airline, trucking, bus, rail or shipping)" } },
+  { k:"seasonal", label:"Is your work seasonal?", type:"select", opts:["no","yes"], labels:{ no:"No, it's year-round", yes:"Yes, it's seasonal" } },
+  { k:"seasonName", label:"What do you call your season?", type:"text", hint:"Optional, like construction season or tax season" },
+  { k:"seasonMonths", label:"Months you work each year", type:"number", def: 5, hint:"How long your season runs" },
   { k:"seasonStart", label:"Month your season starts", type:"select", opts:["1","2","3","4","5","6","7","8","9","10","11","12"], labels:{ "1":"January", "2":"February", "3":"March", "4":"April", "5":"May", "6":"June", "7":"July", "8":"August", "9":"September", "10":"October", "11":"November", "12":"December" } },
   { k:"jobStart", label:"When you started your current job", type:"month", hint:"Earlier years were at other jobs" },
   { k:"oldPlans", label:"Did an earlier employer have a pension or group RRSP?", type:"select", opts:["unsure","no","yes"], labels:{ unsure:"Not sure", no:"No", yes:"Yes" } },
@@ -2074,7 +2084,7 @@ const PROFILE_FIELDS = [
   { k:"taxPct", label:"Set aside for tax on side income, %", type:"number", def: 25, hint:"An estimate; covers income tax and CPP" }
 ];
 
-const blank = () => ({ income: [], expenses: [], debts: [], assets: [], goals: [], history: [], extra: 0, wxPaid: 0, transactions: [], rules: {}, profile: { match: "unsure", firstHome: "no", taxPct: 25, job: "other", employment: "unsure", seasonal: "no", seasonStart: "5", oldPlans: "unsure" }, biz: { rev: "", exp: "" }, strategy: { goals: [], done: false }, setupDone: false, updated: null });
+const blank = () => ({ income: [], expenses: [], debts: [], assets: [], goals: [], history: [], extra: 0, wxPaid: 0, transactions: [], rules: {}, workPlaces: [], profile: { match: "unsure", firstHome: "no", taxPct: 25, job: "", employment: "unsure", licence: "no", perdiem: "no", union: "no", transport: "no", seasonal: "no", seasonStart: "5", oldPlans: "unsure" }, biz: { rev: "", exp: "" }, strategy: { goals: [], done: false }, setupDone: false, updated: null });
 // Lock state: PENDING holds the encrypted copy until it's unlocked; CK/SALT are the key while unlocked
 let PENDING = null, CK = null, SALT = null;
 
@@ -2119,10 +2129,12 @@ function sanitize(o) {
   if (o.rules && typeof o.rules === "object") Object.entries(o.rules).forEach(([k, v]) => {
     if (k.length <= 120 && !["__proto__", "constructor", "prototype"].includes(k) && TX_CATS.includes(v)) d.rules[k] = v;
   });
+  d.workPlaces = (Array.isArray(o.workPlaces) ? o.workPlaces : []).filter(s => typeof s === "string" && s.trim()).map(s => s.trim().toLowerCase().slice(0, 60)).filter((s, i, a) => a.indexOf(s) === i).slice(0, 200);
   const p = o.profile && typeof o.profile === "object" ? o.profile : {};
   PROFILE_FIELDS.forEach(f => {
     if (!(f.k in p)) return;
     if (f.type === "select") { if (f.opts.includes(String(p[f.k]))) d.profile[f.k] = String(p[f.k]); }
+    else if (f.type === "text") { const v = typeof p[f.k] === "string" ? p[f.k].trim().slice(0, 40) : ""; d.profile[f.k] = f.k === "job" && v === "other" ? "" : v; } // "other" was the old line-of-work default
     else if (f.type === "month") d.profile[f.k] = /^\d{4}-\d{2}$/.test(p[f.k]) ? p[f.k] : "";
     else { const n = num(p[f.k]); d.profile[f.k] = n === "" ? "" : Math.max(0, f.k === "taxPct" ? Math.min(60, n) : f.k === "seasonMonths" ? Math.min(12, n) : n); }
   });
@@ -2190,6 +2202,9 @@ let D = load();
 function monthlyOf(r) { return (+r.amount || 0) * (FREQ[r.freq] ?? 1); }
 // Seasonal work: pay that only comes in during the season is spread over the whole year, so the budget fits the slow months too
 const isSeasonal = () => (D.profile || {}).seasonal === "yes";
+// The owner's own words for their season and line of work
+const seasonWord = () => String((D.profile || {}).seasonName || "").trim() || "season";
+const jobWord = () => String((D.profile || {}).job || "").trim();
 const seasonMonths = () => { const m = +(D.profile || {}).seasonMonths; return m >= 1 && m <= 12 ? m : 5; };
 const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 function seasonClock(now = new Date()) {
@@ -2641,17 +2656,17 @@ function review(c, sim) {
   if (c.wants / c.income > .3) F.push(["warning", "Lifestyle spending is above 30%", `Wants come to ${fmt(c.wants)} a month (${pct(c.wants / c.income)} of take-home pay). The biggest are ${topWants(3)}.`, 3]);
   if (c.untaxed) F.push(["warning", "Some of your income has no tax taken off", `About ${fmt(c.untaxed * 12)} a year comes in with no tax withheld, and as a self-employed earner you pay both halves of CPP on it. Your budget sets aside ${P.taxPct ?? 25}% (${fmt(c.taxSetAside)} a month). Move that into a separate savings account each month so April isn't a surprise, and keep receipts for business expenses. If you owe enough, CRA can ask for quarterly instalments, and past a revenue threshold you must register for GST/HST. Check CRA's current thresholds.`, 2]);
   const onJob = monthsOnJob();
-  if (isSeasonal() && onJob != null && onJob < 18) F.push(["warning", "This is your first year on seasonal pay", `You started this job ${onJob <= 1 ? "recently" : `${onJob} months ago`}, after years of steady year-round pay, so you haven't lived through a full off-season on this income yet. Three things change: keep six months of essentials instead of three, budget on the yearly average rather than summer paycheques, and expect your tax to look different. Payroll withholds tax as if each big season cheque lasted all year, so ${new Date().getFullYear()} may end in a refund if you earn little outside the season.`, 2]);
+  if (isSeasonal() && onJob != null && onJob < 18) F.push(["warning", "This is your first year on seasonal pay", `You started this job ${onJob <= 1 ? "recently" : `${onJob} months ago`}, after years of steady year-round pay, so you haven't lived through a full off-season on this income yet. Three things change: keep six months of essentials instead of three, budget on the yearly average rather than in-season paycheques, and expect your tax to look different. Payroll withholds tax as if each big season cheque lasted all year, so ${new Date().getFullYear()} may end in a refund if you earn little outside the season.`, 2]);
   if (P.oldPlans !== "no" && onJob != null) F.push(["info", "Track pensions and group RRSPs from earlier jobs", `${P.oldPlans === "yes" ? "Your earlier employers had" : "If an earlier employer had"} a pension or group RRSP, that money is still yours. Find out whether it stayed in the old plan, was moved to a locked-in account, or was paid out, and add it under What you own so your net worth and retirement picture are complete. Pension adjustments from those years also explain why your RRSP room may be lower than you'd expect.`, 4]);
-  if (isSeasonal()) F.push(["info", "Your budget uses your yearly average", `You earn most of your money in ${c.seasonMonths} months. In season about ${fmt(c.inSeasonIncome)} a month comes in, and off season about ${fmt(c.offIncome)}. Every figure here spreads that over 12 months (${fmt(c.income)} a month), so a big summer cheque isn't a raise. Budget on the average and let the off-season fund carry you.`, 2]);
-  if (c.allowance) F.push(["info", "Per diems are meant for meals and travel", `About ${fmt(c.allowance * 12)} a year comes in as per diems or allowances. When they're reasonable allowances for working away from home, an employer usually pays them tax-free, so they aren't on your T4 as income. Only the part you don't spend on the road is really yours: if it pays for meals while you're deployed, add those meals to your spending, or leave the per diem out of income. Keep the dates and places you were away. ${P.employment === "contractor" ? "As a contractor, per diems a client pays you are part of your business income, and the meal costs are a business expense." : "If a per diem shows up as taxable on your T4, the Taxes volume can check whether you can claim meals instead."}`, 3]);
-  if (P.job === "pilot") {
-    F.push(["warning", "Your income depends on your medical and licence", `If you lose your aviation medical, even for a while, you can't fly, and that's your main income. Check whether your work benefits include disability or loss-of-licence coverage. If not, a private loss-of-licence or disability policy is worth pricing. Budget for medical renewals, recurrent training and licence fees under Work & licensing so they don't come as a surprise.`, 3]);
-    if (SC && SC.justEnded && P.employment !== "contractor") F.push(["critical", "Your season just ended: apply for EI now", `Apply online within four weeks of your last day of work, even before your Record of Employment arrives. A late application can cost you weeks of benefits. Once it's approved, add EI under income as "Off-season only".`, 1]);
-    else if (isSeasonal() && P.employment !== "contractor") F.push(["info", "Apply for EI as soon as the season ends", `Seasonal firefighting and flying jobs usually build enough insurable hours for EI regular benefits in the off season. Apply within four weeks of your last day, even if your Record of Employment isn't ready yet. If you get EI, add it as income marked "Off-season only".`, 4]);
-    else if (isSeasonal()) F.push(["info", "As a contractor, there's no EI for the off season", `Contractors don't pay into EI, so there are no regular benefits when the season ends. The self-employed EI program only covers special benefits like sickness and parental leave. That makes your off-season fund the safety net.`, 4]);
-    F.push(["info", "Keep your work receipts", `Keep receipts for licences, medicals, training, headsets, gear and union dues, plus the dates you were deployed away from home. Which ones you can deduct depends on whether you're an employee or a contractor. The Taxes volume tracks the tax side, and a CPA can confirm.`, 5]);
+  if (isSeasonal()) F.push(["info", "Your budget uses your yearly average", `You earn most of your money in ${c.seasonMonths} months. In season about ${fmt(c.inSeasonIncome)} a month comes in, and off season about ${fmt(c.offIncome)}. Every figure here spreads that over 12 months (${fmt(c.income)} a month), so a big in-season cheque isn't a raise. Budget on the average and let the off-season fund carry you.`, 2]);
+  if (c.allowance) F.push(["info", "Per diems are meant for meals and travel", `About ${fmt(c.allowance * 12)} a year comes in as per diems or allowances. When they're reasonable allowances for working away from home, an employer usually pays them tax-free, so they aren't on your T4 as income. Only the part you don't spend on the road is really yours: if it pays for meals while you're away, add those meals to your spending, or leave the per diem out of income. Keep the dates and places you were away. ${P.employment === "contractor" ? "As a contractor, per diems a client pays you are part of your business income, and the meal costs are a business expense." : "If a per diem shows up as taxable on your T4, the Taxes volume can check whether you can claim meals instead."}`, 3]);
+  if (P.licence === "yes") F.push(["warning", `Your ${jobWord() ? esc(jobWord().toLowerCase()) + " " : ""}income depends on your licence or medical`, `If you lose your licence or medical, even for a while, you can't work, and that's your main income. Check whether your work benefits include disability or loss-of-licence coverage. If not, a private loss-of-licence or disability policy is worth pricing. Budget for medical renewals, training and licence fees under Work & licensing so they don't come as a surprise.`, 3]);
+  if (isSeasonal()) {
+    if (SC && SC.justEnded && P.employment !== "contractor") F.push(["critical", `Your ${esc(seasonWord())} just ended: apply for EI now`, `Apply online within four weeks of your last day of work, even before your Record of Employment arrives. A late application can cost you weeks of benefits. Once it's approved, add EI under income as "Off-season only".`, 1]);
+    else if (P.employment !== "contractor") F.push(["info", `Apply for EI as soon as the ${esc(seasonWord())} ends`, `Seasonal jobs often build enough insurable hours for EI regular benefits in the off season. Apply within four weeks of your last day, even if your Record of Employment isn't ready yet. If you get EI, add it as income marked "Off-season only".`, 4]);
+    else F.push(["info", "As a contractor, there's no EI for the off season", `Contractors don't pay into EI, so there are no regular benefits when the season ends. The self-employed EI program only covers special benefits like sickness and parental leave. That makes your off-season fund the safety net.`, 4]);
   }
+  if (P.licence === "yes" || P.union === "yes" || P.perdiem === "yes") F.push(["info", "Keep your work receipts", `Keep receipts for licences, medicals, training, tools, gear and union dues, plus the dates you worked away from home. Which ones you can deduct depends on whether you're an employee or a contractor. The Taxes volume tracks the tax side, and a CPA can confirm.`, 5]);
   const bi = D.income.filter(i => i.freq === "biweekly" && +i.amount > 0 && !(isSeasonal() && i.season !== "all"));
   if (bi.length) F.push(["info", "Two months a year you'll get a third paycheque", `Your budget counts ${bi.length > 1 ? "every-two-weeks pay" : esc(bi[0].name || "your pay")} as two cheques a month. Twice a year a third one arrives (about ${fmt(sum(bi, i => +i.amount))}). Send it straight to your top priority above instead of letting it blend into spending.`, 4]);
   F.push(["info", "File your tax return every year", `Even in a low-income year. The GST/HST credit, Canada Child Benefit, Canada Workers Benefit and provincial credits are only paid if you file, and filing records new RRSP room.`, 6]);
@@ -2707,7 +2722,7 @@ function review(c, sim) {
 /* ---------- Statements (CSV import, all parsed locally) ---------- */
 const NOT_SPEND = new Set(["Transfer", "Debt payment", CCP, "Income", "Saving & investing", WX]);
 const RULES = [
-  ["Business expense", /(github|vercel|netlify|amazon web services|\baws\b|digitalocean|heroku|apple developer|developer program|play console|google \*?play dev|firebase|supabase|cloudflare|namecheap|godaddy|hover\.com|squarespace domain|figma|jetbrains|testflight|expo\.dev|squawk)/],
+  ["Business expense", /(github|vercel|netlify|amazon web services|\baws\b|digitalocean|heroku|apple developer|developer program|play console|google \*?play dev|firebase|supabase|cloudflare|namecheap|godaddy|hover\.com|squarespace domain|figma|jetbrains|testflight|expo\.dev)/],
   [WX, /(reimb|expense (claim|report|repay)|exp (claim|reimb|rpt)|employee exp|remboursement|frais de d[eé]placement)/],
   // Bank-coded lines from TD, BMO and other Canadian banks, checked first
   ["Bank fees & interest", /(^\[sc\]|interest on (purchases|cash)|premium (card )?fee|bmo .{0,20}fee|performance plan|plan fee rebate|monthly (account|plan) fee|account fee|acct fee|plan fee|service (charge|fee)|svc chg|\bnsf\b|non-sufficient|overdraft|\bod (fee|int)|annual fee|interest charge|purchase interest|cash advance (fee|int)|foreign (transaction|exchange) fee|fx fee|atm fee|network fee|e-?tfr fee|transfer fee|\bfrais\b|card fee|statement fee|paper statement)/],
@@ -2716,7 +2731,7 @@ const RULES = [
   ["Saving & investing", /(td (direct|ewealth|mutual|wealth)|easy ?trade|bmo (investorline|smartfolio|nesbitt|mutual)|cibc investor|rbc direct|scotia ?itrade|\bitrade|nbdb|national bank direct|interactive brokers|\bibkr|moka|crypto\.?com|foris dax|kraken|payward|shakepay|bitbuy|newton crypto|\bndax|coinbase|wealthsimple|questrade|qtrade|\brrsp\b|\btfsa\b|\bfhsa\b|\bresp\b|\bgic\b|mutual fund|\brsp\b)/],
   ["Debt payment", /(bmo (mc|mastercard|master|cashback|air miles|eclipse|world elite|line of credit|loc|loan)|\[ib\].{0,10}(mastercard|mc|visa)|td (visa|mc|mastercard)|mastercard (pmt|payment)|visa (pmt|payment)|\bpmt\b.*(visa|mc|master)|cibc (visa|mc)|rbc (visa|mc)|scotia (visa|mc)|amex (bill|pmt|payment)|american express|capital one|triangle|pc (mastercard|financial)|rogers bank|tangerine (mc|mastercard)|loan (pmt|payment|pymt)|\bloc (pmt|payment)|line of credit|\bosap\b|nslsc|student loan|car loan|auto loan|(toyota|honda|ford|gm|nissan|hyundai|kia|mazda|subaru|vw) (financial|credit|finance)|td auto|scotia dealer|rbc auto|flexiti|affirm|paybright|afterpay|klarna)/],
   ["Housing", /(self[- ]?storage|mini[- ]?storage|storage (unit|locker|centre|center)|public storage|access storage|dymon|sentinel storage|storagemart|storage king|apple self|maple leaf self|u-?haul.{0,10}stor|\bmtg\b|mortgage|hypoth|property tax|prop tax|tax (city|town|twp)|municipal tax|(city|town|township|municipality) of .{0,20}(tax|taxes)|condo (fee|corp)|strata|\brent\b|loyer|property m(gm)?t|landlord)/],
-  ["Utilities", /(hydro one|north bay hydro|toronto hydro|hydro ottawa|alectra|elexicon|ep electricity|hydro|enbridge|union gas|reliance (home|comfort)|enercare|superior propane|propane|heating oil|fuel oil|water (bill|dept|util)|(city|town) of .{0,20}(water|util)|fortis|epcor|atco|sask(power|energy)|nb power|nova scotia power)/],
+  ["Utilities", /(hydro one|toronto hydro|hydro ottawa|alectra|elexicon|ep electricity|hydro|enbridge|union gas|reliance (home|comfort)|enercare|superior propane|propane|heating oil|fuel oil|water (bill|dept|util)|(city|town) of .{0,20}(water|util)|fortis|epcor|atco|sask(power|energy)|nb power|nova scotia power)/],
   ["Phone & internet", /(bell (canada|mobility|aliant|mts)|\bbell\b|rogers|telus|\bfido\b|koodo|virgin (plus|mobile)|freedom mobile|chatr|public mobile|lucky mobile|cogeco|eastlink|videotron|vid[eé]otron|\bshaw\b|starlink|sasktel|teksavvy|start\.ca|distributel|\bebox\b|execulink|\boxio\b|fizz|tbaytel|internet|wireless)/],
   ["Income", /(^\[dn\]|payroll|pay dep|payroll dep|direct dep|\bdep\b.*(pay|salary)|fed-?prov|canada (gst|ccb|fpt|caip|carbon|dental)|gst ?credit|\bgst\b|climate action|\bcaip\b|ontario[- ]trillium|\botb\b|\bccb\b|ei canada|\bei\b|cpp canada|oas canada|cra refund|income tax refund|canada rit|receiver general)/],
   ["Transfer", /(^\[\w\w\]\s*tf\b|^tf \d|\btf \d{4,}|\btrsf\b|\btsf\b|tfr-(to|fr)|own account|between accounts|to sav(ings)?|from sav(ings)?)/],
@@ -2730,7 +2745,7 @@ const RULES = [
   ["Shopping", /(dollar ?tree|dollarama|staples|the source|indigo|chapters|sport ?chek|mark'?s|princess auto|\brona\b|home hardware|lee valley|simons|\bsail\b|bass pro|cabela|pet ?valu|petsmart|petland|structube|the brick|leon'?s|visions|best buy|apple store|aliexpress|wayfair|canadian tire|winners|homesense|giant tiger|walmart|amazon|amzn|costco wholesale|ikea|home depot|lowe'?s)/],
   ["Gifts & giving", /(canadahelps|united way|salvation army|food bank|sickkids|cancer society|heart & stroke|donat|church|paroisse)/],
   ["Income", /(per diem|perdiem|meal allow|travel allow|\bei\b|employment ins)/],
-  ["Work & licensing", /(transport canada|tc aviation|aviation med|nav canada|lightspeed|sporty|aircraft spruce|pilot ?supply|aviation supplies|\balpa\b|aircrew|flight safety|recurrent training|simulator)/],
+  ["Work & licensing", /(union dues|professional dues|licen[cs]e renewal|certification fee)/],
   ["Saving & investing", /(\brrsp\b|\btfsa\b|\bfhsa\b|\bresp\b|wealthsimple|questrade|investorline|direct investing|mutual fund|\bgic\b|qtrade|webbroker|ewealth|smartfolio)/],
   ["Transfer", /\b(xfer|trnsfr|tfr-to|tfr-fr|tfr to|tfr fr|(online|internet|mobile|bank|account|acct) transfer|transfer (to|from)|to savings|from savings|to chequing|from chequing|to checking|from checking)\b/],
   ["Debt payment", /(payment received|preauth pymt|mastercard pmt|visa pmt|mc payment|bmo mc|td visa|payment\W*thank you|thank you for your payment|nslsc|national student loan|(card|credit|visa|mastercard|amex|discover|citi|chase).{0,24}(autopay|auto pay|payment|pymt|pmt)|card payment|credit card|crd pmt|loan pmt|loan payment|student loan|navient|sallie mae|nelnet|mohela|mortgage|auto loan|capital one.*pmt|discover.*pmt|amex.*pmt|\bepay\b)/],
@@ -2759,6 +2774,7 @@ const CARDISH = /(mastercard|master card|visa|amex|american express|\bmc\b|credi
 function categorize(desc, amt, account) {
   const k = merchantKey(desc), s = String(desc || "").toLowerCase();
   if (D.rules && D.rules[k] && TX_CATS.includes(D.rules[k])) return D.rules[k];
+  if (amt < 0 && (D.workPlaces || []).some(w => s.includes(w))) return "Work & licensing"; // Your work suppliers (My numbers)
   // Interac e-Transfers to or from people are real income or spending; own-account ones get paired later
   if (ETRANSFER.test(s)) return amt > 0 ? "Income" : /\b(rent|landlord)\b/.test(s) ? "Housing" : UNS;
   for (const [cat, re] of RULES) if (re.test(s)) {
@@ -2917,7 +2933,7 @@ function showMapper(name, g) {
     <h2>Check the columns in ${esc(name)}</h2>
     <p class="desc">I've guessed which column is which. Look at the preview below, and fix anything that's wrong before adding.</p>
     <div class="mapgrid">
-      <label>Which account is this?<input type="text" id="mAcct" value="${esc(guess)}" placeholder="e.g. TD Chequing or BMO Mastercard" list="acctList" autocomplete="off" spellcheck="false"><datalist id="acctList">${known.map(k => `<option value="${esc(k)}">`).join("")}</datalist></label>
+      <label>Which account is this?<input type="text" id="mAcct" value="${esc(guess)}" placeholder="e.g. Chequing or Visa card" list="acctList" autocomplete="off" spellcheck="false"><datalist id="acctList">${known.map(k => `<option value="${esc(k)}">`).join("")}</datalist></label>
       <label>Date column<select id="mDate">${opts(m.date)}</select></label>
       <label>Description column<select id="mDesc">${opts(m.desc)}</select></label>
       <label>Amounts are in<select id="mMode"><option value="single" ${m.mode === "single" ? "selected" : ""}>One amount column</option><option value="split" ${m.mode === "split" ? "selected" : ""}>Separate money out / money in columns</option></select></label>
@@ -3610,14 +3626,38 @@ function buildProfile(box) {
     let inp;
     if (f.type === "select") { inp = document.createElement("select"); f.opts.forEach(o => { const op = document.createElement("option"); op.value = o; op.textContent = f.labels[o]; inp.appendChild(op); }); inp.value = D.profile[f.k] ?? f.opts[0]; }
     else if (f.type === "month") { inp = document.createElement("input"); inp.type = "month"; inp.value = D.profile[f.k] || ""; }
+    else if (f.type === "text") { inp = document.createElement("input"); inp.type = "text"; inp.maxLength = 40; inp.value = D.profile[f.k] || ""; }
     else { inp = document.createElement("input"); inp.type = "number"; inp.min = 0; inp.step = "any"; inp.placeholder = f.def != null ? String(f.def) : "0"; inp.value = D.profile[f.k] ?? ""; }
     inp.className = "fld-in"; inp.autocomplete = "off"; inp.spellcheck = false;
-    inp.addEventListener(f.type === "select" ? "change" : "input", () => { D.profile[f.k] = f.type === "select" || f.type === "month" ? inp.value : (inp.value === "" ? "" : +inp.value); persist(); renderAll(false); });
+    inp.addEventListener(f.type === "select" ? "change" : "input", () => { D.profile[f.k] = f.type === "select" || f.type === "month" || f.type === "text" ? inp.value : (inp.value === "" ? "" : +inp.value); persist(); renderAll(false); });
     lab.appendChild(inp);
     if (f.hint) { const h = document.createElement("span"); h.style.cssText = "color:var(--muted);font-size:11.5px"; h.textContent = f.hint; lab.appendChild(h); }
     grid.appendChild(lab);
   });
   box.appendChild(card);
+}
+// Your work suppliers: any statement line naming one of these goes to Work & licensing
+function buildWorkPlaces(box) {
+  const card = document.createElement("div"); card.className = "card"; card.id = "workPlacesCard";
+  card.innerHTML = `<div class="section-head"><div><h2>Your work suppliers</h2><p class="desc">Places you pay for work, like a licensing office, a training school or a tool or uniform shop. Type a word from the name as it shows on your statement, and every purchase with it goes to Work &amp; licensing.</p></div></div><div class="wp-list"></div><form class="wp-add"><input class="fld-in" type="text" maxlength="60" placeholder="e.g. safety supply" aria-label="Supplier name as it shows on your statement" autocomplete="off" spellcheck="false"><button type="submit">Add</button></form>`;
+  const list = card.querySelector(".wp-list"), form = card.querySelector("form"), inp = form.querySelector("input");
+  const draw = () => { list.innerHTML = D.workPlaces.length ? D.workPlaces.map((w, i) => `<span class="wp">${esc(w)}<button type="button" class="xun" data-wp="${i}" title="Remove" aria-label="Remove ${esc(w)}">×</button></span>`).join("") : `<span class="wp-none">None yet.</span>`; };
+  list.onclick = e => {
+    const b = e.target.closest("[data-wp]"); if (!b) return;
+    const [w] = D.workPlaces.splice(+b.dataset.wp, 1);
+    // Purchases it moved go back to their usual category
+    D.transactions.forEach(t => { if (t.category === "Work & licensing" && !t.manual && !t.link && String(t.desc).toLowerCase().includes(w)) t.category = categorize(t.desc, t.amount, t.account); });
+    persist(); draw(); renderAll(false);
+  };
+  form.onsubmit = e => {
+    e.preventDefault(); const w = inp.value.trim().toLowerCase().slice(0, 60); if (!w) return;
+    if (!D.workPlaces.includes(w)) D.workPlaces.push(w);
+    // Earlier purchases there move too, unless you sorted them yourself
+    let n = 0; D.transactions.forEach(t => { if (t.amount < 0 && !t.manual && !t.link && !(D.rules && D.rules[merchantKey(t.desc)]) && String(t.desc).toLowerCase().includes(w) && t.category !== "Work & licensing") { t.category = "Work & licensing"; n++; } });
+    inp.value = ""; persist(); draw(); renderAll(false);
+    toast(n ? `Added. ${n} ${n === 1 ? "purchase" : "purchases"} moved to Work & licensing.` : "Added.");
+  };
+  draw(); box.appendChild(card);
 }
 // Accounts named in your statements; credit cards are left out because they're owed, not owned
 function stmtAccounts() {
@@ -3647,6 +3687,7 @@ function buildEditors() {
   stmtAccounts().forEach(a => { const o = document.createElement("option"); o.value = a; dl.appendChild(o); });
   box.appendChild(dl);
   buildProfile(box);
+  buildWorkPlaces(box);
   Object.entries(SCHEMA).forEach(([key, s]) => {
     const card = document.createElement("div"); card.className = "card";
     card.innerHTML = `<div class="section-head"><div><h2>${s.title}</h2><p class="desc">${s.desc}</p></div><div class="total" data-total="${key}"></div></div><div class="scroll"><table class="data"><thead><tr>${s.fields.map(f => `<th class="${f.type === "money" || f.type === "pct" ? "n" : ""}">${f.label}</th>`).join("")}<th></th></tr></thead><tbody></tbody></table></div><button class="add">+ Add ${s.title.toLowerCase().replace(/^monthly /, "").replace(/s$/, "").replace("what you own", "an asset").replace("bills & spending", "expense").replace("income", "income source")}</button>`;
@@ -4017,9 +4058,9 @@ function renderTaxes(c) {
   }
   if (!seen.has("fhsa") && P.firstHome === "yes") ideas.push(["Open an FHSA before you buy", `You can put in up to $8,000 a year (lifetime $40,000), deduct it like an RRSP, and take it out tax-free for a first home. Room only starts building once the account is open, and up to $8,000 of unused room carries forward.${fhsaRoom != null ? ` The Taxes volume shows ${fmt(fhsaRoom)} of room.` : ""}`]);
   const perDiem = sum(D.income.filter(i => i.taxed === "allow"), incomeMonthlyOf);
-  if (!seen.has("perdiem-check") && (perDiem || P.job === "pilot")) ideas.push(["Get per diems right", `Reasonable allowances for meals and travel while you work away from home are usually tax-free for employees and shouldn't be on your T4 as income. If your employer did include them, check box 14 against your pay stubs. ${P.employment === "contractor" ? "As a contractor, per diems you charge are business income and the meals are a business expense (50% deductible)." : "Keep a log of the dates and places you were deployed in case CRA asks."}`]);
-  if (!seen.has("tl2-meals") && P.job === "pilot" && P.employment !== "contractor") ideas.push(["Ask about form TL2 for meals while deployed", `Employees of transport businesses, which can include air operators, who travel away from home and aren't fully reimbursed for meals may be able to claim them with form TL2. The claim is 50% of the meal cost (or of CRA's simplified rate per meal), less any tax-free meal allowance you got. It's worth checking in the Taxes volume or with a CPA for the years you were on deployments.`]);
-  if (!seen.has("union-dues") && P.job === "pilot") ideas.push(["Union and professional dues are deductible", `Dues for a union or a professional body needed for your work are deductible. They're often already in box 44 of your T4; if you paid them yourself, keep the receipt.`]);
+  if (!seen.has("perdiem-check") && (perDiem || P.perdiem === "yes")) ideas.push(["Get per diems right", `Reasonable allowances for meals and travel while you work away from home are usually tax-free for employees and shouldn't be on your T4 as income. If your employer did include them, check box 14 against your pay stubs. ${P.employment === "contractor" ? "As a contractor, per diems you charge are business income and the meals are a business expense (50% deductible)." : "Keep a log of the dates and places you worked away from home in case CRA asks."}`]);
+  if (!seen.has("tl2-meals") && (P.transport === "yes" || (P.transport === "unsure" && (perDiem || P.perdiem === "yes"))) && P.employment !== "contractor") ideas.push(["Ask about form TL2 for meals while travelling for work", `Employees of transport businesses (airlines, trucking, bus, rail or shipping) who travel away from home and aren't fully reimbursed for meals may be able to claim them with form TL2. The claim is 50% of the meal cost (or of CRA's simplified rate per meal), less any tax-free meal allowance you got. It's worth checking in the Taxes volume or with a CPA for the years you travelled for work.`]);
+  if (!seen.has("union-dues") && P.union === "yes") ideas.push(["Union and professional dues are deductible", `Dues for a union or a professional body needed for your work are deductible. They're often already in box 44 of your T4; if you paid them yourself, keep the receipt.`]);
   if (!seen.has("carryforward-loss")) { const loss = TAX && TAX.years.some(y => y.income.cryptoGains < 0); if (loss) ideas.push(["Crypto losses can lower tax in other years", `A net capital loss is applied to capital gains from the three years before it first, then carried forward with no time limit. Report each year's loss, even in a year you didn't owe.`]); }
   $("#taxIdeas").innerHTML = `<div class="section-head"><div><h2>Ways to pay less tax</h2><p class="desc">Ideas that fit your situation. Confirm the details for your province in the Taxes volume or with a CPA before filing.</p></div></div>` +
     (ideas.length ? `<div>${ideas.map(([t, b]) => `<div class="finding">${icon("info")}<div><h3>${esc(t)}</h3><p>${esc(b)}</p></div></div>`).join("")}</div>` : `<div class="empty">Add your gross income under About you in My numbers to see ideas.</div>`);
@@ -4043,7 +4084,7 @@ function renderTaxes(c) {
     const li = a => `<ul style="margin:6px 0 14px;padding-left:20px;line-height:1.7;color:var(--text-2)">${a.map(x => `<li>${x}</li>`).join("")}</ul>`;
     $("#bizGuide").innerHTML = `<h3 class="mh" style="font-size:14px;margin:6px 0 0">What you can usually expense</h3>${li([
       "Supplies, tools and software you use for the business",
-      "Equipment like a computer, drone or headset, written off over several years (capital cost allowance)",
+      "Equipment like a computer, camera or tools, written off over several years (capital cost allowance)",
       "The business share of your phone and internet",
       "Vehicle costs for business driving, by the share of kilometres (keep a logbook)",
       "Business use of your home, if it's where you mainly work or meet clients: a share of rent, utilities and insurance",
@@ -4058,7 +4099,7 @@ function renderTaxes(c) {
       "Register a business name with your province if you don't use your own name.",
       "Keep receipts and records for six years.",
       `Self-employed returns are due June 15, but any balance owing is still due April 30.`,
-      P.job === "pilot" ? "Flying for hire or drone work needs the right Transport Canada certificate and insurance before you charge for it." : "Check whether your work needs a licence or permit before you charge for it."])}
+      "Check whether your work needs a licence or permit before you charge for it."])}
       <p class="desc">Once a business earns more than you need to live on, incorporating can defer tax. That's a conversation for a CPA.</p>`;
     $("#bizGuide").dataset.done = "1";
   }
@@ -4140,7 +4181,7 @@ function renderStrategy(c, keepForm) {
   if (hi.length) step(`Pay off high-interest debt`, sum(hi, d => +d.balance), `${hi.map(d => esc(d.name || d.type)).join(", ")}, highest rate first. Every dollar here earns a guaranteed ${Math.round(Math.max(...hi.map(d => +d.apr)))}%.${pool <= 0 && c.cash > c.essentialMonthly ? " Use savings above your starter cushion for this before building more." : ""}`);
   // 5. Full emergency fund
   const efTotal = c.essentialMonthly * c.efTarget;
-  step(`Emergency fund to ${c.efTarget} months`, efTotal - c.essentialMonthly, `${fmt(efTotal)} in total${seasonal && c.offFund > 0 ? ", on top of the off-season fund, because a slow fire season or a lost medical would hit your income for months" : seasonal ? ", because a slow season or a lost medical would hit your income for months" : ""}. Keep it in high-interest savings, ideally inside a TFSA if you have room. If you take money out of a TFSA, you can only put it back the next calendar year unless you have spare room.`);
+  step(`Emergency fund to ${c.efTarget} months`, efTotal - c.essentialMonthly, `${fmt(efTotal)} in total${seasonal && c.offFund > 0 ? ", on top of the off-season fund, because a slow " + esc(seasonWord()) + (P.licence === "yes" ? " or a lost licence" : "") + " would hit your income for months" : seasonal ? ", because a slow " + esc(seasonWord()) + (P.licence === "yes" ? " or a lost licence" : "") + " would hit your income for months" : ""}. Keep it in high-interest savings, ideally inside a TFSA if you have room. If you take money out of a TFSA, you can only put it back the next calendar year unless you have spare room.`);
   // 6. Home
   if (g.has("home")) {
     const target = +S.homeTarget || 0, need = Math.max(0, target - fhsaHave), yrs = +S.homeYears || 0;
@@ -4209,7 +4250,7 @@ function renderStrategy(c, keepForm) {
     <p>Your answers point to a <b>${riskName}</b> mix: about ${stocks}% stocks and ${100 - stocks}% bonds. ${S.style === "auto" ? "A single all-in-one ETF, or a robo-advisor, keeps that mix and rebalances it for you." : "One all-in-one ETF at that mix is the simplest; if you build your own, rebalance once a year."} Money you need within three years, like a near-term down payment or your funds for the off-season, stays in savings, not the market.</p>
     <p style="margin-bottom:4px">Fill accounts in this order:</p>${li(order)}
     <h3 class="mh">Protect the plan</h3>${li([
-      P.job === "pilot" ? "<b>Loss-of-licence or disability insurance.</b> Your income depends on your medical. Check what your employer covers, and price a private policy for the gap." : "<b>Disability insurance.</b> Check what your work benefits cover if you can't work.",
+      P.licence === "yes" ? "<b>Loss-of-licence or disability insurance.</b> Your income depends on your licence or medical. Check what your employer covers, and price a private policy for the gap." : "<b>Disability insurance.</b> Check what your work benefits cover if you can't work.",
       +P.kids > 0 || g.has("family") ? "<b>Life insurance</b> for the people who depend on you, usually term insurance for 10 to 15 times their yearly needs." : "<b>Life insurance</b> isn't a priority unless someone depends on your income.",
       "<b>A will and powers of attorney</b>, and named beneficiaries on your RRSP, TFSA and FHSA.",
       g.has("business") ? "<b>Before starting a business:</b> see the Taxes tab for what you can expense and what to set aside." : ""].filter(Boolean))}
@@ -4299,18 +4340,18 @@ const WIZ = [
   { id: "about", title: "A bit about you", text: "These help the review give advice that fits you. All optional." },
   { id: "income", sec: "income", title: "Money coming in", text: "Use take-home pay: what actually lands in your account after tax and deductions. A pay stub or your bank app shows it.", add: "Add another income",
     presets: [{ name: "Paycheque", freq: "biweekly", taxed: "yes", season: "season", hint: "Paid every 2 weeks? Pick that and I'll do the math. If you only get it in season, pick Work season only." },
-      { name: "Per diems or meal allowance", freq: "monthly", taxed: "allow", season: "season", hint: "Money for meals and travel while you're deployed. Enter a typical month in season." },
+      { name: "Per diems or meal allowance", freq: "monthly", taxed: "allow", season: "season", hint: "Money for meals and travel while you work away from home. Enter a typical month in season." },
       { name: "EI in the off season", freq: "biweekly", taxed: "yes", season: "off", hint: "Employment Insurance after the season ends, if you get it." }, { name: "Side work or self-employment", freq: "monthly", taxed: "no", hint: "Money with no tax taken off. I'll set some aside for tax." }, { name: "Benefits or other income", freq: "monthly", taxed: "yes", hint: "Canada Child Benefit, GST credit, support payments, rental income." }] },
   { id: "housing", sec: "expenses", cats: EXP_STEP.housing, title: "Your home", text: "What you pay to live where you live. If you have a mortgage, enter the payment here and the balance on the debts step.", add: "Add another housing cost",
     presets: [{ name: "Rent or mortgage payment", category: "Housing" }, { name: "Condo or strata fees", category: "Housing" }, { name: "Property tax", category: "Housing", freq: "annually" }] },
   { id: "bills", sec: "expenses", cats: EXP_STEP.bills, title: "Bills and essentials", text: "The things you have to pay for. Use a typical month, or pick Yearly for things like car insurance.", add: "Add another bill",
     presets: [{ name: "Groceries", category: "Groceries" }, { name: "Hydro / electricity", category: "Utilities" }, { name: "Heat or gas", category: "Utilities" }, { name: "Phone", category: "Phone & internet" }, { name: "Internet", category: "Phone & internet" },
       { name: "Gas for the car", category: "Transportation" }, { name: "Transit pass", category: "Transportation" }, { name: "Car insurance", category: "Insurance" }, { name: "Tenant or home insurance", category: "Insurance" }, { name: "Prescriptions, dental, glasses", category: "Healthcare" }, { name: "Childcare", category: "Childcare", kids: true },
-      { name: "Aviation medical", category: "Work & licensing", freq: "annually" }, { name: "Licences, training and currency", category: "Work & licensing", freq: "annually" }, { name: "Headset, gear and uniforms", category: "Work & licensing", freq: "annually" }, { name: "Union or association dues", category: "Work & licensing" }] },
+      { name: "Work medical or licence renewal", category: "Work & licensing", freq: "annually" }, { name: "Training and certifications", category: "Work & licensing", freq: "annually" }, { name: "Tools, gear and uniforms", category: "Work & licensing", freq: "annually" }, { name: "Union or association dues", category: "Work & licensing" }] },
   { id: "life", sec: "expenses", cats: EXP_STEP.life, title: "Everyday spending", text: "The things you choose to spend on. A guess is fine; your statements can correct it later.", add: "Add something else",
     presets: [{ name: "Restaurants and takeout", category: "Dining out" }, { name: "Coffee and snacks", category: "Dining out" }, { name: "Streaming and apps", category: "Subscriptions" }, { name: "Clothes and online orders", category: "Shopping" },
       { name: "Going out, concerts, games", category: "Entertainment" }, { name: "Gym, haircuts, personal care", category: "Personal care" }, { name: "Gifts and donations", category: "Gifts & giving" }, { name: "Trips", category: "Travel", freq: "annually" }] },
-  { id: "debts", sec: "debts", title: "What you owe", text: "Your statement shows the balance, the interest rate and the minimum payment. Give each one a name you'll recognize, like TD Visa.", add: "Add another debt",
+  { id: "debts", sec: "debts", title: "What you owe", text: "Your statement shows the balance, the interest rate and the minimum payment. Give each one a name you'll recognize, like Visa card.", add: "Add another debt",
     presets: [{ name: "Credit card", type: "Credit card" }, { name: "Line of credit", type: "Line of credit" }, { name: "Student loan", type: "Student loan" }, { name: "Car loan", type: "Car loan" }, { name: "Mortgage", type: "Mortgage" }] },
   { id: "assets", sec: "assets", title: "What you own", text: "Today's balance in each account, and a rough value for a home or car. Your bank app or the latest statement has the numbers.", add: "Add another account",
     presets: [{ name: "Chequing", type: "Chequing" }, { name: "Savings", type: "Savings (HISA)" }, { name: "TFSA", type: "TFSA" }, { name: "RRSP (including group RRSP)", type: "RRSP" }, { name: "FHSA", type: "FHSA" },
@@ -4336,7 +4377,7 @@ function guessFile(sec, name, fallback) {
     if (/\b(insurance)\b/.test(n)) return "Insurance";
     if (/\b(daycare|childcare|nanny|babysit)\b/.test(n)) return "Childcare";
     if (/\b(pet|vet|dog|cat)\b/.test(n)) return "Other";
-    if (/medical|licen[cs]e|training|currency|headset|uniform|union|dues|logbook|aviation|flight gear/.test(n)) return "Work & licensing";
+    if (/medical|licen[cs]e|training|certification|tools|gear|uniform|union|dues/.test(n)) return "Work & licensing";
     const c = categorize(name, -1, ""); return CATS.includes(c) ? c : fallback;
   }
   if (sec === "debts") {
@@ -4419,8 +4460,9 @@ function wzDraw() {
     body.innerHTML = `<div class="wrow" style="grid-template-columns:1fr 1fr">${PROFILE_FIELDS.filter(f => f.k !== "taxPct").map(f => f.type === "select"
       ? `<label>${esc(f.label)}<select data-p="${f.k}">${f.opts.map(o => `<option value="${o}" ${o === WZ.profile[f.k] ? "selected" : ""}>${esc(f.labels[o])}</option>`).join("")}</select></label>`
       : f.type === "month" ? `<label>${esc(f.label)}<input type="month" data-p="${f.k}" data-month="1" value="${esc(WZ.profile[f.k] || "")}"></label>`
+      : f.type === "text" ? `<label>${esc(f.label)}<input type="text" maxlength="40" data-p="${f.k}" data-text="1" value="${esc(WZ.profile[f.k] || "")}" autocomplete="off">${f.hint ? `<span style="font-size:11px">${esc(f.hint)}</span>` : ""}</label>`
       : `<label>${esc(f.label)}<input type="number" min="0" step="any" inputmode="decimal" data-p="${f.k}" value="${esc(WZ.profile[f.k] ?? "")}" placeholder="0" autocomplete="off">${f.hint ? `<span style="font-size:11px">${esc(f.hint)}</span>` : ""}</label>`).join("")}</div>`;
-    body.querySelectorAll("[data-p]").forEach(el => el.addEventListener(el.tagName === "SELECT" ? "change" : "input", () => { WZ.dirty = true; WZ.profile[el.dataset.p] = el.tagName === "SELECT" || el.dataset.month ? el.value : (el.value === "" ? "" : +el.value); }));
+    body.querySelectorAll("[data-p]").forEach(el => el.addEventListener(el.tagName === "SELECT" ? "change" : "input", () => { WZ.dirty = true; WZ.profile[el.dataset.p] = el.tagName === "SELECT" || el.dataset.month || el.dataset.text ? el.value : (el.value === "" ? "" : +el.value); }));
   } else if (st.id === "done") {
     const all = wzCollect(), c = { inc: withWzProfile(() => sum(all.income, incomeMonthlyOf)), exp: sum(all.expenses, monthlyOf), dp: sum(all.debts, r => +r.min || 0), debt: sum(all.debts, r => +r.balance || 0), own: sum(all.assets, r => +r.value || 0), save: sum(all.goals, r => +r.monthly || 0) };
     const line = (k, v, n) => `<tr><td>${k}</td><td class="n">${v}</td><td class="wz-filed">${n}</td></tr>`;
@@ -4440,7 +4482,7 @@ function wzDraw() {
     body.innerHTML = rows.map((r, i) => {
       const pre = r._pre;
       const filed = pre && !r._custom ? `<label>Filed under<span class="wz-filed" style="padding:8px 0">${esc(st.sec === "income" ? (r.taxed === "no" ? "No tax taken off" : r.taxed === "allow" ? "Not taxed (per diem)" : "Tax taken off") : st.sec === "goals" ? (r.kind === "spend" ? "Planned purchase" : "Savings") : (r.category || r.type))}</span></label>` : wzFiledSel(st.sec, r);
-      return `<div class="wrow" data-i="${i}" style="grid-template-columns:${cols}"><label class="w-name">${pre && !r._custom ? "What" : "Name"}<input type="text" class="nm" data-f="name" value="${esc(r.name || "")}" placeholder="e.g. ${st.sec === "debts" ? "TD Visa" : st.sec === "assets" ? "EQ Bank savings" : "Netflix"}" spellcheck="false" autocomplete="off"></label>${fields.map(([f, l, t]) => wzField(r, f, l, t)).join("")}${filed}<button type="button" class="x" data-del="${i}" aria-label="Remove ${esc(r.name || "row")}" title="Remove">×</button>${pre && pre.hint ? `<div class="hint">${esc(pre.hint)}</div>` : ""}</div>`;
+      return `<div class="wrow" data-i="${i}" style="grid-template-columns:${cols}"><label class="w-name">${pre && !r._custom ? "What" : "Name"}<input type="text" class="nm" data-f="name" value="${esc(r.name || "")}" placeholder="e.g. ${st.sec === "debts" ? "Visa card" : st.sec === "assets" ? "High-interest savings" : "Streaming"}" spellcheck="false" autocomplete="off"></label>${fields.map(([f, l, t]) => wzField(r, f, l, t)).join("")}${filed}<button type="button" class="x" data-del="${i}" aria-label="Remove ${esc(r.name || "row")}" title="Remove">×</button>${pre && pre.hint ? `<div class="hint">${esc(pre.hint)}</div>` : ""}</div>`;
     }).join("") + `<button type="button" id="wzAdd" style="margin-top:10px">+ ${esc(st.add)}</button>`;
     body.querySelectorAll(".wrow").forEach(row => {
       const r = rows[+row.dataset.i];
@@ -5614,7 +5656,7 @@ function nextStep(has, open, unfiled) {
   const np = $('#tx-ovNext'), plan = stratPlan(), first = s => (String(s).match(/^.*?[.!?](?=\s|$)/) || [s])[0];
   let p;
   if (plan.length) p = { h: plan[0].title, t: first(plan[0].text), when: plan[0].when, go: [['strategy', 'Your plan']] };
-  else if (!has) p = { h: 'Import every crypto record', t: 'Crypto.com and Kraken from your very first purchase, plus anything else on the manual template.', go: [['import', 'Import files']] };
+  else if (!has) p = { h: 'Import every crypto record', t: 'Every exchange and wallet from your very first purchase. Anything the Import tab can’t read goes on the manual template.', go: [['import', 'Import files']] };
   else if (open) p = { h: 'Clear the review list', t: say(open) + ' ' + plural(open, 'item needs', 'items need') + ' a decision: transfers to match, prices to fill in or gaps in history.', go: [['review', 'Review now']] };
   else if (!unfiled.length) p = { h: 'Keep each year’s papers', t: 'CRA can ask for slips and receipts for six years after each return is filed.', go: [['filing', 'Filing plan']] };
   else {
@@ -5729,7 +5771,7 @@ function attention(has, unfiled) {
   if (!state.years) list.push(['Choose the years you’re filing', 'Set to ' + yearSpan() + ' until you choose. Years before the first one count as already filed.', 'filing', 'Choose', '']);
   if (pre.length) list.push(['Crypto in ' + pre.map(y => y.year).join(', ') + ', a year already filed', 'If it wasn’t on that return, ask your CPA about adjusting it.', 'years', 'Year reports', '']);
   const noPay = unfiled.filter(o => { const w = (state.work || {})[o.y] || {}; return !wn(w.t4inc) && !wn(w.ctGross) && !wn(w.eiInc); }).map(o => o.y);
-  if (noPay.length) list.push(['No pay entered for ' + (noPay.length > 2 ? noPay[0] + ' to ' + noPay[noPay.length - 1] : noPay.join(' and ')), 'Paste your Dayforce summary or type the T4 amounts, so each year’s estimate includes your work income.', 'work', 'Add pay', '']);
+  if (noPay.length) list.push(['No pay entered for ' + (noPay.length > 2 ? noPay[0] + ' to ' + noPay[noPay.length - 1] : noPay.join(' and ')), 'Paste your pay summary or type the T4 amounts, so each year’s estimate includes your work income.', 'work', 'Add pay', '']);
   if (unfiled.length && !taxSettings().province) list.push(['Choose your province', 'It sets the provincial part of each year’s estimate.', 'work', 'Choose', '']);
   $('#attn').innerHTML = list.length
     ? '<ol class="attn">' + list.map(([h, p, g, b, c]) => '<li' + (c ? ' class="' + c + '"' : '') + '><div><h4>' + esc(h) + '</h4><p>' + esc(p) + '</p></div><button data-goto="' + g + '">' + b + '</button></li>').join('') + '</ol>'
@@ -5954,22 +5996,22 @@ const W_FIELDS = [
     ['perdiemT4', 'Were the per diems included in T4 box 14?', 'select', [['unsure', 'Not sure'], ['no', 'No, paid separately'], ['yes', 'Yes, they were taxed']], 'emp'],
     ['mealDays', 'Days away from your home terminal for 12 hours or more', 'number', null, 'emp'],
     ['lodging', 'Lodging you paid yourself and weren’t paid back for', 'money', null, 'emp'],
-    ['transport', 'Is your employer’s main business carrying people or cargo by air?', 'select', [['unsure', 'Not sure'], ['no', 'No (aerial work such as firefighting or surveying)'], ['yes', 'Yes (airline or charter)']], 'emp'],
+    ['transport', 'Is your employer’s main business carrying people or goods (by air, road, rail or water)?', 'select', [['unsure', 'Not sure'], ['no', 'No (for example construction, surveying or field work)'], ['yes', 'Yes (airline, trucking, bus, rail or shipping)']], 'emp'],
     ['forms', 'Will your employer sign a T2200 and TL2 for this year?', 'select', [['ask', 'Haven’t asked yet'], ['yes', 'Yes'], ['no', 'No']], 'emp']
   ]],
   ['Training, dues and moving', [
-    ['tuition', 'T2202 box 26: total eligible tuition fees (flight training)', 'money'],
+    ['tuition', 'T2202 box 26: total eligible tuition fees (school or training)', 'money'],
     ['dues', 'Other union or professional dues (receipts, not on your T4)', 'money'],
-    ['licmed', 'Licence renewals and aviation medicals you paid', 'money'],
+    ['licmed', 'Licence renewals and work medicals you paid', 'money'],
     ['moveKm', 'Moved for work: how many km closer to the new job?', 'number'],
     ['moveCost', 'Moving costs (movers, travel, temporary lodging)', 'money']
   ]],
-  ['Contract flying (self-employed)', [
+  ['Contract or self-employed work', [
     ['ctGross', 'Contract income: T4A box 048 (fees for services), or your invoices if there’s no slip', 'money', null, 'ct'],
     ['ctTravel', 'Travel and lodging you paid', 'money', null, 'ct'],
     ['ctMeals', 'Meals while away (full amount; 50% is claimed)', 'money', null, 'ct'],
-    ['ctGear', 'Headsets, flight gear, uniforms, charts and apps', 'money', null, 'ct'],
-    ['ctTrain', 'Training and type ratings without a T2202', 'money', null, 'ct'],
+    ['ctGear', 'Tools, gear, uniforms and apps', 'money', null, 'ct'],
+    ['ctTrain', 'Training and certifications without a T2202', 'money', null, 'ct'],
     ['ctPhone', 'Work share of phone and internet', 'money', null, 'ct'],
     ['ctOther', 'Other business costs (insurance, accounting)', 'money', null, 'ct']
   ]]
@@ -6015,12 +6057,12 @@ function workCalc(y) {
   if (wn(w.t5ftax)) line('Foreign tax paid', '40500', 'T5 box 16, form T2209', wn(w.t5ftax), 'likely', 'Foreign tax credit.');
   if (emp && wn(w.t4dues)) line('Union dues (T4 box 44)', '21200', 'T4', wn(w.t4dues), 'likely', '');
   if (wn(w.dues)) line('Other professional dues', '21200', 'Receipts', wn(w.dues), 'likely', 'Union dues, or dues needed to keep a status recognized by law.');
-  if (emp && wn(w.licmed)) { line('Licence renewals and medicals', '—', '', wn(w.licmed), 'unlikely', 'Usually not deductible for employees.'); Q.push('Is there any way to claim my ' + y + ' pilot licence and medical costs as an employee?'); }
+  if (emp && wn(w.licmed)) { line('Licence renewals and medicals', '—', '', wn(w.licmed), 'unlikely', 'Usually not deductible for employees.'); Q.push('Is there any way to claim my ' + y + ' licence and medical costs as an employee?'); }
   if (wn(w.eiInc)) {
     line('EI benefits', '11900', 'T4E', wn(w.eiInc), 'sure', 'Taxable income.');
     if (wn(w.eiTax) < wn(w.eiInc) * 0.1) Q.push('Little tax was taken off my ' + y + ' EI. How much will I owe, and does the EI repayment apply?');
   }
-  if (wn(w.tuition)) { line('Flight training tuition', '32300', 'T2202', wn(w.tuition), 'likely', 'A tax credit, not a deduction. Unused amounts carry forward.'); Q.push('Can I use the Canada Training Credit for my ' + y + ' flight training?'); }
+  if (wn(w.tuition)) { line('Training tuition', '32300', 'T2202', wn(w.tuition), 'likely', 'A tax credit, not a deduction. Unused amounts carry forward.'); Q.push('Can I use the Canada Training Credit for my ' + y + ' training?'); }
   if (w.twoT4 === 'yes') { line('CPP and EI overpaid with two employers', '44800 / 45000', 'Both T4s', 0, 'likely', 'Each employer starts CPP and EI from zero. CRA refunds any extra when you file.'); }
   else if (w.twoT4 === 'unsure') Q.push('Did I get a ' + y + ' T4 from more than one employer, for example a final paycheque or vacation payout?');
   if (wn(w.moveKm) || wn(w.moveCost)) {
@@ -6086,7 +6128,7 @@ function renderWork(resultsOnly) {
 }
 $('#btnWorkPrint').onclick = () => { $('#workPrintHead').innerHTML = '<h2 style="margin:0 0 4px">Work and deductions, ' + state.workYear + '</h2><p style="margin:0 0 14px;color:var(--muted)">Prepared ' + fdate(Date.now()) + ' with My finances, offline. An estimate for your CPA to review.</p>'; $('#tx-tab-work').classList.add('printing'); plainPrint(); $('#tx-tab-work').classList.remove('printing'); };
 
-/* ---------- pay summary import (Dayforce or any payroll text) ---------- */
+/* ---------- pay summary import (any payroll text) ---------- */
 // Reads text the user pastes or a .txt/.csv file. Everything stays in this page.
 const PAY_TARGETS = [['', 'Skip'], ['t4inc', 'Employment income (T4 box 14)'], ['t4tax', 'Income tax taken off'], ['t4dues', 'Union dues'], ['perdiem', 'Per diems / allowances'], ['t4cpp', 'CPP contributions (T4 box 16)'], ['t4ei', 'EI premiums (T4 box 18)'], ['t4rpp', 'Pension plan (T4 box 20)'], ['eiInc', 'EI benefits'], ['eiTax', 'Tax taken off EI']];
 const PAY_NUM = /\(?-?\$?\s?\d{1,3}(?:[ ,]\d{3})*(?:\.\d{2})\)?|\(?-?\$?\d+\.\d{2}\)?/g;
@@ -6239,9 +6281,9 @@ function taxSummary() {
     if (meal && meal.amt > 0 && meal.conf !== 'unlikely') add('tl2-meals', 'Claim meals while away from base', 'As a transport employee with a signed TL2 you could deduct meals for days away 12 hours or more. Ask your CPA whether ' + (w.employer || 'your employer') + ' qualifies.', meal.amt, y);
     if (c.emp && wn(w.perdiem) && w.perdiemT4 === 'unsure') add('perdiem-check', 'Confirm how your per diems were paid', 'If they were left off T4 box 14 they’re usually tax-free. If they were included, you may be able to claim meals instead.', wn(w.perdiem), y);
     if (c.emp && w.forms === 'ask' && (wn(w.mealDays) || wn(w.lodging))) add('t2200', 'Ask your employer for a T2200 and TL2', 'Employees need these signed forms to claim meals, lodging or other work costs.', null, y);
-    if (wn(w.tuition)) add('tuition', 'Use your flight training tuition', 'Tuition on a T2202 is a credit. Unused amounts carry forward, and the Canada Training Credit may refund part of it.', wn(w.tuition), y);
+    if (wn(w.tuition)) add('tuition', 'Use your training tuition', 'Tuition on a T2202 is a credit. Unused amounts carry forward, and the Canada Training Credit may refund part of it.', wn(w.tuition), y);
     if (w.twoT4 === 'yes' || w.twoT4 === 'unsure') add('cpp-ei-overpayment', 'Get back CPP and EI overpaid', 'With T4s from two employers in ' + y + ', you may have paid too much CPP and EI. CRA refunds it when the return is filed.', null, y);
-    if (c.ct && c.ctNet > 0) add('business-records', 'Keep receipts for contract flying', 'Licences, medicals, training, gear, travel and half of meals reduce your contract income and the CPP on it.', null, y);
+    if (c.ct && c.ctNet > 0) add('business-records', 'Keep receipts for contract work', 'Licences, medicals, training, gear, travel and half of meals reduce your contract income and the CPP on it.', null, y);
   }
   const last = Object.values(R ? R.years : {}).sort((a, b) => b.year - a.year)[0];
   if (last && last.carryAfter > 0) add('carryforward-loss', 'Use your crypto losses later', 'You have net capital losses that can be applied against future capital gains, with no time limit.', last.carryAfter, null);
@@ -6281,14 +6323,14 @@ $('#taxProv').onchange = e => { taxSettings().province = e.target.value; save();
 const S_QS = [
   ['goals', 'What are you working toward?', 'multi', [['home', 'Buying a first home'], ['debt', 'Paying off debt'], ['emergency', 'A cushion for the off-season'], ['retire', 'Retirement'], ['business', 'Starting a side business'], ['less', 'Owing less tax each year']]],
   ['home', 'When might you buy a home?', 'one', [['soon', 'Within 2 years'], ['mid', 'In 2 to 5 years'], ['later', 'More than 5 years'], ['no', 'Not planning to'], ['own', 'I already own one']]],
-  ['pattern', 'How does your income come in now?', 'one', [['seasonal', 'Seasonal (fire season, then time off)'], ['steady', 'Steady all year'], ['mixed', 'A mix']]],
+  ['pattern', 'How does your income come in now?', 'one', [['seasonal', 'Seasonal (a busy season, then time off)'], ['steady', 'Steady all year'], ['mixed', 'A mix']]],
   ['income', 'Roughly what do you expect to earn this year, before tax?', 'money'],
   ['ei', 'Do you expect to claim EI in the off-season?', 'one', [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']]],
   ['cushion', 'How many months of bills could your savings cover?', 'one', [['0', 'Less than 1'], ['1', '1 to 3'], ['3', '3 to 6'], ['6', 'More than 6']]],
   ['cards', 'Do you carry credit card or other high-interest debt from month to month?', 'one', [['yes', 'Yes'], ['no', 'No']]],
   ['accounts', 'Which accounts do you already have?', 'multi', [['rrsp', 'RRSP'], ['tfsa', 'TFSA'], ['fhsa', 'FHSA'], ['rpp', 'A pension plan at work']]],
   ['crypto', 'What’s your plan for your crypto?', 'one', [['hold', 'Hold for the long run'], ['sell', 'Sell some in the next year or two'], ['trade', 'Trade it often'], ['none', 'I don’t have any now']]],
-  ['side', 'Any side income, or plans for some (instructing, drone work, contract flying)?', 'one', [['no', 'No'], ['thinking', 'Thinking about it'], ['yes', 'Yes, already']]],
+  ['side', 'Any side income, or plans for some (contract work, consulting or a small business)?', 'one', [['no', 'No'], ['thinking', 'Thinking about it'], ['yes', 'Yes, already']]],
   ['pay', 'If the catch-up years end with a balance owing, could you pay it in one go?', 'one', [['yes', 'Yes'], ['part', 'Part of it'], ['no', 'I’d need a payment plan']]]
 ];
 function stratState() { state.strategy = state.strategy || { i: 0, a: { goals: [], accounts: [], pattern: 'seasonal' }, done: false }; return state.strategy; }
@@ -6311,10 +6353,10 @@ function stratPlan() {
   const inc = wn(a.income) || (est.slice(-1)[0].e.taxable), high = inc >= 100000, low = inc < 55000;
   const homeSoon = has('goals', 'home') && (a.home === 'soon' || a.home === 'mid');
   if (homeSoon || (has('goals', 'home') && a.home === 'later')) add(homeSoon ? 1 : 2, has('accounts', 'fhsa') ? 'Max out your FHSA' : 'Open an FHSA now', 'Up to $8,000 a year ($40,000 total) is deductible like an RRSP and comes out tax-free for a first home. Room only starts the year it’s opened, so opening it early matters even with a small deposit. You can hold the deduction for a higher-income year. Unused FHSA room carries forward, up to $8,000. With the FHSA you can also take up to $60,000 from an RRSP under the Home Buyers’ Plan, repaid over 15 years.', has('accounts', 'fhsa') ? 'Each year' : 'This year');
-  if (a.cushion === '0' || a.cushion === '1' || has('goals', 'emergency')) add(a.pattern === 'seasonal' ? 1 : 2, 'Build an off-season cushion in a TFSA', 'Aim for 3 to 6 months of bills. A TFSA keeps it growing tax-free and you can take it out any time, then put it back the next year.' + (a.pattern === 'seasonal' ? ' Fill it during fire season to cover the months off.' : ''), a.pattern === 'seasonal' ? 'During each fire season' : null);
+  if (a.cushion === '0' || a.cushion === '1' || has('goals', 'emergency')) add(a.pattern === 'seasonal' ? 1 : 2, 'Build an off-season cushion in a TFSA', 'Aim for 3 to 6 months of bills. A TFSA keeps it growing tax-free and you can take it out any time, then put it back the next year.' + (a.pattern === 'seasonal' ? ' Fill it during the season to cover the months off.' : ''), a.pattern === 'seasonal' ? 'During each season' : null);
     add(2, high ? 'Make the RRSP a priority' : low ? 'Lean on the TFSA before the RRSP' : 'Split savings between RRSP and TFSA', (high ? 'At your income each RRSP dollar saves roughly 30 to 45 cents of tax. ' : low ? 'At your income an RRSP deduction saves less, and a TFSA keeps the money flexible. ' : 'At your income both help: the RRSP for the tax refund, the TFSA for flexibility. ') + 'Contributions made now count for 2026 or later, and you can hold the deduction for a higher-income year. Any RRSP contributions you already made but haven’t deducted can go on the catch-up returns. Your RRSP room is out of date until ' + yearSpan() + (FILE_YEARS.length > 1 ? ' are' : ' is') + ' assessed, and going more than $2,000 over your real room costs 1% a month, so check the room on your new Notice of Assessment first.' + (has('accounts', 'rpp') ? ' Your work pension lowers your RRSP room (T4 box 52).' : ''), 'By March 1 for the year before');
   // 3. work
-  if (a.pattern !== 'steady') add(2, 'Track per diems and days away each fire season', 'Ask your firefighting employer whether per diems are paid as a tax-free allowance or added to your T4, and whether they’ll sign a T2200 and TL2. Keep a simple log of days away from base.', 'During each fire season');
+  if (a.pattern !== 'steady') add(2, 'Track per diems and days away each season', 'Ask your employer whether per diems are paid as a tax-free allowance or added to your T4, and whether they’ll sign a T2200 and TL2. Keep a simple log of days away from base.', 'During each season');
   if (a.ei !== 'no') add(2, 'Have tax taken off your EI', 'Little tax comes off EI by default. You can ask Service Canada to withhold more, or set aside about 20% of each payment so spring doesn’t bring a bill. If your net income for the year passes about $86,000 (2026 figure), 30% of regular EI may have to be paid back, unless you had no regular EI in the 10 years before. RRSP and FHSA deductions lower net income, so they’re worth the most in years you claim EI.', 'When you apply for EI');
   // 4. crypto
   const cf = (Object.values(R ? R.years : {}).sort((p, q) => q.year - p.year)[0] || {}).carryAfter || 0;
@@ -6674,7 +6716,7 @@ ${SKETCH}    </filter></svg>`);
     [/debt-free|road|payoff/i, "flag"], [/debt/i, "chain"], [/coast|cushion|emergency/i, "hourglass"], [/goal/i, "target"],
     [/worth|you own|holdings|still hold/i, "house"], [/credit card/i, "card"], [/actual vs|planned/i, "scales"],
     [/in and out|by month|year by year/i, "bars"], [/changed/i, "arrows"], [/unsorted|transactions|search/i, "search"],
-    [/work|deduction|employ|business/i, "briefcase"], [/pay less|ways to/i, "bulb"], [/pilot|flying/i, "plane"], [/estimate/i, "scales"], [/crypto|coin|swap|disposal/i, "btc"], [/import|files|statements/i, "folder"],
+    [/work|deduction|employ|business/i, "briefcase"], [/pay less|ways to/i, "bulb"], [/travel/i, "plane"], [/estimate/i, "scales"], [/crypto|coin|swap|disposal/i, "btc"], [/import|files|statements/i, "folder"],
     [/review|attention|checklist|needs/i, "list"], [/strategy|plan|filing rail|catch-up/i, "compass"],
     [/return|tax|cra|schedule|report/i, "doc"], [/backup/i, "box"], [/lock|passphrase/i, "lock"], [/about you/i, "person"],
     [/appearance|page style/i, "sun"], [/question/i, "chat"], [/start over/i, "alert"], [/history|record/i, "bars"]];

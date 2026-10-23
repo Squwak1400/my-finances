@@ -65,7 +65,7 @@ swap("  <!-- OVERVIEW -->", "  <!-- IMPORT -->", `  <!-- OVERVIEW -->
   <section id="tab-overview">
     <div id="welcome" class="card hidden" style="margin-top:24px">
       <h2>Let's get your crypto <em>sorted for CRA.</em></h2>
-      <p class="desc" style="margin-bottom:12px">Import your full transaction history from Crypto.com and Kraken, from your very first purchase. I'll match transfers between your accounts, work out your average cost (ACB) the way CRA requires, and give you a gain, loss and income summary for each year you need to file. Nothing leaves this computer.</p>
+      <p class="desc" style="margin-bottom:12px">Import your full transaction history from every exchange and wallet you've used, from your very first purchase. I'll match transfers between your accounts, work out your average cost (ACB) the way CRA requires, and give you a gain, loss and income summary for each year you need to file. Nothing leaves this computer.</p>
       <div class="actions" style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" data-goto="import">Import my files</button><button id="btnSample">Try it with sample data</button></div>
     </div>
     <div id="sampleNote" class="notice hidden" style="margin-top:20px"><b>You're looking at made-up sample data.</b> <button id="btnClearSample" style="margin-left:8px">Remove sample data</button></div>

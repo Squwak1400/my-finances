@@ -203,6 +203,11 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); }
 table.data { font: 400 14.5px var(--serif); }
 table.data th { font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--text); padding: 6px 8px 8px; }
 table.data td { border-bottom: 1px solid var(--grid); padding: 9px 8px; }
+/* Your work suppliers (My numbers) */
+.wp-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 12px; }
+.wp { display: inline-flex; align-items: center; gap: 2px; padding: 1px 1px 1px 10px; border: 1px solid var(--line); font: 400 12.5px var(--mono); }
+.wp-none { color: var(--muted); font-size: 13px; }
+.wp-add { display: flex; gap: 8px; max-width: 440px; } .wp-add input { flex: 1; min-width: 0; }
 table.data td.n { font-family: var(--mono); font-size: 13px; }
 table.data th.n { font-family: var(--mono); }
 table.data tbody tr:hover > td { background: var(--surface-2); }

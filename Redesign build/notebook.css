@@ -210,7 +210,7 @@
 :root.nb #volMoney .cal-key span:nth-of-type(5) { background: repeating-linear-gradient(-45deg, var(--accent) 0 2px, transparent 2px 3.5px), repeating-linear-gradient(45deg, var(--accent) 0 1.6px, transparent 1.6px 4px), color-mix(in srgb, var(--accent) 22%, transparent) !important; }
 :root.nb #volMoney .cal-key span:nth-of-type(6) { background: repeating-linear-gradient(-45deg, var(--text) 0 2px, transparent 2px 3.5px), repeating-linear-gradient(45deg, var(--text) 0 1.4px, transparent 1.4px 4px) !important; }
 
-/* ── rule cards (e.g. What usually applies to pilots) as sticky notes ── */
+/* ── rule cards (e.g. What usually applies to travelling and seasonal jobs) as sticky notes ── */
 :root.nb #volTax .rules:not([style*="1fr"]) { gap: 22px 18px; margin-top: 14px; align-items: start; }
 :root.nb #volTax .rules:not([style*="1fr"]) > div { position: relative; padding: 18px 16px 14px; font: 400 14px/1.55 var(--serif); color: var(--text-2); transform: rotate(var(--r, -.7deg)); }
 :root.nb #volTax .rules:not([style*="1fr"]) > div:nth-child(3n+2) { --r: .6deg; --tp: var(--s2); }

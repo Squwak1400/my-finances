@@ -102,7 +102,7 @@ function nextStep(has, open, unfiled) {
   const np = $('#ovNext'), plan = stratPlan(), first = s => (String(s).match(/^.*?[.!?](?=\s|$)/) || [s])[0];
   let p;
   if (plan.length) p = { h: plan[0].title, t: first(plan[0].text), when: plan[0].when, go: [['strategy', 'Your plan']] };
-  else if (!has) p = { h: 'Import every crypto record', t: 'Crypto.com and Kraken from your very first purchase, plus anything else on the manual template.', go: [['import', 'Import files']] };
+  else if (!has) p = { h: 'Import every crypto record', t: 'Every exchange and wallet from your very first purchase. Anything the Import tab can’t read goes on the manual template.', go: [['import', 'Import files']] };
   else if (open) p = { h: 'Clear the review list', t: say(open) + ' ' + plural(open, 'item needs', 'items need') + ' a decision: transfers to match, prices to fill in or gaps in history.', go: [['review', 'Review now']] };
   else if (!unfiled.length) p = { h: 'Keep each year’s papers', t: 'CRA can ask for slips and receipts for six years after each return is filed.', go: [['filing', 'Filing plan']] };
   else {
@@ -217,7 +217,7 @@ function attention(has, unfiled) {
   if (!state.years) list.push(['Choose the years you’re filing', 'Set to ' + yearSpan() + ' until you choose. Years before the first one count as already filed.', 'filing', 'Choose', '']);
   if (pre.length) list.push(['Crypto in ' + pre.map(y => y.year).join(', ') + ', a year already filed', 'If it wasn’t on that return, ask your CPA about adjusting it.', 'years', 'Year reports', '']);
   const noPay = unfiled.filter(o => { const w = (state.work || {})[o.y] || {}; return !wn(w.t4inc) && !wn(w.ctGross) && !wn(w.eiInc); }).map(o => o.y);
-  if (noPay.length) list.push(['No pay entered for ' + (noPay.length > 2 ? noPay[0] + ' to ' + noPay[noPay.length - 1] : noPay.join(' and ')), 'Paste your Dayforce summary or type the T4 amounts, so each year’s estimate includes your work income.', 'work', 'Add pay', '']);
+  if (noPay.length) list.push(['No pay entered for ' + (noPay.length > 2 ? noPay[0] + ' to ' + noPay[noPay.length - 1] : noPay.join(' and ')), 'Paste your pay summary or type the T4 amounts, so each year’s estimate includes your work income.', 'work', 'Add pay', '']);
   if (unfiled.length && !taxSettings().province) list.push(['Choose your province', 'It sets the provincial part of each year’s estimate.', 'work', 'Choose', '']);
   $('#attn').innerHTML = list.length
     ? '<ol class="attn">' + list.map(([h, p, g, b, c]) => '<li' + (c ? ' class="' + c + '"' : '') + '><div><h4>' + esc(h) + '</h4><p>' + esc(p) + '</p></div><button data-goto="' + g + '">' + b + '</button></li>').join('') + '</ol>'

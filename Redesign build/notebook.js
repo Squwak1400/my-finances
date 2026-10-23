@@ -88,7 +88,7 @@ ${SKETCH}    </filter></svg>`);
     [/debt-free|road|payoff/i, "flag"], [/debt/i, "chain"], [/coast|cushion|emergency/i, "hourglass"], [/goal/i, "target"],
     [/worth|you own|holdings|still hold/i, "house"], [/credit card/i, "card"], [/actual vs|planned/i, "scales"],
     [/in and out|by month|year by year/i, "bars"], [/changed/i, "arrows"], [/unsorted|transactions|search/i, "search"],
-    [/work|deduction|employ|business/i, "briefcase"], [/pay less|ways to/i, "bulb"], [/pilot|flying/i, "plane"], [/estimate/i, "scales"], [/crypto|coin|swap|disposal/i, "btc"], [/import|files|statements/i, "folder"],
+    [/work|deduction|employ|business/i, "briefcase"], [/pay less|ways to/i, "bulb"], [/travel/i, "plane"], [/estimate/i, "scales"], [/crypto|coin|swap|disposal/i, "btc"], [/import|files|statements/i, "folder"],
     [/review|attention|checklist|needs/i, "list"], [/strategy|plan|filing rail|catch-up/i, "compass"],
     [/return|tax|cra|schedule|report/i, "doc"], [/backup/i, "box"], [/lock|passphrase/i, "lock"], [/about you/i, "person"],
     [/appearance|page style/i, "sun"], [/question/i, "chat"], [/start over/i, "alert"], [/history|record/i, "bars"]];
